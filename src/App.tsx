@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './App.css'
-import Navbar from './components/layout/Navbar';
+import { Route, Routes } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import Home from './pages/Home';
+import Gallery from './pages/Gallery';
+import About from './pages/About';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <Navbar/>
-      <h1 className="text-3xl font-bold text-center mt-10">
-        Welcome to Art-Case
-      </h1>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />  {/*'index' means this is the default child route for the path "/" */}
+        <Route path="gallery" element={<Gallery />} />
+        <Route path="about" element={<About />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;
