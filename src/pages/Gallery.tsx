@@ -38,6 +38,7 @@ const Gallery = () => {
         {mockProducts.map((product) => (
           <ProductCard
             key={product.id}
+            id={product.id} 
             title={product.title}
             imageUrl={product.imageUrl}
             price={product.price}

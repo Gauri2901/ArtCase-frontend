@@ -1,7 +1,7 @@
 // 1. Import the 'useParams' hook from React Router
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus } "lucide-react";
 
 // 2. We need our data. Let's copy the 'mockProducts'
 // array here for now.
