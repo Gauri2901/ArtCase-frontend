@@ -1,28 +1,30 @@
 import ProductCard from "@/components/ProductCard";
 
+// 1. We're changing the 'imageUrl' paths to point to
+//    our images in the 'public' folder.
 const mockProducts = [
   {
     id: "1",
     title: "Mountain Sunset",
-    imageUrl: "/images/sunset.jpg",
+    imageUrl: "/paintings/sunset.jpg", // The path starts with '/'
     price: 49.99,
   },
   {
     id: "2",
     title: "Abstract Ocean",
-    imageUrl: "/images/ocean.jpg",
+    imageUrl: "/paintings/ocean.jpg",
     price: 79.99,
   },
   {
     id: "3",
     title: "Forest Path",
-    imageUrl: "/images/forest.jpg",
+    imageUrl: "/paintings/forest.jpg",
     price: 39.99,
   },
   {
     id: "4",
     title: "Cityscape",
-    imageUrl: "/images/city.jpg",
+    imageUrl: "/paintings/city.jpg",
     price: 99.99,
   },
 ];
@@ -32,15 +34,8 @@ const Gallery = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Gallery</h1>
 
-      {/* 2. This is our responsive grid using Tailwind CSS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        {/* 3. We 'map' (loop) over our mock data array */}
         {mockProducts.map((product) => (
-          
-          // 4. For each item, we render a ProductCard
-          // We pass the product's data as 'props'.
-          // The 'key' is crucial for React!
           <ProductCard
             key={product.id}
             title={product.title}
