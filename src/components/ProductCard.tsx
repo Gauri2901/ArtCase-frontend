@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Plus } from 'lucide-react';
 import { Button } from "./ui/button";
 
 // 1. We define the 'shape' of the data this component expects.
@@ -39,10 +40,17 @@ const ProductCard = ({ title, imageUrl, price }: ProductCardProps) => {
       {/* --- END OF UPDATED SECTION --- */}
 
       <CardFooter className="flex justify-between items-center">
-        <span className="font-bold text-lg">
-          ${price.toFixed(2)}
-        </span>
-        <Button>Add to Cart</Button>
+        <span className="font-bold text-lg">${price.toFixed(2)}</span>
+        
+        {/* 2. Add the icon to the button */}
+        <Button>
+          {/*
+            'mr-2' = margin-right: 2 units (adds space)
+            'h-4 w-4' = height: 4 and width: 4 (sets icon size)
+          */}
+          <Plus className="mr-2 h-4 w-4" />
+          Add to Cart
+        </Button>
       </CardFooter>
     </Card>
   );
