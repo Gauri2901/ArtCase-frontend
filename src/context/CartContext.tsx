@@ -17,6 +17,12 @@ interface CartContextType {
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
   // We'll add removeFroCart, clearCart, etc. later
 }
+interface CartContextType {
+  cartItems: CartItem[];
+  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
+  decreaseQuantity: (id: string) => void; // New
+  removeFromCart: (id: string) => void;   // New
+}
 
 // 3. Create the Context.
 // We give it a 'default value' of 'undefined' for now.
@@ -29,27 +35,58 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addToCart = (itemToAdd: Omit<CartItem, 'quantity'>) => {
+    // ... (this function is the same as before) ...
     setCartItems(prevItems => {
-      // Check if the item is already in the cart
       const existingItem = prevItems.find(item => item.id === itemToAdd.id);
-
       if (existingItem) {
-        // If it exists, just increase the quantity
         return prevItems.map(item =>
           item.id === itemToAdd.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        // If it's new, add it to the array with quantity 1
         return [...prevItems, { ...itemToAdd, quantity: 1 }];
       }
     });
   };
 
-  // 5. Provide the state and functions to all children
+  // 2. Add the 'decreaseQuantity' function
+  const decreaseQuantity = (id: string) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.id === id);
+
+      // If item quantity is 1, remove it
+      if (existingItem && existingItem.quantity === 1) {
+        return prevItems.filter(item => item.id !== id);
+      } else {
+        // Otherwise, just decrease quantity by 1
+        return prevItems.map(item =>
+          item.id === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        );
+      }
+    });
+  };
+
+  // 3. Add the 'removeFromCart' function
+  const removeFromCart = (id: string) => {
+    setCartItems(prevItems => {
+      // Filter out the item with the matching id
+      return prevItems.filter(item => item.id !== id);
+    });
+  };
+
+  // 4. Provide the new functions in the 'value'
   return (
-    <CartContext.Provider value={{ cartItems, addToCart }}>
+    <CartContext.Provider 
+      value={{ 
+        cartItems, 
+        addToCart, 
+        decreaseQuantity, 
+        removeFromCart 
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
