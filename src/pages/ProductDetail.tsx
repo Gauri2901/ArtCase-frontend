@@ -1,11 +1,11 @@
 // 1. Import the 'useParams' hook from React Router
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus } "lucide-react";
+import { Plus } from 'lucide-react';
 
 // 2. We need our data. Let's copy the 'mockProducts'
 // array here for now.
-// (In a real app, we'd import this from a shared file)
+// (In a real app, we'd import this from a shared file
 const mockProducts = [
   {
     id: "1",

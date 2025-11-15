@@ -38,7 +38,7 @@ const Gallery = () => {
         {mockProducts.map((product) => (
           <ProductCard
             key={product.id}
-            id={product.id} 
+            id={product.id} // <-- Make sure this 'id' prop is being passed!
             title={product.title}
             imageUrl={product.imageUrl}
             price={product.price}

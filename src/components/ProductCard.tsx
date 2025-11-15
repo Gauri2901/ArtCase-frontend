@@ -55,4 +55,4 @@ const ProductCard = ({ id, title, imageUrl, price }: ProductCardProps) => {
   );
 };
 
-export default ProductCard; 
+export default ProductCard;
