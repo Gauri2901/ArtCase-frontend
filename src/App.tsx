@@ -3,8 +3,9 @@ import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
-// 1. Import the new page (we'll create this next)
 import ProductDetail from './pages/ProductDetail';
+// 1. Import the new Cart page
+import Cart from './pages/Cart'; 
 
 function App() {
   return (
@@ -13,12 +14,10 @@ function App() {
         <Route index element={<Home />} />
         <Route path="gallery" element={<Gallery />} />
         <Route path="about" element={<About />} />
-        
-        {/* 2. This is our new dynamic route!
-            The ':id' part is a "URL parameter".
-            React Router will match /product/1, /product/abc, etc.
-        */}
         <Route path="product/:id" element={<ProductDetail />} />
+        
+        {/* 2. Add the route for the cart page */}
+        <Route path="cart" element={<Cart />} />
         
       </Route>
     </Routes>
