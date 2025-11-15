@@ -7,23 +7,34 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from './ui/button';
-// 1. Import 'Link'
 import { Link } from 'react-router-dom';
+// 1. Import our custom hook
+import { useCart } from '@/context/CartContext';
 
 type ProductCardProps = {
-  // 2. We need the 'id' to build the link!
   id: string;
   title: string;
   imageUrl: string;
   price: number;
 };
 
-// 3. Get 'id' from the props
-const ProductCard = ({ id, title, imageUrl, price }: ProductCardProps) => {
+// 3. We need all the product data to pass to the cart
+const ProductCard = (props: ProductCardProps) => {
+  const { id, title, imageUrl, price } = props;
+
+  // 2. Get the 'addToCart' function from our context
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    // 4. Call 'addToCart' with the product info
+    // We pass the 'props' object directly as it matches the shape
+    addToCart(props);
+    // You could add a 'toast' notification here later!
+  };
+
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        {/* 4. Wrap the title in a Link */}
         <Link to={`/product/${id}`}>
           <CardTitle className="text-xl hover:text-primary transition-colors">
             {title}
@@ -32,7 +43,6 @@ const ProductCard = ({ id, title, imageUrl, price }: ProductCardProps) => {
       </CardHeader>
 
       <CardContent className="flex-grow">
-        {/* 5. Wrap the image in a Link */}
         <Link to={`/product/${id}`}>
           <div className="aspect-square relative overflow-hidden rounded-md">
             <img
@@ -46,7 +56,9 @@ const ProductCard = ({ id, title, imageUrl, price }: ProductCardProps) => {
 
       <CardFooter className="flex justify-between items-center">
         <span className="font-bold text-lg">${price.toFixed(2)}</span>
-        <Button>
+        
+        {/* 5. Attach the 'handleAddToCart' function to the button */}
+        <Button onClick={handleAddToCart}>
           <Plus className="mr-2 h-4 w-4" />
           Add to Cart
         </Button>

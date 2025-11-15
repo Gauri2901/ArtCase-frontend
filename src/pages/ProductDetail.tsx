@@ -2,7 +2,7 @@
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-
+import { useCart } from '@/context/CartContext';
 // 2. We need our data. Let's copy the 'mockProducts'
 // array here for now.
 // (In a real app, we'd import this from a shared file
@@ -41,7 +41,7 @@ const ProductDetail = () => {
   // 3. 'useParams' gives us an object with the URL params.
   //    We 'destructure' it to get the 'id'.
   const { id } = useParams();
-
+  const { addToCart } = useCart();
   // 4. Find the product in our mock data that matches the id
   //    (The 'product' variable might be 'undefined' if no match is found)
   const product = mockProducts.find(p => p.id === id);
@@ -55,13 +55,17 @@ const ProductDetail = () => {
       </div>
     );
   }
+  const handleAddToCart = () => {
+    // We know 'product' exists here, so we can pass it
+    addToCart(product);
+  };
 
   // 6. If the product *is* found, render its details
   return (
     <div className="container mx-auto px-4 py-8">
       {/* We'll use a 2-column grid for the layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
+
         {/* Column 1: Image */}
         <div className="aspect-square overflow-hidden rounded-lg">
           <img
@@ -74,17 +78,17 @@ const ProductDetail = () => {
         {/* Column 2: Details */}
         <div className="flex flex-col">
           <h1 className="text-4xl font-bold mb-4">{product.title}</h1>
-          
+
           <span className="text-3xl font-semibold mb-6">
             ${product.price.toFixed(2)}
           </span>
-          
+
           <p className="text-gray-700 text-lg mb-6">
             {product.description}
           </p>
-          
+
           {/* 'mt-auto' pushes this button to the bottom */}
-          <Button size="lg" className="mt-auto">
+          <Button size="lg" className="mt-auto" onClick={handleAddToCart}>
             <Plus className="mr-2 h-5 w-5" />
             Add to Cart
           </Button>
