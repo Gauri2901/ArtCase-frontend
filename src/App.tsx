@@ -6,7 +6,7 @@ import About from './pages/About';
 import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';;
 import Cart from './pages/Cart'; 
-
+import ThankYou from './pages/Thankyou';
 function App() {
   return (
     <Routes>
@@ -17,6 +17,7 @@ function App() {
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />
+        <Route path="thank-you" element={<ThankYou />} />
       </Route>
     </Routes>
   );
