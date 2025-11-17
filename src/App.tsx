@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
 import ProductDetail from './pages/ProductDetail';
-// 1. Import the new Cart page
+import Checkout from './pages/Checkout';;
 import Cart from './pages/Cart'; 
 
 function App() {
@@ -15,10 +15,8 @@ function App() {
         <Route path="gallery" element={<Gallery />} />
         <Route path="about" element={<About />} />
         <Route path="product/:id" element={<ProductDetail />} />
-        
-        {/* 2. Add the route for the cart page */}
         <Route path="cart" element={<Cart />} />
-        
+        <Route path="checkout" element={<Checkout />} />
       </Route>
     </Routes>
   );

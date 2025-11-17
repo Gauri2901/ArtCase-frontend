@@ -3,7 +3,6 @@ import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
-
 const Cart = () => {
     // 1. Get the cart state from our context
     const { cartItems, addToCart, decreaseQuantity, removeFromCart } = useCart();
@@ -101,8 +100,10 @@ const Cart = () => {
                         <span>Total:</span>
                         <span>${totalPrice.toFixed(2)}</span>
                     </div>
-                    <Button size="lg" className="w-full">
-                        Proceed to Checkout
+
+                    {/* 1. Wrap the Button in 'asChild' to use the Link */}
+                    <Button size="lg" className="w-full" asChild>
+                        <Link to="/checkout">Proceed to Checkout</Link>
                     </Button>
                 </div>
             </div>

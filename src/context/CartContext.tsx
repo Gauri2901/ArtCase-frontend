@@ -13,8 +13,9 @@ interface CartItem {
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  decreaseQuantity: (id: string) => void; // New
-  removeFromCart: (id: string) => void;   // New
+  decreaseQuantity: (id: string) => void;
+  removeFromCart: (id: string) => void;
+  clearCart: () => void; 
 }
 
 // 3. Create the Context.
@@ -96,6 +97,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const clearCart = () => {
+    setCartItems([]); // Just set the cart to an empty array
+    toast.info("Cart cleared");
+  };
+
   // 4. Provide the new functions in the 'value'
   return (
     <CartContext.Provider
@@ -103,7 +109,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         cartItems,
         addToCart,
         decreaseQuantity,
-        removeFromCart
+        removeFromCart,
+        clearCart
       }}
     >
       {children}
