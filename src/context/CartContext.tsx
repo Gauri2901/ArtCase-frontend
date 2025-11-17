@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
+import { toast } from 'sonner';
 // 1. Define the shape of a single item in our cart
 // (We'll need the full product info to show in the cart later)
 interface CartItem {
@@ -24,16 +24,16 @@ interface CartContextType {
 // We give it a 'default value' of 'undefined' for now.
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// 4. Create the 'Provider' component
-// This is the component that will hold the actual data (the 'state')
-// and provide it to all its children.
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addToCart = (itemToAdd: Omit<CartItem, 'quantity'>) => {
-    // ... (this function is the same as before) ...
+    // 2. Add a variable to track if the item was new
+    let itemWasAdded = false;
+
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === itemToAdd.id);
+
       if (existingItem) {
         return prevItems.map(item =>
           item.id === itemToAdd.id
@@ -41,9 +41,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             : item
         );
       } else {
+        // 3. If it's a new item, set our tracker
+        itemWasAdded = true; 
         return [...prevItems, { ...itemToAdd, quantity: 1 }];
       }
     });
+
+    // 4. After the state update, show the toast
+    // We check 'itemWasAdded' to customize the message
+    if (itemWasAdded) {
+      toast.success(`${itemToAdd.title} added to cart!`);
+    } else {
+      toast.info(`Increased ${itemToAdd.title} quantity`);
+    }
   };
 
   // 2. Add the 'decreaseQuantity' function
@@ -86,7 +96,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </CartContext.Provider>
   );
-};
+};  
 
 // 6. Create a 'custom hook' - This is the BEST PRACTICE
 // This hook makes it easy for components to use our context
