@@ -34,7 +34,6 @@ const Cart = () => {
             <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
 
             {/* Cart Items List */}
-            {/* Cart Items List - UPDATED SECTION */}
             <div className="flex flex-col gap-6">
                 {cartItems.map((item) => (
                     <div

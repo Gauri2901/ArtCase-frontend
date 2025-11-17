@@ -12,11 +12,7 @@ interface CartItem {
 
 // 2. Define the shape of the 'bulletin board' (our Context)
 // What data and functions will it provide?
-interface CartContextType {
-  cartItems: CartItem[];
-  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  // We'll add removeFroCart, clearCart, etc. later
-}
+
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
