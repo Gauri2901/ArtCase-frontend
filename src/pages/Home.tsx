@@ -1,12 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, Palette, ShieldCheck, Truck } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, Palette, ShieldCheck, Truck, Brush, Quote, Play, Sparkles, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { products } from "@/lib/products"; // [cite: 144]
-import ProductCard from "@/components/ProductCard"; // [cite: 110]
+import ProductCard from "@/components/ProductCard";
 
-// --- Components ---
+// --- EXISTING COMPONENTS (Untouched) ---
 
 const AuroraBackground = () => {
   return (
@@ -33,10 +32,10 @@ const HeroSection = () => {
   return (
     <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden border-2px-s">
       <AuroraBackground />
-      
+
       <div className="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
         {/* Text Content */}
-        <motion.div 
+        <motion.div
           style={{ y: yText }}
           className="flex flex-col gap-6 text-center lg:text-left"
         >
@@ -49,8 +48,8 @@ const HeroSection = () => {
               Handcrafted Excellence
             </span>
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -58,18 +57,18 @@ const HeroSection = () => {
           >
             Art that <span className="italic text-primary/80">breathes</span> life into your space.
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 font-sans"
           >
-            Discover a curated collection of handmade paintings. 
+            Discover a curated collection of handmade paintings.
             Where every stroke tells a story and every canvas holds an emotion.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
@@ -88,41 +87,41 @@ const HeroSection = () => {
 
         {/* Hero Image Parallax */}
         <div className="hidden lg:block relative h-[600px] w-full">
-           {/* Main Hero Image */}
-           <motion.div 
-             style={{ y: yImage, scale: scaleImage }}
-             className="absolute inset-0 z-10"
-           >
-              <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl">
-                <img 
-                  src="/paintings/ocean.jpg" 
-                  alt="Abstract Ocean Art" 
-                  className="w-full h-full object-cover"
-                />
-                {/* Glass Overlay Card */}
-                <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl text-white">
-                   <p className="font-serif italic text-lg">"The Ocean's Whisper"</p>
-                   <p className="text-sm opacity-80 font-sans">Oil on Canvas, 2025</p>
-                </div>
+          {/* Main Hero Image */}
+          <motion.div
+            style={{ y: yImage, scale: scaleImage }}
+            className="absolute inset-0 z-10"
+          >
+            <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl">
+              <img
+                src="/paintings/ocean.jpg"
+                alt="Abstract Ocean Art"
+                className="w-full h-full object-cover"
+              />
+              {/* Glass Overlay Card */}
+              <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl text-white">
+                <p className="font-serif italic text-lg">"The Ocean's Whisper"</p>
+                <p className="text-sm opacity-80 font-sans">Oil on Canvas, 2025</p>
               </div>
-           </motion.div>
+            </div>
+          </motion.div>
 
-           {/* Floating Decorative Elements */}
-           <motion.div 
-              animate={{ y: [0, -20, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-12 -right-12 w-48 h-64 rounded-xl overflow-hidden shadow-xl z-0 opacity-80"
-           >
-              <img src="/paintings/sunset.jpg" alt="Sunset" className="w-full h-full object-cover" />
-           </motion.div>
-           
-           <motion.div 
-              animate={{ y: [0, 30, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full overflow-hidden shadow-xl z-20 border-4 border-white/30"
-           >
-              <img src="/paintings/forest.jpg" alt="Forest" className="w-full h-full object-cover" />
-           </motion.div>
+          {/* Floating Decorative Elements */}
+          <motion.div
+            animate={{ y: [0, -20, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-12 -right-12 w-48 h-64 rounded-xl overflow-hidden shadow-xl z-0 opacity-80"
+          >
+            <img src="/paintings/sunset.jpg" alt="Sunset" className="w-full h-full object-cover" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 30, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full overflow-hidden shadow-xl z-20 border-4 border-white/30"
+          >
+            <img src="/paintings/forest.jpg" alt="Forest" className="w-full h-full object-cover" />
+          </motion.div>
         </div>
       </div>
     </section>
@@ -131,7 +130,7 @@ const HeroSection = () => {
 
 const FeatureItem = ({ icon: Icon, title, description, delay }: { icon: any, title: string, description: string, delay: number }) => {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -147,43 +146,206 @@ const FeatureItem = ({ icon: Icon, title, description, delay }: { icon: any, tit
   );
 };
 
+// --- NEW COMPONENTS (Added Plainly) ---
+
+const PhilosophySection = () => {
+  return (
+    <section className="py-32 bg-foreground text-background relative overflow-hidden">
+      <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
+      
+      <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative">
+          <div className="absolute -top-10 -left-10 text-[10rem] font-serif text-background/10 leading-none select-none">"</div>
+          <h2 className="text-4xl md:text-6xl font-serif leading-tight relative z-10">
+            Art is not just what you see, but what you make others feel.
+          </h2>
+          <div className="h-1 w-24 bg-primary mt-8 mb-8" />
+          <p className="text-lg text-background/70 leading-relaxed font-light">
+            Every piece in this collection starts with a chaotic burst of emotion and ends with a deliberate stroke of silence. 
+            I believe in the power of texture to disrupt the digital flatness of our lives.
+          </p>
+          <div className="mt-12 flex items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-background/10 flex items-center justify-center">
+               <Brush className="w-8 h-8 text-background/50" />
+            </div>
+            <div>
+              <p className="font-serif font-bold text-xl">The Artist</p>
+              <p className="text-sm text-primary">Founder & Creator</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative h-[600px] w-full bg-neutral-800 rounded-2xl overflow-hidden border border-white/10 group cursor-pointer">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors z-20">
+            <div className="h-20 w-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center border border-white/50 transition-transform group-hover:scale-110">
+              <Play className="w-8 h-8 fill-white text-white ml-1" />
+            </div>
+          </div>
+          <img src="/paintings/forest.jpg" alt="In the Studio" className="h-full w-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-700" />
+          <p className="absolute bottom-8 left-8 font-mono text-xs uppercase tracking-widest text-white/80 z-20">Watch the Process • 01:24</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const LookbookSection = () => {
+  return (
+    <section className="py-0 relative">
+      <div className="grid grid-cols-1 md:grid-cols-2 h-[80vh]">
+        <div className="relative group overflow-hidden">
+          <div className="absolute inset-0 bg-gray-200">
+             <img src="/paintings/ocean.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
+          </div>
+          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+            <div className="text-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+              <h3 className="text-3xl font-serif text-white mb-2">Sanctuary</h3>
+              <p className="text-white/80 mb-6">Curated for calm spaces.</p>
+              <Button variant="outline" className="text-white border-white hover:bg-white hover:text-black bg-transparent">Shop the Look</Button>
+            </div>
+          </div>
+        </div>
+        <div className="relative group overflow-hidden">
+           <div className="absolute inset-0 bg-stone-300">
+             <img src="/paintings/city.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
+           </div>
+          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+            <div className="text-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+              <h3 className="text-3xl font-serif text-white mb-2">Statement</h3>
+              <p className="text-white/80 mb-6">Bold pieces for bold minds.</p>
+              <Button variant="outline" className="text-white border-white hover:bg-white hover:text-black bg-transparent">Shop the Look</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl px-8 py-6 rounded-full shadow-2xl z-10 text-center">
+        <span className="font-serif italic text-2xl text-foreground">View in Room</span>
+      </div>
+    </section>
+  )
+}
+
+const CommissionSection = () => {
+  return (
+    <section id="commissions" className="py-32 relative overflow-hidden bg-background">
+      <div className="absolute right-0 bottom-0 w-[800px] h-[800px] bg-orange-100/40 rounded-full blur-[120px] -z-10" />
+
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs mb-6">
+              <Brush className="w-4 h-4" /> Custom Orders
+            </div>
+            <h2 className="text-5xl font-serif font-medium mb-6">Your Vision. <br /> Our Hands.</h2>
+            <p className="text-lg text-muted-foreground mb-12 max-w-md">
+              Looking for a specific size or color palette? We accept a limited number of commissions each month to bring your unique ideas to life.
+            </p>
+
+            <div className="space-y-8">
+              {[
+                { title: "Consultation", desc: "Share your space, colors, and inspiration." },
+                { title: "Creation", desc: "Receive sketches and updates as we paint." },
+                { title: "Delivery", desc: "White-glove shipping to your door." }
+              ].map((step, i) => (
+                <div key={i} className="flex gap-6 group">
+                  <span className="text-4xl font-serif text-primary/20 font-bold group-hover:text-primary transition-colors">0{i + 1}</span>
+                  <div>
+                    <h3 className="text-xl font-serif font-bold">{step.title}</h3>
+                    <p className="text-muted-foreground">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-12 bg-white/50 dark:bg-black/20 backdrop-blur-xl border border-primary/10 p-2 rounded-full flex max-w-md shadow-sm">
+              <input
+                type="email"
+                placeholder="Enter email for quote..."
+                className="bg-transparent flex-grow px-6 outline-none placeholder:text-muted-foreground/70"
+              />
+              <Button className="rounded-full px-8">Request</Button>
+            </div>
+          </div>
+
+          <div className="relative h-[600px] flex items-center justify-center">
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: -2 }}
+              className="absolute w-80 h-[450px] bg-white p-4 shadow-2xl rotate-3 z-10 rounded-xl border border-gray-100"
+            >
+              <div className="w-full h-full bg-gray-100 overflow-hidden relative">
+                <img src="/paintings/city.jpg" className="w-full h-full object-cover" />
+                <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded text-xs font-bold shadow-sm">COMMISSION #42</div>
+              </div>
+            </motion.div>
+            <motion.div
+              className="absolute w-80 h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-12 translate-y-12 border border-gray-100"
+            >
+              <img src="/paintings/forest.jpg" className="w-full h-full object-cover grayscale" />
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- MAIN HOME COMPONENT ---
+
 const Home = () => {
-  const featuredProducts = products.slice(0, 3); // [cite: 114]
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/products?featured=true');
+        const data = await res.json();
+        setFeaturedProducts(data.slice(0, 3));
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      }
+    };
+    fetchFeatured();
+  }, []);
 
   return (
     <div className="flex flex-col gap-0">
+      
+      {/* 1. HERO (Your existing version) */}
       <HeroSection />
 
-      {/* Features Section */}
+      {/* 2. FEATURES (Your existing version) */}
       <section className="py-24 container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <FeatureItem 
-            icon={Palette} 
-            title="100% Handmade" 
-            description="Authentic art created by hand. No prints, just raw emotion on canvas." 
-            delay={0.1} 
+          <FeatureItem
+            icon={Palette}
+            title="100% Handmade"
+            description="Authentic art created by hand. No prints, just raw emotion on canvas."
+            delay={0.1}
           />
-          <FeatureItem 
-            icon={Truck} 
-            title="Secure Shipping" 
-            description="Museum-grade packaging ensures your masterpiece arrives in perfect condition." 
-            delay={0.2} 
+          <FeatureItem
+            icon={Truck}
+            title="Secure Shipping"
+            description="Museum-grade packaging ensures your masterpiece arrives in perfect condition."
+            delay={0.2}
           />
-          <FeatureItem 
-            icon={ShieldCheck} 
-            title="Satisfaction Guarantee" 
-            description="We want you to fall in love with your art. 30-day return policy included." 
-            delay={0.3} 
+          <FeatureItem
+            icon={ShieldCheck}
+            title="Satisfaction Guarantee"
+            description="We want you to fall in love with your art. 30-day return policy included."
+            delay={0.3}
           />
         </div>
       </section>
 
-      {/* Featured Collection with Horizontal Scroll Hint */}
+      {/* 3. PHILOSOPHY (NEW INSERTION) */}
+      <PhilosophySection />
+
+      {/* 4. FEATURED COLLECTION (Your existing version) */}
       <section className="py-24 bg-secondary/30 relative">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
             <div>
-              <motion.h2 
+              <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -201,7 +363,7 @@ const Home = () => {
               </Link>
             </Button>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProducts.map((product, index) => (
               <motion.div
@@ -223,7 +385,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Call to Action */}
+      {/* 5. LOOKBOOK (NEW INSERTION) */}
+      <LookbookSection />
+
+      {/* 6. COMMISSIONS (NEW INSERTION) */}
+      <CommissionSection />
+
+      {/* 7. CALL TO ACTION (Your existing version) */}
       <section className="py-32 container mx-auto px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 -z-10 rounded-3xl transform rotate-1 scale-95" />
         <motion.div

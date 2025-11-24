@@ -5,14 +5,33 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { products } from "@/lib/products";
 import { cn } from '@/lib/utils';
-
+import { useState, useEffect } from 'react';
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  
-  const product = products.find(p => p.id === id);
 
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        if (!res.ok) throw new Error('Not found');
+        const data = await res.json();
+        setProduct(data);
+      } catch (error) {
+        console.error(error);
+        // Optional: navigate('/gallery') here
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchProduct();
+  }, [id]);
+
+  if (loading) return <div className="h-screen flex items-center justify-center">Loading masterpiece...</div>;
   if (!product) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-background text-center p-4">
@@ -44,21 +63,21 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden">
-      
+
       {/* 1. Ambient Background Blur - Takes colors from the image itself */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-[100px] z-10" />
-        <img 
-          src={product.imageUrl} 
-          alt="" 
-          className="w-full h-full object-cover blur-3xl opacity-40 scale-150" 
+        <img
+          src={product.imageUrl}
+          alt=""
+          className="w-full h-full object-cover blur-3xl opacity-40 scale-150"
         />
       </div>
 
       <div className="container mx-auto px-4 py-24 md:py-32">
-        
+
         {/* Navigation Breadcrumb */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
@@ -71,7 +90,7 @@ const ProductDetail = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
-          
+
           {/* 2. Sticky Image Section */}
           <div className="relative lg:sticky lg:top-32">
             <motion.div
@@ -85,14 +104,14 @@ const ProductDetail = () => {
                 alt={product.title}
                 className="h-full w-full object-cover"
               />
-              
+
               {/* Subtle grain overlay on the painting */}
               <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay pointer-events-none" />
             </motion.div>
           </div>
 
           {/* 3. Product Details Column */}
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -124,7 +143,7 @@ const ProductDetail = () => {
                 {product.description}
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed font-sans">
-                This piece invites the viewer to explore the relationship between color and form. 
+                This piece invites the viewer to explore the relationship between color and form.
                 Hand-painted with archival quality materials to ensure longevity and vibrance.
               </p>
             </motion.div>

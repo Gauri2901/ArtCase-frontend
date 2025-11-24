@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { products } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
@@ -20,16 +20,54 @@ const expandedProducts = [
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Filter logic
+  // Fetch from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/products');
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching gallery:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Use the fetched 'products' to create the expanded list
+  // Note: We perform this check inside the render or a memo
+  const baseList = products.length > 0 ? products : [];
+  
+  // Artificial expansion for Masonry Demo (same as before, but using fetched data)
+  const expandedProducts = baseList.length > 0 ? [
+    ...baseList.map(p => ({ ...p, category: "Oil" })), 
+    { ...baseList[1], id: "5", category: "Acrylic" },
+    { ...baseList[2], id: "6", category: "Watercolor" },
+    { ...baseList[0], id: "7", category: "Mixed Media" },
+  ] : [];
+
   const filteredProducts = activeCategory === "All" 
     ? expandedProducts 
-    : expandedProducts.filter(p => p.category === activeCategory);
+    : expandedProducts.filter((p: any) => p.category === activeCategory);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  
   return (
     <div className="min-h-screen bg-background relative">
-       {/* Ambient Background Blob */}
-       <div className="fixed top-20 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
+      {/* Ambient Background Blob */}
+      <div className="fixed top-20 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
       {/* Header Section */}
       <div className="container mx-auto px-4 pt-24 pb-12">
@@ -52,7 +90,7 @@ const Gallery = () => {
 
         {/* Glass Filter Bar */}
         <div className="sticky top-24 z-30 mb-12 flex justify-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="p-1.5 bg-white/70 dark:bg-black/70 backdrop-blur-xl border border-white/20 rounded-full shadow-sm flex flex-wrap gap-1 justify-center"
@@ -82,8 +120,8 @@ const Gallery = () => {
 
         {/* Masonry Layout */}
         {/* CSS Columns approach: simple, effective for pure vertical stacking */}
-        <motion.div 
-          layout 
+        <motion.div
+          layout
           className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8"
         >
           <AnimatePresence mode="popLayout">
@@ -104,7 +142,7 @@ const Gallery = () => {
                     imageUrl={product.imageUrl}
                     price={product.price}
                   />
-                  
+
                   {/* Artistic Overlay Decoration (Optional) */}
                   <div className="absolute -inset-2 border border-primary/0 group-hover:border-primary/10 rounded-xl transition-all duration-500 pointer-events-none -z-10 scale-95 group-hover:scale-105" />
                 </div>
@@ -119,8 +157,8 @@ const Gallery = () => {
             <Filter className="h-12 w-12 mx-auto text-muted-foreground mb-4 opacity-20" />
             <h3 className="text-xl font-serif">No artworks found</h3>
             <p className="text-muted-foreground">Try adjusting your filters.</p>
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               onClick={() => setActiveCategory("All")}
               className="mt-4"
             >
