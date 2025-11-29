@@ -5,6 +5,7 @@ import Footer from './Footer';
 import { Toaster } from '@/components/ui/sonner';
 import CustomCursor from '@/components/ui/CustomCursor';
 import { useEffect } from 'react';
+import FloatingShapes from './FloatingShapes';
 
 const Layout = () => {
   const { pathname } = useLocation();
@@ -15,15 +16,13 @@ const Layout = () => {
   }, [pathname]);
 
   return (
-    // 'root' prop tells Lenis to control the <html> scroll
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
-      <div className="min-h-screen flex flex-col bg-noise">
-        {/* The Custom Cursor */}
-        <div className="hidden md:block">
-           <CustomCursor />
-        </div>
+      <div className="min-h-screen flex flex-col bg-noise relative">
+        <CustomCursor />
+        
+        {/* Add Floating Shapes here - clearly visible but behind content */}
+        <FloatingShapes />
 
-        {/* Navbar will be sticky/glass inside */}
         <Navbar />
         
         <main className="flex-grow relative z-10">

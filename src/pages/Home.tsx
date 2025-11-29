@@ -1,11 +1,107 @@
 import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Palette, ShieldCheck, Truck, Brush, Quote, Play, Sparkles, Mail } from "lucide-react";
+import { ArrowRight, Palette, ShieldCheck, Truck, Brush, Play, Sparkles, Paintbrush, Frame, Shapes, PenTool } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
+import { cn } from "@/lib/utils";
 
-// --- EXISTING COMPONENTS (Untouched) ---
+// --- NEW HELPER COMPONENTS (Inline for easy setup) ---
+
+// 1. Marquee Component (For infinite scrolling text/images)
+const Marquee = ({ children, direction = "left", speed = 20, className }: { children: React.ReactNode, direction?: "left" | "right", speed?: number, className?: string }) => {
+  return (
+    <div className={cn("flex overflow-hidden whitespace-nowrap", className)}>
+      <motion.div
+        className="flex min-w-full gap-8 py-4"
+        animate={{
+          x: direction === "left" ? ["0%", "-100%"] : ["-100%", "0%"],
+        }}
+        transition={{
+          repeat: Infinity,
+          ease: "linear",
+          duration: speed,
+        }}
+      >
+        {/* Repeat children 4 times to ensure seamless looping on large screens */}
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex gap-8 items-center shrink-0">
+            {children}
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
+// 2. Floating Shapes Component (Background artifacts)
+const FloatingIcon = ({ Icon, delay, x, y, duration }: any) => (
+  <motion.div
+    className="absolute text-foreground/5 dark:text-foreground/10 pointer-events-none z-0"
+    initial={{ x, y, opacity: 0 }}
+    animate={{ 
+      y: [y, y - 40, y], 
+      rotate: [0, 10, -10, 0],
+      opacity: 1
+    }}
+    transition={{ 
+      duration: duration, 
+      repeat: Infinity, 
+      ease: "easeInOut",
+      delay: delay 
+    }}
+  >
+    <Icon className="w-12 h-12 md:w-24 md:h-24" />
+  </motion.div>
+);
+
+const FloatingShapes = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 h-full w-full">
+      <FloatingIcon Icon={Palette} x="10vw" y={200} delay={0} duration={6} />
+      <FloatingIcon Icon={Paintbrush} x="85vw" y={600} delay={1} duration={7} />
+      <FloatingIcon Icon={Frame} x="90vw" y={300} delay={2} duration={8} />
+      <FloatingIcon Icon={Shapes} x="5vw" y={800} delay={0.5} duration={9} />
+      <FloatingIcon Icon={PenTool} x="70vw" y={150} delay={1.5} duration={6.5} />
+  </div>
+);
+
+// 3. Moving Gallery Section (The "Shoparl" style strip)
+const MovingGallery = () => {
+  const images = [
+    "/paintings/ocean.jpg",
+    "/paintings/city.jpg",
+    "/paintings/forest.jpg",
+    "/paintings/sunset.jpg",
+  ];
+
+  return (
+    <section className="py-20 overflow-hidden bg-background relative border-y border-border/50">
+      <div className="mb-12 text-center">
+         <h2 className="text-3xl md:text-4xl font-serif italic text-muted-foreground/50">Studio Life</h2>
+      </div>
+      
+      {/* Top Row - Moving Left */}
+      <Marquee speed={40} className="mb-8" direction="left">
+         {images.map((src, i) => (
+            <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+               <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
+            </div>
+         ))}
+      </Marquee>
+
+      {/* Bottom Row - Moving Right */}
+      <Marquee speed={35} direction="right">
+         {images.reverse().map((src, i) => (
+            <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+               <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
+            </div>
+         ))}
+      </Marquee>
+    </section>
+  );
+};
+
+// --- EXISTING COMPONENTS (Untouched logic, minor layout tweaks) ---
 
 const AuroraBackground = () => {
   return (
@@ -32,6 +128,8 @@ const HeroSection = () => {
   return (
     <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden border-2px-s">
       <AuroraBackground />
+      {/* Add Floating Shapes to Hero */}
+      <FloatingShapes />
 
       <div className="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
         {/* Text Content */}
@@ -145,8 +243,6 @@ const FeatureItem = ({ icon: Icon, title, description, delay }: { icon: any, tit
     </motion.div>
   );
 };
-
-// --- NEW COMPONENTS (Added Plainly) ---
 
 const PhilosophySection = () => {
   return (
@@ -308,13 +404,26 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-0">
+    <div className="flex flex-col gap-0 relative">
       
-      {/* 1. HERO (Your existing version) */}
+      {/* 1. TOP MARQUEE (Sale Section) */}
+      <div className="bg-primary py-3 relative z-40 overflow-hidden">
+        <Marquee speed={30} className="text-primary-foreground font-medium text-sm uppercase tracking-widest">
+           <span className="flex items-center gap-4 mx-4"><Sparkles className="w-4 h-4" /> New Collection Drop: "Midnight Bloom"</span>
+           <span className="flex items-center gap-4 mx-4">★ Free Shipping on Orders Over $200</span>
+           <span className="flex items-center gap-4 mx-4">● Original Hand-Painted Art</span>
+           <span className="flex items-center gap-4 mx-4">★ Spring Sale: 20% Off Commissions</span>
+        </Marquee>
+      </div>
+
+      {/* 2. HERO */}
       <HeroSection />
 
-      {/* 2. FEATURES (Your existing version) */}
-      <section className="py-24 container mx-auto px-4">
+      {/* 3. MOVING GALLERY (New "Shoparl" Style Section) */}
+      <MovingGallery />
+
+      {/* 4. FEATURES */}
+      <section className="py-24 container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <FeatureItem
             icon={Palette}
@@ -337,10 +446,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. PHILOSOPHY (NEW INSERTION) */}
+      {/* 5. PHILOSOPHY */}
       <PhilosophySection />
 
-      {/* 4. FEATURED COLLECTION (Your existing version) */}
+      {/* 6. FEATURED COLLECTION */}
       <section className="py-24 bg-secondary/30 relative">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
@@ -373,6 +482,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
+                {/* The updated ProductCard handles the price hiding/hover logic internally */}
                 <ProductCard
                   id={product.id}
                   title={product.title}
@@ -385,13 +495,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 5. LOOKBOOK (NEW INSERTION) */}
+      {/* 7. LOOKBOOK */}
       <LookbookSection />
 
-      {/* 6. COMMISSIONS (NEW INSERTION) */}
+      {/* 8. COMMISSIONS */}
       <CommissionSection />
 
-      {/* 7. CALL TO ACTION (Your existing version) */}
+      {/* 9. CALL TO ACTION */}
       <section className="py-32 container mx-auto px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 -z-10 rounded-3xl transform rotate-1 scale-95" />
         <motion.div

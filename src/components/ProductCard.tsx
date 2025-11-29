@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Plus, Eye } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Plus, Eye, Star } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/context/CartContext';
 import { cn } from '@/lib/utils';
@@ -17,101 +17,59 @@ type ProductCardProps = {
 const ProductCard = ({ id, title, imageUrl, price, className }: ProductCardProps) => {
   const { addToCart } = useCart();
   const ref = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  // Mouse position for the "Lens Zoom" effect
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  // Smooth out the mouse movement
-  const springConfig = { damping: 20, stiffness: 300 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
-
-  // Map mouse position to image translation (pan effect)
-  // Moving mouse right moves image left, etc.
-  const translateLargeX = useTransform(springX, [0, 1], ["0%", "-20%"]);
-  const translateLargeY = useTransform(springY, [0, 1], ["0%", "-20%"]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    // Calculate normalized position (0 to 1)
-    const xPos = (e.clientX - rect.left) / rect.width;
-    const yPos = (e.clientY - rect.top) / rect.height;
-    x.set(xPos);
-    y.set(yPos);
-  };
+  
+  // Random rating for demo
+  const rating = (Math.random() * (5.0 - 4.5) + 4.5).toFixed(1);
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation if clicking the button
+    e.preventDefault();
     addToCart({ id, title, imageUrl, price });
   };
 
   return (
     <motion.div 
       ref={ref}
-      className={cn("group relative flex flex-col bg-transparent", className)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onMouseMove={handleMouseMove}
+      className={cn("group relative bg-transparent break-inside-avoid mb-6 cursor-pointer", className)}
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 300 }}
     >
-      {/* Image Container */}
-      <Link to={`/product/${id}`} className="block overflow-hidden rounded-[1.5rem] aspect-[4/5] relative mb-4 bg-gray-100 dark:bg-gray-900">
-        {/* Main Image - Scales and Pans on Hover */}
-        <motion.img
-          src={imageUrl}
-          alt={title}
-          className="w-full h-full object-cover will-change-transform"
-          style={{
-            scale: isHovered ? 1.25 : 1, // Zoom in
-            x: isHovered ? translateLargeX : 0, // Pan X
-            y: isHovered ? translateLargeY : 0, // Pan Y
-          }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        />
+      <Link to={`/product/${id}`} className="block w-full h-full">
+        <div className="relative overflow-hidden rounded-2xl">
+          
+          {/* Main Image */}
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
+          />
 
-        {/* Overlay: Darken slightly on hover for text contrast */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+          {/* Pinterest-style Dark Overlay (Only on Hover) */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Quick Action Floating Buttons */}
-        <div className="absolute bottom-4 right-4 flex gap-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
-           <Button 
-             size="icon" 
-             variant="secondary" 
-             className="rounded-full h-10 w-10 shadow-lg bg-white/90 backdrop-blur text-primary hover:bg-white"
-             onClick={(e) => { e.preventDefault(); /* Just let Link handle nav */ }}
-           >
-             <Eye className="h-4 w-4" />
-             <span className="sr-only">View Details</span>
-           </Button>
-           <Button 
-             size="icon" 
-             className="rounded-full h-10 w-10 shadow-lg"
-             onClick={handleAddToCart}
-           >
-             <Plus className="h-5 w-5" />
-             <span className="sr-only">Add to Cart</span>
-           </Button>
+          {/* Hover Content: Top Right Button */}
+          <div className="absolute top-4 right-4 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">
+             <Button 
+               size="icon" 
+               className="rounded-full bg-white text-black hover:bg-white/90"
+               onClick={handleAddToCart}
+             >
+               <Plus className="h-5 w-5" />
+             </Button>
+          </div>
+
+          {/* Hover Content: Bottom Info */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+             <h3 className="text-white font-serif text-2xl mb-1">{title}</h3>
+             <div className="flex justify-between items-center text-white/90 text-sm font-medium">
+                <span>${price.toFixed(2)}</span>
+                <div className="flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-white" /> {rating}
+                </div>
+             </div>
+          </div>
+
         </div>
       </Link>
-
-      {/* Minimalist Info Section */}
-      <div className="flex justify-between items-start px-1">
-        <div className="flex flex-col gap-1">
-          <Link to={`/product/${id}`}>
-            <h3 className="text-xl font-serif font-medium leading-none text-foreground group-hover:text-primary/70 transition-colors">
-              {title}
-            </h3>
-          </Link>
-          <p className="text-sm text-muted-foreground font-sans">
-            Oil on Canvas
-          </p>
-        </div>
-        <span className="text-lg font-medium font-sans tracking-tight">
-          ${price.toFixed(2)}
-        </span>
-      </div>
     </motion.div>
   );
 };
