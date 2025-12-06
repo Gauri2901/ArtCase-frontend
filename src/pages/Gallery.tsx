@@ -77,7 +77,7 @@ const Gallery = () => {
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product, index) => (
               <motion.div
-                key={product.id}
+                key={product._id}
                 layout
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -85,7 +85,7 @@ const Gallery = () => {
                 transition={{ duration: 0.4, delay: index * 0.05 }}
               >
                 <ProductCard
-                  id={product.id}
+                  id={product._id}
                   title={product.title}
                   imageUrl={product.imageUrl}
                   price={product.price}

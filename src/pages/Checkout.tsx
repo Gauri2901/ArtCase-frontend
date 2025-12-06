@@ -117,7 +117,7 @@ const Checkout = () => {
                                                 <FormItem>
                                                     <FormLabel>Full Name</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Vincent van Gogh" {...field} className="bg-white/50 dark:bg-black/20" />
+                                                        <Input placeholder="" {...field} className="bg-white/50 dark:bg-black/20" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -130,7 +130,7 @@ const Checkout = () => {
                                                 <FormItem>
                                                     <FormLabel>Email Address</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="vincent@art.com" {...field} className="bg-white/50 dark:bg-black/20" />
+                                                        <Input placeholder="artcase@gmail.com" {...field} className="bg-white/50 dark:bg-black/20" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -160,7 +160,7 @@ const Checkout = () => {
                                                 <FormItem>
                                                     <FormLabel>City</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="Saint-Rémy" {...field} className="bg-white/50 dark:bg-black/20" />
+                                                        <Input placeholder="Pune" {...field} className="bg-white/50 dark:bg-black/20" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>

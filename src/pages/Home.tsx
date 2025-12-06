@@ -39,16 +39,16 @@ const FloatingIcon = ({ Icon, delay, x, y, duration }: any) => (
   <motion.div
     className="absolute text-foreground/5 dark:text-foreground/10 pointer-events-none z-0"
     initial={{ x, y, opacity: 0 }}
-    animate={{ 
-      y: [y, y - 40, y], 
+    animate={{
+      y: [y, y - 40, y],
       rotate: [0, 10, -10, 0],
       opacity: 1
     }}
-    transition={{ 
-      duration: duration, 
-      repeat: Infinity, 
+    transition={{
+      duration: duration,
+      repeat: Infinity,
       ease: "easeInOut",
-      delay: delay 
+      delay: delay
     }}
   >
     <Icon className="w-12 h-12 md:w-24 md:h-24" />
@@ -57,11 +57,11 @@ const FloatingIcon = ({ Icon, delay, x, y, duration }: any) => (
 
 const FloatingShapes = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 h-full w-full">
-      <FloatingIcon Icon={Palette} x="10vw" y={200} delay={0} duration={6} />
-      <FloatingIcon Icon={Paintbrush} x="85vw" y={600} delay={1} duration={7} />
-      <FloatingIcon Icon={Frame} x="90vw" y={300} delay={2} duration={8} />
-      <FloatingIcon Icon={Shapes} x="5vw" y={800} delay={0.5} duration={9} />
-      <FloatingIcon Icon={PenTool} x="70vw" y={150} delay={1.5} duration={6.5} />
+    <FloatingIcon Icon={Palette} x="10vw" y={200} delay={0} duration={6} />
+    <FloatingIcon Icon={Paintbrush} x="85vw" y={600} delay={1} duration={7} />
+    <FloatingIcon Icon={Frame} x="90vw" y={300} delay={2} duration={8} />
+    <FloatingIcon Icon={Shapes} x="5vw" y={800} delay={0.5} duration={9} />
+    <FloatingIcon Icon={PenTool} x="70vw" y={150} delay={1.5} duration={6.5} />
   </div>
 );
 
@@ -77,25 +77,25 @@ const MovingGallery = () => {
   return (
     <section className="py-20 overflow-hidden bg-background relative border-y border-border/50">
       <div className="mb-12 text-center">
-         <h2 className="text-3xl md:text-4xl font-serif italic text-muted-foreground/50">Studio Life</h2>
+        <h2 className="text-3xl md:text-4xl font-serif italic text-muted-foreground/50">Studio Life</h2>
       </div>
-      
+
       {/* Top Row - Moving Left */}
       <Marquee speed={40} className="mb-8" direction="left">
-         {images.map((src, i) => (
-            <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
-               <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
-            </div>
-         ))}
+        {images.map((src, i) => (
+          <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+            <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
+          </div>
+        ))}
       </Marquee>
 
       {/* Bottom Row - Moving Right */}
       <Marquee speed={35} direction="right">
-         {images.reverse().map((src, i) => (
-            <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
-               <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
-            </div>
-         ))}
+        {images.reverse().map((src, i) => (
+          <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+            <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
+          </div>
+        ))}
       </Marquee>
     </section>
   );
@@ -248,7 +248,7 @@ const PhilosophySection = () => {
   return (
     <section className="py-32 bg-foreground text-background relative overflow-hidden">
       <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
-      
+
       <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative">
           <div className="absolute -top-10 -left-10 text-[10rem] font-serif text-background/10 leading-none select-none">"</div>
@@ -257,12 +257,12 @@ const PhilosophySection = () => {
           </h2>
           <div className="h-1 w-24 bg-primary mt-8 mb-8" />
           <p className="text-lg text-background/70 leading-relaxed font-light">
-            Every piece in this collection starts with a chaotic burst of emotion and ends with a deliberate stroke of silence. 
+            Every piece in this collection starts with a chaotic burst of emotion and ends with a deliberate stroke of silence.
             I believe in the power of texture to disrupt the digital flatness of our lives.
           </p>
           <div className="mt-12 flex items-center gap-4">
             <div className="h-16 w-16 rounded-full bg-background/10 flex items-center justify-center">
-               <Brush className="w-8 h-8 text-background/50" />
+              <Brush className="w-8 h-8 text-background/50" />
             </div>
             <div>
               <p className="font-serif font-bold text-xl">The Artist</p>
@@ -291,7 +291,7 @@ const LookbookSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 h-[80vh]">
         <div className="relative group overflow-hidden">
           <div className="absolute inset-0 bg-gray-200">
-             <img src="/paintings/ocean.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
+            <img src="/paintings/ocean.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
           </div>
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
             <div className="text-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
@@ -302,9 +302,9 @@ const LookbookSection = () => {
           </div>
         </div>
         <div className="relative group overflow-hidden">
-           <div className="absolute inset-0 bg-stone-300">
-             <img src="/paintings/city.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
-           </div>
+          <div className="absolute inset-0 bg-stone-300">
+            <img src="/paintings/city.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
+          </div>
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
             <div className="text-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
               <h3 className="text-3xl font-serif text-white mb-2">Statement</h3>
@@ -405,14 +405,14 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-0 relative">
-      
+
       {/* 1. TOP MARQUEE (Sale Section) */}
       <div className="bg-primary py-3 relative z-40 overflow-hidden">
         <Marquee speed={30} className="text-primary-foreground font-medium text-sm uppercase tracking-widest">
-           <span className="flex items-center gap-4 mx-4"><Sparkles className="w-4 h-4" /> New Collection Drop: "Midnight Bloom"</span>
-           <span className="flex items-center gap-4 mx-4">★ Free Shipping on Orders Over $200</span>
-           <span className="flex items-center gap-4 mx-4">● Original Hand-Painted Art</span>
-           <span className="flex items-center gap-4 mx-4">★ Spring Sale: 20% Off Commissions</span>
+          <span className="flex items-center gap-4 mx-4"><Sparkles className="w-4 h-4" /> New Collection Drop: "Midnight Bloom"</span>
+          <span className="flex items-center gap-4 mx-4">★ Free Shipping on Orders Over $200</span>
+          <span className="flex items-center gap-4 mx-4">● Original Hand-Painted Art</span>
+          <span className="flex items-center gap-4 mx-4">★ Spring Sale: 20% Off Commissions</span>
         </Marquee>
       </div>
 
@@ -476,7 +476,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProducts.map((product, index) => (
               <motion.div
-                key={product.id}
+                key={product._id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -484,7 +484,7 @@ const Home = () => {
               >
                 {/* The updated ProductCard handles the price hiding/hover logic internally */}
                 <ProductCard
-                  id={product.id}
+                  id={product._id}
                   title={product.title}
                   imageUrl={product.imageUrl}
                   price={product.price}

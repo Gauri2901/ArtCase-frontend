@@ -44,7 +44,12 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
-    addToCart(product);
+    addToCart({
+      id: product._id,
+      title: product.title,
+      price: product.price,
+      imageUrl: product.imageUrl
+    });
   };
 
   // Animation variants for staggered text loading
