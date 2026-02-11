@@ -48,17 +48,115 @@ const Checkout = () => {
     });
 
     // Mock Order Processing
+    // Load Razorpay Script
+    const loadScript = (src: string) => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = () => {
+                resolve(true);
+            };
+            script.onerror = () => {
+                resolve(false);
+            };
+            document.body.appendChild(script);
+        });
+    };
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsProcessing(true);
-        
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log("Order placed:", { customer: values, items: cartItems });
-        toast.success("Payment successful! Your collection is on its way.");
-        clearCart();
-        setIsProcessing(false);
-        navigate("/thank-you");
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+        if (!res) {
+            toast.error("Razorpay SDK failed to load. Are you online?");
+            setIsProcessing(false);
+            return;
+        }
+
+        try {
+            // Create Order
+            const result = await fetch("http://localhost:5000/api/payment/create-order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    amount: totalPrice,
+                    currency: "INR",
+                }),
+            });
+
+            if (!result.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const order = await result.json();
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Use environment variable
+                amount: order.amount,
+                currency: order.currency,
+                name: "Art Case",
+                description: "Purchase Transaction",
+                order_id: order.id,
+                handler: async function (response: any) {
+                    const data = {
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                    };
+
+                    try {
+                        const verifyRes = await fetch("http://localhost:5000/api/payment/verify-payment", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(data),
+                        });
+
+                        const verifyData = await verifyRes.json();
+
+                        if (verifyRes.ok) {
+                            toast.success("Payment successful!");
+                            clearCart();
+                            navigate("/thank-you");
+                        } else {
+                            toast.error(verifyData.message || "Payment verification failed");
+                        }
+                    } catch (error) {
+                        toast.error("Verification failed");
+                    } finally {
+                        setIsProcessing(false);
+                    }
+                },
+                prefill: {
+                    name: values.name,
+                    email: values.email,
+                    contact: "9999999999",
+                },
+                notes: {
+                    address: values.address,
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+
+            const paymentObject = new (window as any).Razorpay(options);
+            paymentObject.open();
+
+            paymentObject.on('payment.failed', function (response: any) {
+                toast.error(response.error.description);
+                setIsProcessing(false);
+            });
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong with the payment initialization.");
+            setIsProcessing(false);
+        }
     }
 
     const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -74,7 +172,7 @@ const Checkout = () => {
             <div className="fixed top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
             <div className="container mx-auto px-4">
-                
+
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -86,9 +184,9 @@ const Checkout = () => {
                 </motion.div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
-                    
+
                     {/* LEFT COLUMN: Input Forms */}
-                    <motion.div 
+                    <motion.div
                         className="lg:col-span-7"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -101,14 +199,14 @@ const Checkout = () => {
 
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                
+
                                 {/* Section 1: Shipping */}
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-2 pb-2 border-b border-border/50">
                                         <MapPin className="h-5 w-5 text-primary" />
                                         <h2 className="text-xl font-serif">Shipping Details</h2>
                                     </div>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <FormField
                                             control={form.control}
@@ -211,9 +309,9 @@ const Checkout = () => {
                                     />
                                 </div>
 
-                                <Button 
-                                    type="submit" 
-                                    size="lg" 
+                                <Button
+                                    type="submit"
+                                    size="lg"
                                     className="w-full rounded-full h-12 text-lg mt-8"
                                     disabled={isProcessing}
                                 >
@@ -230,7 +328,7 @@ const Checkout = () => {
                     </motion.div>
 
                     {/* RIGHT COLUMN: Summary Panel */}
-                    <motion.div 
+                    <motion.div
                         className="lg:col-span-5"
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -238,7 +336,7 @@ const Checkout = () => {
                     >
                         <div className="sticky top-32 bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-xl">
                             <h3 className="text-2xl font-serif font-medium mb-6">Order Summary</h3>
-                            
+
                             <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                 {cartItems.map((item) => (
                                     <div key={item.id} className="flex gap-4 items-center">
