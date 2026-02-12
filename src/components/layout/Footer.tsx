@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { Instagram, Twitter, Facebook, ArrowUpRight } from "lucide-react";
+import {  ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   return (
     <footer className="bg-foreground text-background pt-24 pb-12 relative overflow-hidden">
+      {/* Watermark Background Logo */}
       {/* Watermark Background Logo */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-[0.03]">
         <span className="text-[20vw] font-serif font-bold leading-none whitespace-nowrap select-none">

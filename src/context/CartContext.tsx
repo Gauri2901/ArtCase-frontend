@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import  { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { toast } from 'sonner';
 // 1. Define the shape of a single item in our cart
