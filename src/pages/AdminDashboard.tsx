@@ -1,71 +1,87 @@
+// /ArtCase-frontend/src/pages/AdminDashboard.tsx
+
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Upload, Plus } from 'lucide-react';
+import { Upload, Plus, Trash2, ImageIcon } from 'lucide-react';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
     const [uploading, setUploading] = useState(false);
-    const { register, handleSubmit, reset } = useForm();
+    const [pendingArtworks, setPendingArtworks] = useState<any[]>([]);
 
-    const onSubmit = async (data: any) => {
-        if (!user) return;
+    // Handle multiple file selection
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const files = Array.from(e.target.files);
+            const newArtworks = files.map(file => ({
+                file,
+                preview: URL.createObjectURL(file),
+                title: "",
+                price: "",
+                category: "Oil",
+                description: ""
+            }));
+            setPendingArtworks([...pendingArtworks, ...newArtworks]);
+        }
+    };
 
-        // 1. Upload Image
-        const formData = new FormData();
-        formData.append('image', data.image[0]);
+    // Update specific field for a specific index
+    const updateArtworkDetails = (index: number, field: string, value: string) => {
+        const updated = [...pendingArtworks];
+        updated[index] = { ...updated[index], [field]: value };
+        setPendingArtworks(updated);
+    };
 
+    const removePending = (index: number) => {
+        setPendingArtworks(pendingArtworks.filter((_, i) => i !== index));
+    };
+
+    const handleBulkSubmit = async () => {
+        if (pendingArtworks.length === 0) return;
+        
+        setUploading(true);
         try {
-            setUploading(true);
+            // 1. Upload all images to Cloudinary in one request
+            const formData = new FormData();
+            pendingArtworks.forEach(art => formData.append('images', art.file));
 
-            const uploadRes = await fetch('http://art-case-backend.vercel.app/api/upload', {
+            const uploadRes = await fetch('https://art-case-backend.vercel.app/api/upload/bulk', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${user.token}` },
                 body: formData,
             });
 
-            // STOP: Check if upload worked before proceeding
-            if (!uploadRes.ok) {
-                const errorText = await uploadRes.text();
-                throw new Error(`Upload failed: ${errorText}`);
-            }
+            if (!uploadRes.ok) throw new Error("Bulk image upload failed");
+            
+            const { imageUrls } = await uploadRes.json();
 
-            // Parse JSON (not text)
-            const uploadData = await uploadRes.json();
-            const imageUrl = uploadData.imageUrl; // This is now a real Cloudinary URL
-
-            // 2. Create Product
-            const productRes = await fetch('http://art-case-backend.vercel.app/api/products', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${user.token}`,
-                },
-                body: JSON.stringify({
-                    title: data.title,
-                    price: data.price,
-                    description: data.description,
-                    category: data.category,
-                    // Use the clean URL directly (no need for localhost prefix)
-                    image: imageUrl,
-                }),
+            // 2. Loop through and create each product in the database
+            const creationPromises = pendingArtworks.map((art, index) => {
+                return fetch('https://art-case-backend.vercel.app/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                    body: JSON.stringify({
+                        title: art.title,
+                        price: Number(art.price),
+                        description: art.description,
+                        category: art.category,
+                        image: imageUrls[index] // Map the Cloudinary URL back
+                    }),
+                });
             });
 
-            if (productRes.ok) {
-                toast.success('Masterpiece added to gallery!');
-                reset();
-            } else {
-                const errorData = await productRes.json();
-                toast.error(errorData.message || 'Failed to create product');
-            }
-
+            await Promise.all(creationPromises);
+            
+            toast.success(`${pendingArtworks.length} masterpieces published!`);
+            setPendingArtworks([]); // Clear the list
         } catch (error: any) {
-            console.error(error);
-            // Show the actual error message so you know if it's "File too large" or "Invalid Key"
-            toast.error(error.message || 'Something went wrong');
+            toast.error(error.message || 'Bulk upload failed');
         } finally {
             setUploading(false);
         }
@@ -77,58 +93,103 @@ const AdminDashboard = () => {
         <div className="min-h-screen pt-32 pb-20 container mx-auto px-4">
             <h1 className="text-4xl font-serif mb-8">Studio Dashboard</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-border">
-                    <h2 className="text-2xl font-serif mb-6 flex items-center gap-2">
-                        <Plus className="w-6 h-6" /> Add New Artwork
-                    </h2>
-
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Title</label>
-                            <Input {...register('title', { required: true })} placeholder="e.g. Midnight Blue" />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Price ($)</label>
-                                <Input type="number" {...register('price', { required: true })} placeholder="150.00" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Category</label>
-                                <select {...register('category')} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors">
-                                    <option value="Oil">Oil</option>
-                                    <option value="Acrylic">Acrylic</option>
-                                    <option value="Watercolor">Watercolor</option>
-                                    <option value="Mixed Media">Mixed Media</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Description</label>
-                            <textarea {...register('description')} className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm" placeholder="Tell the story..." />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Upload Image</label>
-                            <div className="flex items-center gap-2">
-                                <Input type="file" {...register('image', { required: true })} className="cursor-pointer" />
-                                <Upload className="w-4 h-4 text-muted-foreground" />
-                            </div>
-                        </div>
-
-                        <Button disabled={uploading} className="w-full">
-                            {uploading ? 'Uploading...' : 'Publish to Gallery'}
-                        </Button>
-                    </form>
-                </div>
-
-                {/* Right side could be a list of existing products to edit/delete */}
-                <div className="bg-secondary/20 p-8 rounded-3xl border border-border/50 flex items-center justify-center text-muted-foreground">
-                    Manage Inventory (Coming Soon)
-                </div>
+            {/* Step 1: File Selection Area */}
+            <div className="mb-12 p-10 border-2 border-dashed border-border rounded-3xl bg-secondary/5 text-center">
+                <input 
+                    type="file" 
+                    id="bulk-upload" 
+                    multiple 
+                    className="hidden" 
+                    onChange={handleFileChange} 
+                    accept="image/*"
+                />
+                <label htmlFor="bulk-upload" className="cursor-pointer flex flex-col items-center gap-4">
+                    <div className="bg-primary/10 p-4 rounded-full">
+                        <Upload className="w-8 h-8 text-primary" />
+                    </div>
+                    <div>
+                        <p className="text-xl font-medium">Select multiple paintings to upload</p>
+                        <p className="text-sm text-muted-foreground">JPG, PNG or WebP</p>
+                    </div>
+                </label>
             </div>
+
+            {/* Step 2: Details Filling Area */}
+            {pendingArtworks.length > 0 && (
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-serif">Pending Collection ({pendingArtworks.length})</h2>
+                        <Button variant="destructive" onClick={() => setPendingArtworks([])} size="sm">
+                            Clear All
+                        </Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6">
+                        {pendingArtworks.map((art, index) => (
+                            <div key={index} className="bg-white p-6 rounded-3xl shadow-sm border border-border flex flex-col md:flex-row gap-6">
+                                {/* Image Preview */}
+                                <div className="w-full md:w-48 h-48 shrink-0 rounded-2xl overflow-hidden bg-secondary">
+                                    <img src={art.preview} className="w-full h-full object-cover" alt="Preview" />
+                                </div>
+
+                                {/* Inputs */}
+                                <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-4">
+                                        <Input 
+                                            placeholder="Title" 
+                                            value={art.title} 
+                                            onChange={(e) => updateArtworkDetails(index, 'title', e.target.value)} 
+                                        />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Input 
+                                                type="number" 
+                                                placeholder="Price ($)" 
+                                                value={art.price} 
+                                                onChange={(e) => updateArtworkDetails(index, 'price', e.target.value)} 
+                                            />
+                                            <select 
+                                                value={art.category} 
+                                                onChange={(e) => updateArtworkDetails(index, 'category', e.target.value)}
+                                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                                            >
+                                                <option value="Oil">Oil</option>
+                                                <option value="Acrylic">Acrylic</option>
+                                                <option value="Watercolor">Watercolor</option>
+                                                <option value="Mixed Media">Mixed Media</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="relative">
+                                        <textarea 
+                                            placeholder="Description..." 
+                                            value={art.description}
+                                            onChange={(e) => updateArtworkDetails(index, 'description', e.target.value)}
+                                            className="w-full h-full min-h-[100px] rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm"
+                                        />
+                                        <button 
+                                            onClick={() => removePending(index)}
+                                            className="absolute -top-2 -right-2 bg-destructive text-white p-1 rounded-full hover:scale-110 transition-transform"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="flex justify-center pt-8">
+                        <Button 
+                            size="lg" 
+                            className="rounded-full px-12 h-14 text-lg" 
+                            disabled={uploading}
+                            onClick={handleBulkSubmit}
+                        >
+                            {uploading ? 'Publishing Collection...' : 'Publish All to Gallery'}
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
