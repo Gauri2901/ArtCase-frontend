@@ -6,7 +6,7 @@ import About from './pages/About';
 import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart'; 
-import ThankYou from './pages/Thankyou';
+import ThankYou from './pages/ThankYou';
 import Login from './pages/Login';      // Make sure this is imported
 import Register from './pages/Register'; // Make sure this is imported
 import AdminDashboard from './pages/AdminDashboard';
