@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Upload, Plus, Trash2, ImageIcon } from 'lucide-react';
+import { Upload, Trash2 } from 'lucide-react';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
@@ -40,6 +40,7 @@ const AdminDashboard = () => {
     };
 
     const handleBulkSubmit = async () => {
+        if (!user) return; 
         if (pendingArtworks.length === 0) return;
         
         setUploading(true);
