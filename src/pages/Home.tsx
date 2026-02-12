@@ -393,7 +393,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products?featured=true');
+        const res = await fetch('http://art-case-backend.vercel.app/api/products?featured=true');
         const data = await res.json();
         setFeaturedProducts(data.slice(0, 3));
       } catch (error) {

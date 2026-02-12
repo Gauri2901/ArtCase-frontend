@@ -17,7 +17,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        const res = await fetch(`http://art-case-backend.vercel.app/api/products/${id}`);
         if (!res.ok) throw new Error('Not found');
         const data = await res.json();
         setProduct(data);

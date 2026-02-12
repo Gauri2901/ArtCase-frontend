@@ -21,7 +21,7 @@ const AdminDashboard = () => {
         try {
             setUploading(true);
 
-            const uploadRes = await fetch('http://localhost:5000/api/upload', {
+            const uploadRes = await fetch('http://art-case-backend.vercel.app/api/upload', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${user.token}` },
                 body: formData,
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
             const imageUrl = uploadData.imageUrl; // This is now a real Cloudinary URL
 
             // 2. Create Product
-            const productRes = await fetch('http://localhost:5000/api/products', {
+            const productRes = await fetch('http://art-case-backend.vercel.app/api/products', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

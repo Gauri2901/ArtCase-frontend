@@ -76,7 +76,7 @@ const Checkout = () => {
 
         try {
             // Create Order
-            const result = await fetch("http://localhost:5000/api/payment/create-order", {
+            const result = await fetch("http://art-case-backend.vercel.app/api/payment/create-order", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const Checkout = () => {
                     };
 
                     try {
-                        const verifyRes = await fetch("http://localhost:5000/api/payment/verify-payment", {
+                        const verifyRes = await fetch("http://art-case-backend.vercel.app/api/payment/verify-payment", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
