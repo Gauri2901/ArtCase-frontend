@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, ShieldCheck, Truck, Ruler, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
-import { products } from "@/lib/products";
-import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 const ProductDetail = () => {
   const { id } = useParams();
@@ -17,7 +15,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://art-case-backend.vercel.app/api/products/${id}`);
+        const res = await fetch(`https://art-case-backend.vercel.app/api/products/${id}`);
         if (!res.ok) throw new Error('Not found');
         const data = await res.json();
         setProduct(data);

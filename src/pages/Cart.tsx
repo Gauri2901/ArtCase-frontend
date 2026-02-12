@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, X, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 const Cart = () => {
     const { cartItems, addToCart, decreaseQuantity, removeFromCart } = useCart();
@@ -12,7 +11,6 @@ const Cart = () => {
         return total + item.price * item.quantity;
     }, 0);
 
-    const shippingCost = totalPrice > 0 ? 0 : 0; // Free shipping logic
 
     // Animation variants
     const containerVariants = {

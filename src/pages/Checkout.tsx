@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
-import { cn } from "@/lib/utils";
 
 // Schema Validation
 const formSchema = z.object({
@@ -76,7 +75,7 @@ const Checkout = () => {
 
         try {
             // Create Order
-            const result = await fetch("http://art-case-backend.vercel.app/api/payment/create-order", {
+            const result = await fetch("https://art-case-backend.vercel.app/api/payment/create-order", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -108,7 +107,7 @@ const Checkout = () => {
                     };
 
                     try {
-                        const verifyRes = await fetch("http://art-case-backend.vercel.app/api/payment/verify-payment", {
+                        const verifyRes = await fetch("https://art-case-backend.vercel.app/api/payment/verify-payment", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
