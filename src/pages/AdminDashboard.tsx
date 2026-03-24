@@ -49,7 +49,7 @@ const AdminDashboard = () => {
             const formData = new FormData();
             pendingArtworks.forEach(art => formData.append('images', art.file));
 
-            const uploadRes = await fetch('https://art-case-backend.vercel.app/api/upload/bulk', {
+            const uploadRes = await fetch('http://localhost:5000/api/upload/bulk', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${user.token}` },
                 body: formData,
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
 
             // 2. Loop through and create each product in the database
             const creationPromises = pendingArtworks.map((art, index) => {
-                return fetch('https://art-case-backend.vercel.app/api/products', {
+                return fetch('http://localhost:5000/api/products', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

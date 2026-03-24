@@ -35,7 +35,7 @@ const Marquee = ({ children, direction = "left", speed = 20, className }: { chil
 };
 
 // 2. Floating Shapes Component (Background artifacts)
-const FloatingIcon = ({ Icon, delay, x, y, duration }: any) => (
+const FloatingIcon = ({ Icon, delay, x, y, duration }: { Icon: React.ComponentType<{ className?: string }>; delay: number; x: string; y: number; duration: number }) => (
   <motion.div
     className="absolute text-foreground/5 dark:text-foreground/10 pointer-events-none z-0"
     initial={{ x, y, opacity: 0 }}
@@ -83,7 +83,7 @@ const MovingGallery = () => {
       {/* Top Row - Moving Left */}
       <Marquee speed={40} className="mb-8" direction="left">
         {images.map((src, i) => (
-          <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+          <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative  hover:-0 transition-all duration-500 hover:scale-105 cursor-pointer">
             <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
           </div>
         ))}
@@ -92,7 +92,7 @@ const MovingGallery = () => {
       {/* Bottom Row - Moving Right */}
       <Marquee speed={35} direction="right">
         {images.reverse().map((src, i) => (
-          <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+          <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative  hover:-0 transition-all duration-500 hover:scale-105 cursor-pointer">
             <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
           </div>
         ))}
@@ -226,7 +226,7 @@ const HeroSection = () => {
   );
 };
 
-const FeatureItem = ({ icon: Icon, title, description, delay }: { icon: any, title: string, description: string, delay: number }) => {
+const FeatureItem = ({ icon: Icon, title, description, delay }: { icon: React.ComponentType<{ className?: string }>; title: string; description: string; delay: number }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -376,7 +376,7 @@ const CommissionSection = () => {
             <motion.div
               className="absolute w-80 h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-12 translate-y-12 border border-gray-100"
             >
-              <img src="/paintings/forest.jpg" className="w-full h-full object-cover grayscale" />
+              <img src="/paintings/forest.jpg" className="w-full h-full object-cover " />
             </motion.div>
           </div>
         </div>
@@ -387,13 +387,20 @@ const CommissionSection = () => {
 
 // --- MAIN HOME COMPONENT ---
 
+interface Product {
+  _id: string;
+  title: string;
+  imageUrl: string;
+  price: number;
+}
+
 const Home = () => {
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await fetch('https://art-case-backend.vercel.app/api/products?featured=true');
+        const res = await fetch('http://localhost:5000/api/products?featured=true');
         const data = await res.json();
         setFeaturedProducts(data.slice(0, 3));
       } catch (error) {
