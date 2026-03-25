@@ -77,6 +77,9 @@ const Navbar = () => {
         ...(user?.isAdmin ? [{ name: 'Dashboard', path: '/admin' }] : []),
     ];
 
+    const isActiveLink = (path: string) =>
+        location.pathname === path || location.pathname.startsWith(`${path}/`);
+
     return (
         <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4 pointer-events-none">
             <header
@@ -100,10 +103,18 @@ const Navbar = () => {
                             <Link
                                 key={link.name}
                                 to={link.path}
-                                className="relative text-sm font-medium font-sans text-foreground/80 hover:text-foreground transition-colors group"
+                                className={cn(
+                                    'relative text-sm font-medium font-sans transition-colors group',
+                                    isActiveLink(link.path) ? 'text-foreground' : 'text-foreground/80 hover:text-foreground'
+                                )}
                             >
                                 {link.name}
-                                <span className="absolute -bottom-1 left-1/2 w-0 h-px bg-primary transition-all duration-300 -translate-x-1/2 group-hover:w-full" />
+                                <span
+                                    className={cn(
+                                        'absolute -bottom-1 left-1/2 h-px bg-black transition-all duration-300 -translate-x-1/2',
+                                        isActiveLink(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
+                                    )}
+                                />
                             </Link>
                         ))}
                     </nav>
@@ -118,7 +129,7 @@ const Navbar = () => {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="rounded-full border border-white/40 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30"
+                                    className="rounded-full border border-gray-600 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30"
                                     onClick={() => {
                                         setIsProfileOpen((prev) => !prev);
                                         setIsMobileMenuOpen(false);
@@ -232,7 +243,10 @@ const Navbar = () => {
                                                 <Link
                                                     key={link.name}
                                                     to={link.path}
-                                                    className="rounded-2xl px-3 py-2 text-sm font-serif font-semibold text-foreground transition-colors hover:bg-black/5 text-center flex justify-center"
+                                                    className={cn(
+                                                        'rounded-2xl px-3 py-2 text-sm font-serif font-semibold transition-colors hover:bg-black/5 text-center flex justify-center',
+                                                        isActiveLink(link.path) ? 'text-foreground underline decoration-black underline-offset-4' : 'text-foreground'
+                                                    )}
                                                 >
                                                     {link.name}
                                                 </Link>
