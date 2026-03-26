@@ -149,8 +149,8 @@ const Navbar = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: -10, scale: 0.96 }}
                                             transition={{ duration: 0.18, ease: 'easeOut' }}
-                                            // Clamp width so it never overflows the viewport edge
-                                            className="absolute right-0 top-12 sm:top-14 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl z-50"
+                                            // On mobile: center below the button. On sm+: anchor to right edge.
+                                            className="absolute left-1/2 -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0 top-12 sm:top-14 w-[calc(100vw-2rem)] max-w-xs overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl z-50"
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-foreground text-background text-base font-semibold">
