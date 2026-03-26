@@ -35,17 +35,14 @@ const Navbar = () => {
 
     useEffect(() => {
         if (!isProfileOpen) return;
-
         const handlePointerDown = (event: MouseEvent | TouchEvent) => {
             const target = event.target as Node | null;
             if (profileRef.current && target && !profileRef.current.contains(target)) {
                 setIsProfileOpen(false);
             }
         };
-
         document.addEventListener('mousedown', handlePointerDown);
         document.addEventListener('touchstart', handlePointerDown);
-
         return () => {
             document.removeEventListener('mousedown', handlePointerDown);
             document.removeEventListener('touchstart', handlePointerDown);
@@ -54,17 +51,14 @@ const Navbar = () => {
 
     useEffect(() => {
         if (!isMobileMenuOpen) return;
-
         const handlePointerDown = (event: MouseEvent | TouchEvent) => {
             const target = event.target as Node | null;
             if (mobileMenuRef.current && target && !mobileMenuRef.current.contains(target)) {
                 setIsMobileMenuOpen(false);
             }
         };
-
         document.addEventListener('mousedown', handlePointerDown);
         document.addEventListener('touchstart', handlePointerDown);
-
         return () => {
             document.removeEventListener('mousedown', handlePointerDown);
             document.removeEventListener('touchstart', handlePointerDown);
@@ -81,31 +75,41 @@ const Navbar = () => {
         location.pathname === path || location.pathname.startsWith(`${path}/`);
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4 pointer-events-none">
+        // Outer wrapper: full-width fixed strip, pointer-events off so content beneath is clickable
+        <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 sm:pt-4 px-3 sm:px-4 pointer-events-none">
             <header
                 className={cn(
-                    'pointer-events-auto relative w-full max-w-6xl rounded-full transition-all duration-500 ease-out border border-white/40 shadow-xl',
+                    // pointer-events back on; pill fills available width up to max-w
+                    'pointer-events-auto relative w-full max-w-6xl rounded-full',
+                    'transition-all duration-500 ease-out',
+                    'border border-white/40 shadow-xl',
                     'bg-white/60 dark:bg-black/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-white/40',
-                    isScrolled ? 'py-2 px-6' : 'py-4 px-8'
+                    // Fluid padding: tighter on mobile, relaxes on larger screens
+                    isScrolled
+                        ? 'py-1.5 px-3 sm:py-2 sm:px-6'
+                        : 'py-2.5 px-4 sm:py-4 sm:px-8'
                 )}
             >
-                <div className="flex justify-between items-center">
-                    {/* Logo */}
-                    <Link to="/" className="relative z-50 group">
-                        <h1 className="text-2xl font-serif font-bold tracking-tight text-foreground">
+                <div className="flex items-center justify-between gap-2 min-w-0">
+
+                    {/* ── Logo ─────────────────────────────────────── */}
+                    <Link to="/" className="relative z-50 group shrink-0">
+                        <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-tight text-foreground whitespace-nowrap">
                             Art-Case<span className="text-primary">.</span>
                         </h1>
                     </Link>
 
-                    {/* Desktop Nav Links */}
-                    <nav className="hidden md:flex items-center gap-8">
+                    {/* ── Desktop Nav Links ─────────────────────────── */}
+                    <nav className="hidden md:flex items-center gap-6 lg:gap-8">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 to={link.path}
                                 className={cn(
-                                    'relative text-sm font-medium font-sans transition-colors group',
-                                    isActiveLink(link.path) ? 'text-foreground' : 'text-foreground/80 hover:text-foreground'
+                                    'relative text-sm font-medium font-sans transition-colors group whitespace-nowrap',
+                                    isActiveLink(link.path)
+                                        ? 'text-foreground'
+                                        : 'text-foreground/80 hover:text-foreground'
                                 )}
                             >
                                 {link.name}
@@ -119,17 +123,16 @@ const Navbar = () => {
                         ))}
                     </nav>
 
-                    {/* Right Side Actions */}
-                    <div className="flex items-center gap-4">
+                    {/* ── Right-side Actions ───────────────────────── */}
+                    <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
-                        {/* Desktop: Auth Buttons or Profile Icon */}
+                        {/* Profile avatar (all sizes) OR login buttons (desktop only) */}
                         {user ? (
-                            // Profile Avatar — shared for both desktop and mobile
                             <div ref={profileRef} className="relative">
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="rounded-full border border-gray-600 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30"
+                                    className="rounded-full border border-gray-600 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30 h-8 w-8 sm:h-9 sm:w-9"
                                     onClick={() => {
                                         setIsProfileOpen((prev) => !prev);
                                         setIsMobileMenuOpen(false);
@@ -146,11 +149,11 @@ const Navbar = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: -10, scale: 0.96 }}
                                             transition={{ duration: 0.18, ease: 'easeOut' }}
-                                            className="absolute right-0 top-14 w-72 overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl z-50"
+                                            // Clamp width so it never overflows the viewport edge
+                                            className="absolute right-0 top-12 sm:top-14 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl z-50"
                                         >
-                                            {/* User Info */}
                                             <div className="flex items-center gap-3">
-                                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-foreground text-background text-base font-semibold">
+                                                <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-foreground text-background text-base font-semibold">
                                                     {userInitial}
                                                 </div>
                                                 <div className="min-w-0">
@@ -158,8 +161,6 @@ const Navbar = () => {
                                                     <p className="truncate text-sm font-semibold text-foreground">{user.name}</p>
                                                 </div>
                                             </div>
-
-                                            {/* Logout */}
                                             <Button
                                                 onClick={logout}
                                                 variant="destructive"
@@ -172,27 +173,32 @@ const Navbar = () => {
                                 </AnimatePresence>
                             </div>
                         ) : (
-                            // Login / Join buttons — desktop only
+                            // Login / Join — desktop only
                             <div className="hidden md:flex items-center gap-2">
                                 <Link to="/login">
-                                    <Button variant="ghost" size="sm" className="rounded-full hover:bg-white/20">Login</Button>
+                                    <Button variant="ghost" size="sm" className="rounded-full hover:bg-white/20">
+                                        Login
+                                    </Button>
                                 </Link>
                                 <Link to="/register">
-                                    <Button size="sm" className="rounded-full px-5 shadow-md">Join</Button>
+                                    <Button size="sm" className="rounded-full px-4 lg:px-5 shadow-md">
+                                        Join
+                                    </Button>
                                 </Link>
                             </div>
                         )}
 
                         {/* Cart Icon */}
-                        <div className="relative">
+                        {/* Use `relative` + fixed size so the badge never bleeds outside */}
+                        <div className="relative h-8 w-8 sm:h-9 sm:w-9 shrink-0">
                             <Button
                                 asChild
                                 variant="ghost"
                                 size="icon"
-                                className="hover:bg-white/20 rounded-full relative transition-transform hover:scale-105 active:scale-95"
+                                className="hover:bg-white/20 rounded-full w-full h-full transition-transform hover:scale-105 active:scale-95"
                             >
                                 <Link to="/cart">
-                                    <ShoppingCart className="h-5 w-5 text-foreground" />
+                                    <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
                                     <span className="sr-only">View Cart</span>
                                 </Link>
                             </Button>
@@ -205,26 +211,27 @@ const Navbar = () => {
                                         animate={{ scale: 1, opacity: 1 }}
                                         exit={{ scale: 0, opacity: 0 }}
                                         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                                        className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-bold rounded-full pointer-events-none border-2 border-white dark:border-black"
+                                        // Positioned relative to the fixed-size wrapper — always visible
+                                        className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center bg-primary text-primary-foreground text-[9px] sm:text-[10px] font-bold rounded-full pointer-events-none border-2 border-white dark:border-black"
                                     >
-                                        {totalItems}
+                                        {totalItems > 99 ? '99+' : totalItems}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
 
-                        {/* Mobile Hamburger Menu */}
-                        <div ref={mobileMenuRef} className="relative md:hidden">
+                        {/* Mobile Hamburger */}
+                        <div ref={mobileMenuRef} className="relative md:hidden shrink-0">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-full hover:bg-white/20"
+                                className="rounded-full hover:bg-white/20 h-8 w-8 sm:h-9 sm:w-9"
                                 onClick={() => {
                                     setIsMobileMenuOpen((prev) => !prev);
                                     setIsProfileOpen(false);
                                 }}
                             >
-                                <Menu className="h-5 w-5" />
+                                <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
                                 <span className="sr-only">Open navigation menu</span>
                             </Button>
 
@@ -235,30 +242,39 @@ const Navbar = () => {
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: -10, scale: 0.96 }}
                                         transition={{ duration: 0.18, ease: 'easeOut' }}
-                                        className="absolute right-0 top-14 w-44 overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-2 shadow-2xl backdrop-blur-2xl"
+                                        // Width: at least 10rem, at most viewport minus 2rem padding
+                                        className="absolute right-0 top-12 sm:top-14 w-[min(12rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-2 shadow-2xl backdrop-blur-2xl z-50"
                                     >
                                         <div className="flex flex-col gap-1">
-                                            {/* Nav Links including Dashboard if admin */}
                                             {navLinks.map((link) => (
                                                 <Link
                                                     key={link.name}
                                                     to={link.path}
                                                     className={cn(
                                                         'rounded-2xl px-3 py-2 text-sm font-serif font-semibold transition-colors hover:bg-black/5 text-center flex justify-center',
-                                                        isActiveLink(link.path) ? 'text-foreground underline decoration-black underline-offset-4' : 'text-foreground'
+                                                        isActiveLink(link.path)
+                                                            ? 'text-foreground underline decoration-black underline-offset-4'
+                                                            : 'text-foreground'
                                                     )}
                                                 >
                                                     {link.name}
                                                 </Link>
                                             ))}
 
-                                            {/* Login/Join for guests */}
+                                            {/* Login / Join for guests — inside mobile menu */}
                                             {!user && (
                                                 <div className="mt-2 grid grid-cols-2 gap-2 border-t border-foreground/10 pt-3">
-                                                    <Button asChild variant="outline" className="rounded-xl border-foreground/20 bg-transparent">
+                                                    <Button
+                                                        asChild
+                                                        variant="outline"
+                                                        className="rounded-xl border-foreground/20 bg-transparent text-xs sm:text-sm"
+                                                    >
                                                         <Link to="/login">Login</Link>
                                                     </Button>
-                                                    <Button asChild className="rounded-xl shadow-lg">
+                                                    <Button
+                                                        asChild
+                                                        className="rounded-xl shadow-lg text-xs sm:text-sm"
+                                                    >
                                                         <Link to="/register">Join</Link>
                                                     </Button>
                                                 </div>
