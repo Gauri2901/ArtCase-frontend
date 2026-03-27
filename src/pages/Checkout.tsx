@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { apiRequest } from "@/lib/api";
 
 // Schema Validation
 const formSchema = z.object({
@@ -31,6 +33,7 @@ const formSchema = z.object({
 
 const Checkout = () => {
     const { cartItems, clearCart } = useCart();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -75,22 +78,18 @@ const Checkout = () => {
 
         try {
             // Create Order
-            const result = await fetch("http://localhost:5000/api/payment/create-order", {
+            const order = await apiRequest<{
+                id: string;
+                amount: number;
+                currency: string;
+            }>("/payment/create-order", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                token: user?.token,
                 body: JSON.stringify({
                     amount: totalPrice,
                     currency: "INR",
                 }),
             });
-
-            if (!result.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const order = await result.json();
 
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Use environment variable
@@ -107,25 +106,37 @@ const Checkout = () => {
                     };
 
                     try {
-                        const verifyRes = await fetch("http://localhost:5000/api/payment/verify-payment", {
+                        const verifyData = await apiRequest<{ message: string; order: { orderId: string } }>("/payment/verify-payment", {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(data),
+                            token: user?.token,
+                            body: JSON.stringify({
+                                ...data,
+                                customer: {
+                                    name: values.name,
+                                    email: values.email,
+                                    address: values.address,
+                                    city: values.city,
+                                    zip: values.zip,
+                                },
+                                artworks: cartItems.map((item) => ({
+                                    artworkId: item.id,
+                                    title: item.title,
+                                    imageUrl: item.imageUrl,
+                                    price: item.price,
+                                    quantity: item.quantity,
+                                    category: item.category || "Oil",
+                                })),
+                                amount: totalPrice,
+                                currency: order.currency,
+                                method: "Razorpay",
+                            }),
                         });
 
-                        const verifyData = await verifyRes.json();
-
-                        if (verifyRes.ok) {
                             toast.success("Payment successful!");
                             clearCart();
-                            navigate("/thank-you");
-                        } else {
-                            toast.error(verifyData.message || "Payment verification failed");
-                        }
+                            navigate("/thank-you", { state: { orderId: verifyData.order.orderId } });
                     } catch (error) {
-                        toast.error("Verification failed");
+                        toast.error(error instanceof Error ? error.message : "Verification failed");
                     } finally {
                         setIsProcessing(false);
                     }

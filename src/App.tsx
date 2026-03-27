@@ -10,6 +10,7 @@ import ThankYou from './pages/ThankYou';
 import Login from './pages/Login';      // Make sure this is imported
 import Register from './pages/Register'; // Make sure this is imported
 import AdminDashboard from './pages/AdminDashboard';
+import AdminLogDetail from './pages/AdminLogDetail';
 import ProtectedRoute from './components/layout/ProtectedRoute'; // Import this
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         {/* Protected Admin Routes */}
         <Route element={<ProtectedRoute adminOnly={true} />}>
           <Route path="admin" element={<AdminDashboard />} />
+          <Route path="admin/logs/:logId" element={<AdminLogDetail />} />
         </Route>
       </Route>
     </Routes>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
+import NotificationBell from '@/components/admin/NotificationBell';
 
 const Navbar = () => {
     const { cartItems } = useCart();
@@ -187,6 +188,8 @@ const Navbar = () => {
                                 </Link>
                             </div>
                         )}
+
+                        <NotificationBell />
 
                         {/* Cart Icon */}
                         {/* Use `relative` + fixed size so the badge never bleeds outside */}

@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 
 const ThankYou = () => {
+  const location = useLocation();
+  const orderId = (location.state as { orderId?: string } | null)?.orderId;
+
   return (
     <div className="container mx-auto px-4 py-12 text-center">
       <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
@@ -11,6 +14,11 @@ const ThankYou = () => {
         Your order has been placed successfully. We'll be in touch soon with
         shipping details.
       </p>
+      {orderId ? (
+        <p className="mb-8 text-sm uppercase tracking-[0.3em] text-muted-foreground">
+          Order reference {orderId}
+        </p>
+      ) : null}
       <Button asChild size="lg">
         <Link to="/gallery">Continue Shopping</Link>
       </Button>
