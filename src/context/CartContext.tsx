@@ -1,12 +1,14 @@
 import  { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { toast } from 'sonner';
+import type { ArtworkCategory } from "@/types/admin";
 // 1. Define the shape of a single item in our cart
 interface CartItem {
   id: string;
   title: string;
   price: number;
   imageUrl: string;
+  category?: ArtworkCategory;
   quantity: number; // We'll need quantity
 }
 // 2. Define the shape of the 'bulletin board' (our Context)

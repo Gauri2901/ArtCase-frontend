@@ -11,10 +11,11 @@ type ProductCardProps = {
   title: string;
   imageUrl: string;
   price: number;
+  category?: 'Oil' | 'Acrylic' | 'Watercolor' | 'Mixed Media';
   className?: string;
 };
 
-const ProductCard = ({ id, title, imageUrl, price, className }: ProductCardProps) => {
+const ProductCard = ({ id, title, imageUrl, price, category, className }: ProductCardProps) => {
   const { addToCart } = useCart();
   const ref = useRef<HTMLDivElement>(null);
   
@@ -23,7 +24,7 @@ const ProductCard = ({ id, title, imageUrl, price, className }: ProductCardProps
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addToCart({ id, title, imageUrl, price });
+    addToCart({ id, title, imageUrl, price, category });
   };
 
   return (

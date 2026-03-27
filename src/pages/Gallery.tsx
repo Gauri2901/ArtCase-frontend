@@ -3,19 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Filter } from 'lucide-react';
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
+import { apiRequest } from '@/lib/api';
+import type { Artwork } from '@/types/admin';
 
 const CATEGORIES = ["All", "Oil", "Acrylic", "Watercolor", "Mixed Media"];
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
-        const data = await res.json();
+        const data = await apiRequest<Artwork[]>('/products');
         setProducts(data);
       } catch (error) {
         console.error("Error fetching gallery:", error);
@@ -28,7 +29,7 @@ const Gallery = () => {
 
   const filteredProducts = activeCategory === "All" 
     ? products 
-    : products.filter((p: any) => p.category === activeCategory);
+    : products.filter((p) => p.category === activeCategory);
 
   if (isLoading) {
     return (
@@ -89,6 +90,7 @@ const Gallery = () => {
                   title={product.title}
                   imageUrl={product.imageUrl}
                   price={product.price}
+                  category={product.category}
                 />
               </motion.div>
             ))}

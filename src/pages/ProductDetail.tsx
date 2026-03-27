@@ -4,20 +4,21 @@ import { ArrowLeft, Plus, ShieldCheck, Truck, Ruler, Calendar } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
+import { apiRequest } from '@/lib/api';
+import type { Artwork } from '@/types/admin';
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Artwork | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
-        if (!res.ok) throw new Error('Not found');
-        const data = await res.json();
+        if (!id) return;
+        const data = await apiRequest<Artwork>(`/products/${id}`);
         setProduct(data);
       } catch (error) {
         console.error(error);
@@ -46,7 +47,8 @@ const ProductDetail = () => {
       id: product._id,
       title: product.title,
       price: product.price,
-      imageUrl: product.imageUrl
+      imageUrl: product.imageUrl,
+      category: product.category,
     });
   };
 
