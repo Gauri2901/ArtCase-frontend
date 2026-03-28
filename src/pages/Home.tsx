@@ -1,9 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Palette, ShieldCheck, Truck, Brush, Play, Sparkles, Paintbrush, Frame, Shapes, PenTool } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProductCard from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
 
 // --- NEW HELPER COMPONENTS (Inline for easy setup) ---
@@ -285,50 +284,15 @@ const PhilosophySection = () => {
   )
 }
 
-const LookbookSection = () => {
-  return (
-    <section className="py-0 relative">
-      <div className="grid grid-cols-1 md:grid-cols-2 h-[80vh]">
-        <div className="relative group overflow-hidden">
-          <div className="absolute inset-0 bg-gray-200">
-            <img src="/paintings/ocean.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
-          </div>
-          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-            <div className="text-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-              <h3 className="text-3xl font-serif text-white mb-2">Sanctuary</h3>
-              <p className="text-white/80 mb-6">Curated for calm spaces.</p>
-              <Button variant="outline" className="text-white border-white hover:bg-white hover:text-black bg-transparent">Shop the Look</Button>
-            </div>
-          </div>
-        </div>
-        <div className="relative group overflow-hidden">
-          <div className="absolute inset-0 bg-stone-300">
-            <img src="/paintings/city.jpg" className="w-full h-full object-cover opacity-50 blur-sm scale-110" />
-          </div>
-          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-            <div className="text-center translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-              <h3 className="text-3xl font-serif text-white mb-2">Statement</h3>
-              <p className="text-white/80 mb-6">Bold pieces for bold minds.</p>
-              <Button variant="outline" className="text-white border-white hover:bg-white hover:text-black bg-transparent">Shop the Look</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl px-8 py-6 rounded-full shadow-2xl z-10 text-center">
-        <span className="font-serif italic text-2xl text-foreground">View in Room</span>
-      </div>
-    </section>
-  )
-}
-
 const CommissionSection = () => {
   return (
-    <section id="commissions" className="py-32 relative overflow-hidden bg-background">
+    <section id="commissions" className="pt-16 pb-24 md:pt-20 md:pb-28 relative overflow-hidden bg-background">
       <div className="absolute right-0 bottom-0 w-[800px] h-[800px] bg-orange-100/40 rounded-full blur-[120px] -z-10" />
 
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
+        <div className="rounded-[2rem] border border-primary/10 bg-secondary/20 backdrop-blur-sm shadow-[0_20px_80px_-40px_rgba(0,0,0,0.18)] px-6 py-10 md:px-10 md:py-14">
+          <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
+            <div>
             <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs mb-6">
               <Brush className="w-4 h-4" /> Custom Orders
             </div>
@@ -363,21 +327,22 @@ const CommissionSection = () => {
             </div>
           </div>
 
-          <div className="relative h-[600px] flex items-center justify-center">
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: -2 }}
-              className="absolute w-80 h-[450px] bg-white p-4 shadow-2xl rotate-3 z-10 rounded-xl border border-gray-100"
-            >
-              <div className="w-full h-full bg-gray-100 overflow-hidden relative">
-                <img src="/paintings/city.jpg" className="w-full h-full object-cover" />
-                <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded text-xs font-bold shadow-sm">COMMISSION #42</div>
-              </div>
-            </motion.div>
-            <motion.div
-              className="absolute w-80 h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-12 translate-y-12 border border-gray-100"
-            >
-              <img src="/paintings/forest.jpg" className="w-full h-full object-cover " />
-            </motion.div>
+            <div className="relative h-[420px] md:h-[520px] flex items-center justify-center">
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: -2 }}
+                className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-2xl rotate-3 z-10 rounded-xl border border-gray-100"
+              >
+                <div className="w-full h-full bg-gray-100 overflow-hidden relative">
+                  <img src="/paintings/city.jpg" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded text-xs font-bold shadow-sm">COMMISSION #42</div>
+                </div>
+              </motion.div>
+              <motion.div
+                className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-10 translate-y-10 md:translate-x-12 md:translate-y-12 border border-gray-100"
+              >
+                <img src="/paintings/forest.jpg" className="w-full h-full object-cover " />
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
@@ -385,31 +350,7 @@ const CommissionSection = () => {
   );
 };
 
-// --- MAIN HOME COMPONENT ---
-
-interface Product {
-  _id: string;
-  title: string;
-  imageUrl: string;
-  price: number;
-}
-
 const Home = () => {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetchFeatured = async () => {
-      try {
-        const res = await fetch('http://localhost:5000/api/products?featured=true');
-        const data = await res.json();
-        setFeaturedProducts(data.slice(0, 3));
-      } catch (error) {
-        console.error("Failed to fetch products", error);
-      }
-    };
-    fetchFeatured();
-  }, []);
-
   return (
     <div className="flex flex-col gap-0 relative">
 
@@ -455,55 +396,6 @@ const Home = () => {
 
       {/* 5. PHILOSOPHY */}
       <PhilosophySection />
-
-      {/* 6. FEATURED COLLECTION */}
-      <section className="py-24 bg-secondary/30 relative">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-            <div>
-              <motion.h2
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="text-4xl font-serif font-bold mb-4"
-              >
-                Curated Selections
-              </motion.h2>
-              <p className="text-muted-foreground max-w-md">
-                Hand-picked favorites from our latest exhibition.
-              </p>
-            </div>
-            <Button variant="ghost" className="group" asChild>
-              <Link to="/gallery">
-                View Full Gallery <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product, index) => (
-              <motion.div
-                key={product._id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                {/* The updated ProductCard handles the price hiding/hover logic internally */}
-                <ProductCard
-                  id={product._id}
-                  title={product.title}
-                  imageUrl={product.imageUrl}
-                  price={product.price}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. LOOKBOOK */}
-      <LookbookSection />
 
       {/* 8. COMMISSIONS */}
       <CommissionSection />
