@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bell, CheckCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/api';
@@ -13,6 +13,7 @@ type NotificationPayload = {
 
 const NotificationBell = () => {
   const { user } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<NotificationPayload>({ unreadCount: 0, orders: [] });
@@ -45,6 +46,25 @@ const NotificationBell = () => {
     };
   }, [user]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+      if (dropdownRef.current && target && !dropdownRef.current.contains(target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, [open]);
+
   if (!user?.isAdmin) return null;
 
   const markAllRead = async () => {
@@ -63,7 +83,7 @@ const NotificationBell = () => {
   };
 
   return (
-    <div className="relative">
+    <div ref={dropdownRef} className="relative">
       <Button
         type="button"
         variant="ghost"

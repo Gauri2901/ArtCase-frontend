@@ -317,13 +317,10 @@ const CommissionSection = () => {
               ))}
             </div>
 
-            <div className="mt-12 bg-white/50 dark:bg-black/20 backdrop-blur-xl border border-primary/10 p-2 rounded-full flex max-w-md shadow-sm">
-              <input
-                type="email"
-                placeholder="Enter email for quote..."
-                className="bg-transparent flex-grow px-6 outline-none placeholder:text-muted-foreground/70"
-              />
-              <Button className="rounded-full px-8">Request</Button>
+            <div className="mt-12">
+              <Button asChild className="rounded-full px-8 h-12 shadow-lg">
+                <Link to="/commissions">Start Custom Order</Link>
+              </Button>
             </div>
           </div>
 
