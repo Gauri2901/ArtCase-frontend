@@ -16,6 +16,8 @@ export type DashboardStats = {
   totalArtworks: number;
   totalOrders: number;
   unreadOrders: number;
+  totalCommissions: number;
+  unreadCommissions: number;
 };
 
 export type UploadLog = {
@@ -50,6 +52,7 @@ export type OrderItem = {
 export type AdminOrder = {
   _id: string;
   orderId: string;
+  orderKind: 'purchase' | 'commission';
   unread: boolean;
   placedAt: string;
   payment: {
@@ -68,4 +71,44 @@ export type AdminOrder = {
     zip: string;
   };
   artworks: OrderItem[];
+  commissionDetails?: {
+    commission?: string | null;
+    artworkType: string;
+    description: string;
+    sizeDetails: string;
+    referenceImages: string[];
+    adminNotes: string;
+  };
+};
+
+export type CommissionStatus = 'pending' | 'approved' | 'rejected' | 'in_progress' | 'completed';
+
+export type AdminCommission = {
+  _id: string;
+  commissionId: string;
+  submittedAt: string;
+  unread: boolean;
+  artworkType: string;
+  description: string;
+  budget: number;
+  currency: string;
+  sizeDetails: string;
+  referenceImages: string[];
+  status: CommissionStatus;
+  adminNotes: string;
+  quotedPrice: number | null;
+  customer: {
+    name: string;
+    email: string;
+  };
+  convertedOrder?: {
+    _id: string;
+    orderId: string;
+    orderKind: 'commission';
+    payment: {
+      amount: number;
+      currency: string;
+      status: 'created' | 'paid' | 'failed';
+    };
+  } | null;
 };

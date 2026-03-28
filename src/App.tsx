@@ -3,6 +3,7 @@ import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
+import Commissions from './pages/Commissions';
 import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart'; 
@@ -20,6 +21,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="gallery" element={<Gallery />} />
         <Route path="about" element={<About />} />
+        <Route path="commissions" element={<Commissions />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="cart" element={<Cart />} />
         <Route path="login" element={<Login />} />
