@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Plus, Star } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/context/CartContext';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 
 type ProductCardProps = {
   id: string;
@@ -62,7 +62,7 @@ const ProductCard = ({ id, title, imageUrl, price, category, className }: Produc
           <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
              <h3 className="text-white font-serif text-2xl mb-1">{title}</h3>
              <div className="flex justify-between items-center text-white/90 text-sm font-medium">
-                <span>${price.toFixed(2)}</span>
+                <span>{formatPrice(price)}</span>
                 <div className="flex items-center gap-1">
                     <Star className="w-3 h-3 fill-white" /> {rating}
                 </div>

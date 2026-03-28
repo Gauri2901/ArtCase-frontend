@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { apiRequest } from "@/lib/api";
+import { formatPrice } from "@/lib/utils";
 
 // Schema Validation
 const formSchema = z.object({
@@ -330,7 +331,7 @@ const Checkout = () => {
                                             <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...
                                         </>
                                     ) : (
-                                        `Pay $${totalPrice.toFixed(2)}`
+                                        `Pay ${formatPrice(totalPrice)}`
                                     )}
                                 </Button>
                             </form>
@@ -357,7 +358,7 @@ const Checkout = () => {
                                             <h4 className="font-medium font-serif">{item.title}</h4>
                                             <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                                         </div>
-                                        <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                                        <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
                                     </div>
                                 ))}
                             </div>
@@ -367,7 +368,7 @@ const Checkout = () => {
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between text-muted-foreground">
                                     <span>Subtotal</span>
-                                    <span>${totalPrice.toFixed(2)}</span>
+                                    <span>{formatPrice(totalPrice)}</span>
                                 </div>
                                 <div className="flex justify-between text-muted-foreground">
                                     <span>Shipping</span>
@@ -375,7 +376,7 @@ const Checkout = () => {
                                 </div>
                                 <div className="flex justify-between text-lg font-medium pt-2">
                                     <span>Total</span>
-                                    <span>${totalPrice.toFixed(2)}</span>
+                                    <span>{formatPrice(totalPrice)}</span>
                                 </div>
                             </div>
 
