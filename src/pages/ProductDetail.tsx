@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
 import { apiRequest } from '@/lib/api';
 import type { Artwork } from '@/types/admin';
+import { formatPrice } from '@/lib/utils';
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -135,7 +136,7 @@ const ProductDetail = () => {
             {/* Price & Add Button */}
             <motion.div variants={itemVariants} className="flex items-center gap-6 mb-8 pb-8 border-b border-border/50">
               <span className="text-3xl font-sans font-light">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               <Button size="lg" className="rounded-full px-8 h-12 text-lg shadow-lg hover:shadow-primary/25" onClick={handleAddToCart}>
                 <Plus className="mr-2 h-5 w-5" /> Add to Collection

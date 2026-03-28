@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, X, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
+import { formatPrice } from '@/lib/utils';
 
 const Cart = () => {
     const { cartItems, addToCart, decreaseQuantity, removeFromCart } = useCart();
@@ -125,7 +126,7 @@ const Cart = () => {
 
                                             {/* Price */}
                                             <p className="text-lg font-medium">
-                                                ${(item.price * item.quantity).toFixed(2)}
+                                                {formatPrice(item.price * item.quantity)}
                                             </p>
                                         </div>
                                     </div>
@@ -147,7 +148,7 @@ const Cart = () => {
                             <div className="space-y-4 mb-8 text-sm">
                                 <div className="flex justify-between text-muted-foreground">
                                     <span>Subtotal</span>
-                                    <span>${totalPrice.toFixed(2)}</span>
+                                    <span>{formatPrice(totalPrice)}</span>
                                 </div>
                                 <div className="flex justify-between text-muted-foreground">
                                     <span>Shipping (Insured)</span>
@@ -160,7 +161,7 @@ const Cart = () => {
                                 <div className="h-px bg-border/50 my-4" />
                                 <div className="flex justify-between text-lg font-medium">
                                     <span>Total</span>
-                                    <span>${totalPrice.toFixed(2)}</span>
+                                    <span>{formatPrice(totalPrice)}</span>
                                 </div>
                             </div>
 
