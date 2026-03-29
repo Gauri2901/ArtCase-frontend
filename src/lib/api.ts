@@ -1,5 +1,6 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') || 'http://localhost:5000/api';
+const envApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
+
+export const API_BASE_URL = envApiBaseUrl || (import.meta.env.DEV ? 'http://localhost:5000/api' : '');
 
 type RequestOptions = {
   method?: string;
@@ -10,6 +11,10 @@ type RequestOptions = {
 
 export async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', token, body, headers = {} } = options;
+
+  if (!API_BASE_URL) {
+    throw new Error('API is not configured. Set VITE_API_BASE_URL in the frontend deployment settings.');
+  }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
