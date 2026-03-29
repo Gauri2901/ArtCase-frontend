@@ -39,7 +39,7 @@ const About = () => {
                     className="max-w-4xl mx-auto text-center mb-24"
                 >
                     <motion.span variants={itemVariants} className="text-xs font-bold tracking-[0.2em] text-primary uppercase mb-6 block">
-                        Est. 2024
+                        Est. 2026
                     </motion.span>
                     <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-serif font-medium mb-8 text-foreground leading-tight">
                         We believe art should <br />
@@ -63,7 +63,7 @@ const About = () => {
                     >
                         <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl">
                             <img
-                                src="/paintings/forest.jpg"
+                                src="/paintings/night.jpg"
                                 alt="Artist in Studio"
                                 className="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-[2s]"
                             />
@@ -74,7 +74,7 @@ const About = () => {
                         {/* Floating Badge */}
                         <div className="absolute -bottom-6 -right-6 bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl max-w-xs hidden md:block">
                             <p className="font-serif italic text-lg mb-2">"Creativity takes courage."</p>
-                            <p className="text-xs uppercase tracking-widest text-primary">— Henri Matisse</p>
+                            <p className="text-xs uppercase tracking-widest text-primary">— Gauri Borle</p>
                         </div>
                     </motion.div>
 
@@ -146,7 +146,7 @@ const About = () => {
                 <div className="relative rounded-[3rem] overflow-hidden h-[400px] flex items-center justify-center text-center px-4">
                     {/* Background Image with Blur */}
                     <div className="absolute inset-0">
-                        <img src="/paintings/ocean.jpg" alt="Ocean Texture" className="w-full h-full object-cover" />
+                        <img src="/paintings/sunflower.jpg" alt="Ocean Texture" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
                     </div>
 
