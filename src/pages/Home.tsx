@@ -67,10 +67,12 @@ const FloatingShapes = () => (
 // 3. Moving Gallery Section (The "Shoparl" style strip)
 const MovingGallery = () => {
   const images = [
-    "/paintings/ocean.jpg",
-    "/paintings/city.jpg",
-    "/paintings/forest.jpg",
-    "/paintings/sunset.jpg",
+    "/paintings/blossom.jpg",
+    "/paintings/clouds.jpg",
+    "/paintings/calm.jpg",
+    "/paintings/night.jpg",
+    "/paintings/tulips.jpg",
+    "/paintings/mandala.jpg",
   ];
 
   return (
@@ -191,7 +193,7 @@ const HeroSection = () => {
           >
             <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl">
               <img
-                src="/paintings/ocean.jpg"
+                src="/paintings/Brushes.jpg"
                 alt="Abstract Ocean Art"
                 className="w-full h-full object-cover"
               />
@@ -209,7 +211,7 @@ const HeroSection = () => {
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -top-12 -right-12 w-48 h-64 rounded-xl overflow-hidden shadow-xl z-0 opacity-80"
           >
-            <img src="/paintings/sunset.jpg" alt="Sunset" className="w-full h-full object-cover" />
+            <img src="/paintings/lights.jpg" alt="Sunset" className="w-full h-full object-cover" />
           </motion.div>
 
           <motion.div
@@ -217,7 +219,7 @@ const HeroSection = () => {
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full overflow-hidden shadow-xl z-20 border-4 border-white/30"
           >
-            <img src="/paintings/forest.jpg" alt="Forest" className="w-full h-full object-cover" />
+            <img src="/paintings/tent.jpg" alt="Forest" className="w-full h-full object-cover" />
           </motion.div>
         </div>
       </div>
@@ -276,7 +278,7 @@ const PhilosophySection = () => {
               <Play className="w-8 h-8 fill-white text-white ml-1" />
             </div>
           </div>
-          <img src="/paintings/forest.jpg" alt="In the Studio" className="h-full w-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-700" />
+          <img src="/paintings/Brushes.jpg" alt="In the Studio" className="h-full w-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-700" />
           <p className="absolute bottom-8 left-8 font-mono text-xs uppercase tracking-widest text-white/80 z-20">Watch the Process • 01:24</p>
         </div>
       </div>
@@ -330,14 +332,14 @@ const CommissionSection = () => {
                 className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-2xl rotate-3 z-10 rounded-xl border border-gray-100"
               >
                 <div className="w-full h-full bg-gray-100 overflow-hidden relative">
-                  <img src="/paintings/city.jpg" className="w-full h-full object-cover" />
+                  <img src="/paintings/tnj.jpg" className="w-full h-full object-cover" />
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded text-xs font-bold shadow-sm">COMMISSION #42</div>
                 </div>
               </motion.div>
               <motion.div
                 className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-10 translate-y-10 md:translate-x-12 md:translate-y-12 border border-gray-100"
               >
-                <img src="/paintings/forest.jpg" className="w-full h-full object-cover " />
+                <img src="/paintings/house.jpg" className="w-full h-full object-cover " />
               </motion.div>
             </div>
           </div>
