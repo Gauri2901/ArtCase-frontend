@@ -70,6 +70,11 @@ const Commissions = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!user?.token) {
+      toast.error('Please log in to submit a custom order.');
+      return;
+    }
+
     if (!form.customerName.trim() || !effectiveArtworkType || !form.description.trim() || !form.sizeDetails.trim() || !form.email.trim() || !form.budget.trim()) {
       toast.error('Please fill in all required commission details.');
       return;
@@ -80,6 +85,7 @@ const Commissions = () => {
       const referenceImages = await uploadReferences();
       await apiRequest('/commissions', {
         method: 'POST',
+        token: user.token,
         body: JSON.stringify({
           customerName: form.customerName,
           artworkType: effectiveArtworkType,
@@ -308,7 +314,7 @@ const Commissions = () => {
               <p className="text-xs uppercase tracking-[0.25em] text-background/60">Commission Guide</p>
               <h3 className="mt-3 text-3xl font-serif">How pricing is handled</h3>
               <p className="mt-4 text-sm text-background/70">
-                Your budget is used as a ceiling for the request. Once the studio reviews your brief, the admin can approve it with a final quoted price and email you the details.
+                Your budget is used as a ceiling for the request. Once the studio reviews your brief, the admin can approve it with a final quoted price and send the payment request to your dashboard.
               </p>
               <div className="mt-6 rounded-[1.5rem] bg-white/10 p-4">
                 <p className="text-sm text-background/80">Example quote</p>

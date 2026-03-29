@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { apiRequest } from '@/lib/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,22 +15,22 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const data = await apiRequest<{
+        _id: string;
+        name: string;
+        email: string;
+        phone: string;
+        isAdmin: boolean;
+        token: string;
+      }>('/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
-
-      if (res.ok) {
-        login(data);
-        toast.success(`Welcome back, ${data.name}`);
-        navigate(data.isAdmin ? '/admin' : '/'); // Redirect Admin to Dashboard
-      } else {
-        toast.error(data.message);
-      }
+      login(data);
+      toast.success(`Welcome back, ${data.name}`);
+      navigate(data.isAdmin ? '/admin' : '/profile');
     } catch (error) {
-      toast.error('Login failed');
+      toast.error(error instanceof Error ? error.message : 'Login failed');
     }
   };
 

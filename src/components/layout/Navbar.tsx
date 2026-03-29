@@ -7,6 +7,7 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/admin/NotificationBell';
+import UserNotificationBell from '@/components/UserNotificationBell';
 
 const Navbar = () => {
     const { cartItems } = useCart();
@@ -131,21 +132,35 @@ const Navbar = () => {
                         {/* Profile avatar (all sizes) OR login buttons (desktop only) */}
                         {user ? (
                             <div ref={profileRef} className="relative">
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="rounded-full border border-gray-600 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30 h-8 w-8 sm:h-9 sm:w-9"
-                                    onClick={() => {
-                                        setIsProfileOpen((prev) => !prev);
-                                        setIsMobileMenuOpen(false);
-                                    }}
-                                >
-                                    <span>{userInitial}</span>
-                                    <span className="sr-only">Open profile menu</span>
-                                </Button>
+                                {user.isAdmin ? (
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="rounded-full border border-gray-600 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30 h-8 w-8 sm:h-9 sm:w-9"
+                                        onClick={() => {
+                                            setIsProfileOpen((prev) => !prev);
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                    >
+                                        <span>{userInitial}</span>
+                                        <span className="sr-only">Open profile menu</span>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        asChild
+                                        variant="ghost"
+                                        size="icon"
+                                        className="rounded-full border border-gray-600 bg-white/20 text-sm font-semibold text-foreground backdrop-blur-xl hover:bg-white/30 h-8 w-8 sm:h-9 sm:w-9"
+                                    >
+                                        <Link to="/profile">
+                                            <span>{userInitial}</span>
+                                            <span className="sr-only">Open profile page</span>
+                                        </Link>
+                                    </Button>
+                                )}
 
                                 <AnimatePresence>
-                                    {isProfileOpen && (
+                                    {user.isAdmin && isProfileOpen && (
                                         <motion.div
                                             initial={{ opacity: 0, y: -12, scale: 0.96 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -190,7 +205,7 @@ const Navbar = () => {
                             </div>
                         )}
 
-                        <NotificationBell />
+                        {user?.isAdmin ? <NotificationBell /> : <UserNotificationBell />}
 
                         {/* Cart Icon */}
                         {/* Use `relative` + fixed size so the badge never bleeds outside */}

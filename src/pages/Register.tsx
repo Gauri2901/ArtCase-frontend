@@ -4,10 +4,12 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { apiRequest } from '@/lib/api';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -15,22 +17,22 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const data = await apiRequest<{
+        _id: string;
+        name: string;
+        email: string;
+        phone: string;
+        isAdmin: boolean;
+        token: string;
+      }>('/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, phone, password }),
       });
-      const data = await res.json();
-
-      if (res.ok) {
-        login(data);
-        toast.success(`Welcome to ArtCase, ${data.name}!`);
-        navigate('/');
-      } else {
-        toast.error(data.message || 'Registration failed');
-      }
+      login(data);
+      toast.success(`Welcome to ArtCase, ${data.name}!`);
+      navigate('/profile');
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error(error instanceof Error ? error.message : 'Something went wrong');
     }
   };
 
@@ -54,6 +56,12 @@ const Register = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+          />
+          <Input 
+            placeholder="Phone Number (Optional)" 
+            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
           />
           <Input 
             type="password" 

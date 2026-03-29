@@ -81,7 +81,7 @@ export type AdminOrder = {
   };
 };
 
-export type CommissionStatus = 'pending' | 'approved' | 'rejected' | 'in_progress' | 'completed';
+export type CommissionStatus = 'pending' | 'approved' | 'payment_pending' | 'paid' | 'rejected' | 'in_progress' | 'completed';
 
 export type AdminCommission = {
   _id: string;
@@ -97,6 +97,16 @@ export type AdminCommission = {
   status: CommissionStatus;
   adminNotes: string;
   quotedPrice: number | null;
+  payment: {
+    status: 'unpaid' | 'paid' | 'failed';
+    paymentLink: string;
+    paymentOrderId: string;
+    paymentId: string;
+    linkSentAt: string | null;
+    paidAt: string | null;
+  };
+  approvedAt: string | null;
+  completedAt: string | null;
   customer: {
     name: string;
     email: string;
