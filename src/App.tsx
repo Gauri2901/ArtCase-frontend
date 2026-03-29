@@ -13,6 +13,7 @@ import Register from './pages/Register'; // Make sure this is imported
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogDetail from './pages/AdminLogDetail';
 import ProtectedRoute from './components/layout/ProtectedRoute'; // Import this
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="checkout" element={<Checkout />} />
           <Route path="thank-you" element={<ThankYou />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* Protected Admin Routes */}

@@ -706,7 +706,8 @@ const AdminDashboard = () => {
                     >
                       <option value="all">All statuses</option>
                       <option value="pending">Pending</option>
-                      <option value="approved">Approved</option>
+                      <option value="payment_pending">Payment pending</option>
+                      <option value="paid">Paid</option>
                       <option value="rejected">Rejected</option>
                       <option value="in_progress">In progress</option>
                       <option value="completed">Completed</option>
@@ -735,6 +736,9 @@ const AdminDashboard = () => {
                                 <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
                                   {commission.status.replace('_', ' ')}
                                 </span>
+                                <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                  Payment {commission.payment.status}
+                                </span>
                                 <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
                                   {commission.artworkType}
                                 </span>
@@ -757,6 +761,25 @@ const AdminDashboard = () => {
                                 <div className="rounded-2xl bg-secondary/60 p-4">
                                   <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Size details</p>
                                   <p className="mt-2 text-sm text-muted-foreground">{commission.sizeDetails}</p>
+                                </div>
+                              </div>
+
+                              <div className="grid gap-4 md:grid-cols-2">
+                                <div className="rounded-2xl bg-secondary/60 p-4">
+                                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Payment status</p>
+                                  <p className="mt-2 font-medium capitalize">{commission.payment.status}</p>
+                                  {commission.payment.linkSentAt ? (
+                                    <p className="mt-1 text-sm text-muted-foreground">Link sent {new Date(commission.payment.linkSentAt).toLocaleString('en-IN')}</p>
+                                  ) : null}
+                                </div>
+                                <div className="rounded-2xl bg-secondary/60 p-4">
+                                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Timeline</p>
+                                  <p className="mt-2 text-sm text-muted-foreground">
+                                    {commission.approvedAt ? `Approved ${new Date(commission.approvedAt).toLocaleString('en-IN')}` : 'Not approved yet'}
+                                  </p>
+                                  <p className="mt-1 text-sm text-muted-foreground">
+                                    {commission.completedAt ? `Completed ${new Date(commission.completedAt).toLocaleString('en-IN')}` : 'Waiting for completion'}
+                                  </p>
                                 </div>
                               </div>
 
@@ -786,14 +809,15 @@ const AdminDashboard = () => {
                                   <select
                                     value={draft.status}
                                     onChange={(event) => updateCommissionDraft(commission._id, 'status', event.target.value)}
-                                    className="h-12 w-full rounded-2xl border border-input bg-background/80 px-4 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
-                                  >
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                    <option value="in_progress">In progress</option>
-                                    <option value="completed">Completed</option>
-                                  </select>
+                                  className="h-12 w-full rounded-2xl border border-input bg-background/80 px-4 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                                >
+                                  <option value="pending">Pending</option>
+                                  <option value="payment_pending">Approve & send payment link</option>
+                                  <option value="paid">Paid</option>
+                                  <option value="rejected">Rejected</option>
+                                  <option value="in_progress">In progress</option>
+                                  <option value="completed">Completed</option>
+                                </select>
                                 </div>
 
                                 <div>
@@ -836,7 +860,7 @@ const AdminDashboard = () => {
                                   onClick={() => handleCommissionSave(commission._id)}
                                 >
                                   {savingCommissionId === commission._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                                  Save commission
+                                  {draft.status === 'payment_pending' ? 'Approve & send payment link' : 'Save commission'}
                                 </Button>
                               </div>
                             </div>

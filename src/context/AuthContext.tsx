@@ -1,25 +1,19 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  isAdmin: boolean;
-  token: string;
-}
+import type { UserAccount } from '@/types/user';
 
 interface AuthContextType {
-  user: User | null;
+  user: UserAccount | null;
   loading: boolean; // Add loading state
-  login: (userData: User) => void;
+  login: (userData: UserAccount) => void;
+  updateUser: (userData: UserAccount) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserAccount | null>(null);
   const [loading, setLoading] = useState(true); // Start as loading
 
   useEffect(() => {
@@ -31,7 +25,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false); // Finished checking
   }, []);
 
-  const login = (userData: User) => {
+  const login = (userData: UserAccount) => {
+    setUser(userData);
+    localStorage.setItem('artcase_user', JSON.stringify(userData));
+  };
+
+  const updateUser = (userData: UserAccount) => {
     setUser(userData);
     localStorage.setItem('artcase_user', JSON.stringify(userData));
   };
@@ -43,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
