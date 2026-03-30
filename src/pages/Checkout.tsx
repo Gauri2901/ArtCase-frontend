@@ -328,7 +328,8 @@ const Checkout = () => {
                                 >
                                     {isProcessing ? (
                                         <>
-                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...
+                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                            Processing Payment...
                                         </>
                                     ) : (
                                         `Pay ${formatPrice(totalPrice)}`
