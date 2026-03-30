@@ -30,7 +30,7 @@ const Login = () => {
       });
       login(data);
       toast.success(`Welcome back, ${data.name}`);
-      navigate(data.isAdmin ? '/admin' : '/');
+      navigate(data.isAdmin ? '/admin' : '/profile');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
     } finally {
@@ -46,7 +46,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input 
             placeholder="Email" 
-            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
+            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
@@ -54,7 +54,7 @@ const Login = () => {
           <Input 
             type="password" 
             placeholder="Password" 
-            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
+            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
