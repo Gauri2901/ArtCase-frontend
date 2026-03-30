@@ -3,18 +3,30 @@ import { motion } from 'framer-motion';
 
 const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
     window.addEventListener('mousemove', updateMousePosition);
+    window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('mousemove', updateMousePosition);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  // Hide cursor on mobile view
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <motion.div

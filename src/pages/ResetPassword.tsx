@@ -84,7 +84,7 @@ const ResetPassword = () => {
             <Input 
               type={showNewPassword ? 'text' : 'password'}
               placeholder="New Password" 
-              className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600 pr-10"
+              className="bg-white/20 border-white/30 text-white placeholder:text-white/70 pr-10"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               disabled={isLoading}
@@ -92,7 +92,7 @@ const ResetPassword = () => {
             <button
               type="button"
               onClick={() => setShowNewPassword(!showNewPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
               tabIndex={-1}
             >
               {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -103,7 +103,7 @@ const ResetPassword = () => {
             <Input 
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm Password" 
-              className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600 pr-10"
+              className="bg-white/20 border-white/30 text-white placeholder:text-white/70 pr-10"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
@@ -111,7 +111,7 @@ const ResetPassword = () => {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
               tabIndex={-1}
             >
               {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
