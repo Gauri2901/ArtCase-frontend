@@ -266,7 +266,7 @@ const PhilosophySection = () => {
               <Brush className="w-8 h-8 text-background/50" />
             </div>
             <div>
-              <p className="font-serif font-bold text-xl">The Artist</p>
+              <p className="font-serif font-bold text-xl">Gauri Borle</p>
               <p className="text-sm text-primary">Founder & Creator</p>
             </div>
           </div>
