@@ -68,10 +68,10 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-x-hidden">
+    <div className="relative overflow-x-hidden">
 
       {/* 1. Ambient Background Blur - Takes colors from the image itself */}
-      <div className="fixed inset-0 -z-10">
+      <div className="absolute inset-0 -z-10 pointer-events-none">
         <div className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-[100px] z-10" />
         <img
           src={product.imageUrl}
@@ -80,7 +80,8 @@ const ProductDetail = () => {
         />
       </div>
 
-      <div className="container mx-auto px-4 py-24 md:py-32">
+      <div className="min-h-screen">
+        <div className="container mx-auto px-4 py-24 md:py-32">
 
         {/* Navigation Breadcrumb */}
         <motion.div
@@ -195,6 +196,7 @@ const ProductDetail = () => {
             </motion.div>
 
           </motion.div>
+        </div>
         </div>
       </div>
     </div>

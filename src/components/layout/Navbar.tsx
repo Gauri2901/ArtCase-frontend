@@ -69,7 +69,7 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Gallery', path: '/gallery' },
-        { name: 'Commissions', path: '/commissions' },
+        { name: 'Customizad Art', path: '/commissions' },
         { name: 'About', path: '/about' },
         ...(user?.isAdmin ? [{ name: 'Dashboard', path: '/admin' }] : []),
     ];
