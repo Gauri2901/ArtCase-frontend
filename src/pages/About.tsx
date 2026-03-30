@@ -38,9 +38,9 @@ const About = () => {
                     variants={containerVariants}
                     className="max-w-4xl mx-auto text-center mb-24"
                 >
-                    <motion.span variants={itemVariants} className="text-xs font-bold tracking-[0.2em] text-primary uppercase mb-6 block">
+                    {/* <motion.span variants={itemVariants} className="text-xs font-bold tracking-[0.2em] text-primary uppercase mb-6 block">
                         Est. 2026
-                    </motion.span>
+                    </motion.span> */}
                     <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-serif font-medium mb-8 text-foreground leading-tight">
                         We believe art should <br />
                         <span className="italic text-muted-foreground">speak to the soul.</span>

@@ -84,7 +84,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-background/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-background/40">
-          <p>&copy; 2025 Art-Case. All rights reserved.</p>
+          <p>&copy; 2026 Art-Case. All rights reserved.</p>
           <div className="flex gap-8">
             <Link to="/privacy" className="hover:text-background transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-background transition-colors">Terms of Service</Link>
