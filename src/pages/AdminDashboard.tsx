@@ -112,6 +112,7 @@ const AdminDashboard = () => {
   const [commissionStatusFilter, setCommissionStatusFilter] = useState<CommissionStatusFilter>('all');
   const [commissionSearch, setCommissionSearch] = useState('');
   const [savingCommissionId, setSavingCommissionId] = useState<string | null>(null);
+  const [deletingArtworkId, setDeletingArtworkId] = useState<string | null>(null);
   const [commissionDrafts, setCommissionDrafts] = useState<Record<string, { status: CommissionStatus; quotedPrice: string; adminNotes: string }>>({});
   const [logSort, setLogSort] = useState<LogSort>('timestamp');
   const [logOrder, setLogOrder] = useState<'asc' | 'desc'>('desc');
@@ -307,6 +308,7 @@ const AdminDashboard = () => {
     const confirmed = window.confirm('Delete this artwork? This action cannot be undone.');
     if (!confirmed) return;
 
+    setDeletingArtworkId(artworkId);
     try {
       await apiRequest(`/artworks/${artworkId}`, {
         method: 'DELETE',
@@ -319,6 +321,8 @@ const AdminDashboard = () => {
       fetchDashboardData();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to delete artwork');
+    } finally {
+      setDeletingArtworkId(null);
     }
   };
 
@@ -505,8 +509,17 @@ const AdminDashboard = () => {
                         </div>
                         <div className="md:col-span-2 flex flex-wrap gap-3">
                           <Button type="submit" className="rounded-full px-6" disabled={savingArtwork}>
-                            {savingArtwork ? <Loader2 className="h-4 w-4 animate-spin" /> : editingArtworkId ? <Save className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            {editingArtworkId ? 'Save artwork' : 'Upload artwork'}
+                            {savingArtwork ? (
+                              <>
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                {editingArtworkId ? 'Saving...' : 'Uploading...'}
+                              </>
+                            ) : (
+                              <>
+                                {editingArtworkId ? <Save className="h-4 w-4 mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
+                                {editingArtworkId ? 'Save artwork' : 'Upload artwork'}
+                              </>
+                            )}
                           </Button>
                           {editingArtworkId ? (
                             <Button type="button" variant="outline" className="rounded-full px-6" onClick={resetForm}>
@@ -552,9 +565,18 @@ const AdminDashboard = () => {
                               <Pencil className="h-4 w-4" />
                               Edit
                             </Button>
-                            <Button type="button" variant="destructive" className="flex-1 rounded-full" onClick={() => handleDeleteArtwork(artwork._id)}>
-                              <Trash2 className="h-4 w-4" />
-                              Delete
+                            <Button type="button" variant="destructive" className="flex-1 rounded-full" onClick={() => handleDeleteArtwork(artwork._id)} disabled={deletingArtworkId === artwork._id}>
+                              {deletingArtworkId === artwork._id ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                  Deleting...
+                                </>
+                              ) : (
+                                <>
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </>
+                              )}
                             </Button>
                           </div>
                         </div>
@@ -859,8 +881,17 @@ const AdminDashboard = () => {
                                   disabled={savingCommissionId === commission._id}
                                   onClick={() => handleCommissionSave(commission._id)}
                                 >
-                                  {savingCommissionId === commission._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                                  {draft.status === 'payment_pending' ? 'Approve & send payment link' : 'Save commission'}
+                                  {savingCommissionId === commission._id ? (
+                                    <>
+                                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                      Saving commission...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Save className="h-4 w-4 mr-2" />
+                                      {draft.status === 'payment_pending' ? 'Approve & send payment link' : 'Save commission'}
+                                    </>
+                                  )}
                                 </Button>
                               </div>
                             </div>

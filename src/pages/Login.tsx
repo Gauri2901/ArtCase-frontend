@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,7 +47,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input 
             placeholder="Email" 
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
@@ -54,13 +55,20 @@ const Login = () => {
           <Input 
             type="password" 
             placeholder="Password" 
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
           />
           <Button className="w-full bg-white text-black hover:bg-white/90" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              'Sign In'
+            )}
           </Button>
         </form>
         <div className="mt-6 space-y-3">

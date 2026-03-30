@@ -265,8 +265,17 @@ const Profile = () => {
                   </div>
                   <div className="md:col-span-2 flex flex-wrap gap-3">
                     <Button type="submit" className="rounded-full px-6" disabled={savingProfile}>
-                      {savingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                      Save profile
+                      {savingProfile ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4 mr-2" />
+                          Save profile
+                        </>
+                      )}
                     </Button>
                   </div>
                 </form>
@@ -377,8 +386,17 @@ const Profile = () => {
                           </p>
                           {commission.status === 'payment_pending' && commission.payment.status === 'unpaid' ? (
                             <Button className="mt-4 w-full rounded-full" onClick={() => handleCommissionPayment(commission)} disabled={payingCommissionId === commission._id}>
-                              {payingCommissionId === commission._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-                              Pay now
+                              {payingCommissionId === commission._id ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                  Processing payment...
+                                </>
+                              ) : (
+                                <>
+                                  <CreditCard className="h-4 w-4 mr-2" />
+                                  Pay now
+                                </>
+                              )}
                             </Button>
                           ) : (
                             <div className="mt-4 inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">

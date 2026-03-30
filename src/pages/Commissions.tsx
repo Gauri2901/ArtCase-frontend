@@ -264,8 +264,17 @@ const Commissions = () => {
                 We’ll review your request and send the next update to your email.
               </p>
               <Button type="submit" className="rounded-full px-8 h-12" disabled={isSubmitting || uploadingReferences}>
-                {isSubmitting || uploadingReferences ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-                Submit Custom Order
+                {isSubmitting || uploadingReferences ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    Submit Custom Order
+                  </>
+                )}
               </Button>
             </div>
           </motion.form>

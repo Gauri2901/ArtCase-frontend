@@ -96,7 +96,7 @@ const VerifyOTP = () => {
             type="text"
             placeholder="Enter OTP" 
             maxLength={6}
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/70 text-center text-2xl tracking-widest"
+            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600 text-center text-2xl tracking-widest"
             value={otp}
             onChange={(e) => {
               const value = e.target.value.replace(/\D/g, '');

@@ -55,7 +55,7 @@ const ForgotPassword = () => {
           <Input 
             type="email"
             placeholder="Email" 
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
