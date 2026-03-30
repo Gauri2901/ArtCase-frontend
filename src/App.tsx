@@ -8,11 +8,14 @@ import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart'; 
 import ThankYou from './pages/ThankYou';
-import Login from './pages/Login';      // Make sure this is imported
-import Register from './pages/Register'; // Make sure this is imported
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import VerifyOTP from './pages/VerifyOTP';
+import ResetPassword from './pages/ResetPassword';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogDetail from './pages/AdminLogDetail';
-import ProtectedRoute from './components/layout/ProtectedRoute'; // Import this
+import ProtectedRoute from './components/layout/ProtectedRoute';
 import Profile from './pages/Profile';
 
 function App() {
@@ -27,6 +30,9 @@ function App() {
         <Route path="cart" element={<Cart />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="verify-otp" element={<VerifyOTP />} />
+        <Route path="reset-password" element={<ResetPassword />} />
 
         {/* Protected User Routes (Checkout requires login) */}
         <Route element={<ProtectedRoute />}>

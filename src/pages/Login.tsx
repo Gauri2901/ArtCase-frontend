@@ -9,11 +9,13 @@ import { apiRequest } from '@/lib/api';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const data = await apiRequest<{
         _id: string;
@@ -28,9 +30,11 @@ const Login = () => {
       });
       login(data);
       toast.success(`Welcome back, ${data.name}`);
-      navigate(data.isAdmin ? '/admin' : '/profile');
+      navigate(data.isAdmin ? '/admin' : '/');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,22 +46,33 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input 
             placeholder="Email" 
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
           />
           <Input 
             type="password" 
             placeholder="Password" 
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+            className="bg-white/20 border-white/30 text-gray-900 placeholder:text-gray-600"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
           />
-          <Button className="w-full bg-white text-black hover:bg-white/90">Sign In</Button>
+          <Button className="w-full bg-white text-black hover:bg-white/90" disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </Button>
         </form>
-        <p className="mt-4 text-center text-white/60 text-sm">
-          Don't have an account? <Link to="/register" className="underline hover:text-white">Register</Link>
-        </p>
+        <div className="mt-6 space-y-3">
+          <div className="text-center">
+            <Link to="/forgot-password" className="text-white/70 hover:text-white text-sm underline transition-colors">
+              Forgot Password?
+            </Link>
+          </div>
+          <p className="text-center text-white/60 text-sm">
+            Don't have an account? <Link to="/register" className="underline hover:text-white">Register</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
