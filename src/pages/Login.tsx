@@ -31,7 +31,7 @@ const Login = () => {
       });
       login(data);
       toast.success(`Welcome back, ${data.name}`);
-      navigate(data.isAdmin ? '/admin' : '/profile');
+      navigate('/');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
     } finally {
