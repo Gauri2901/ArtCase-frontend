@@ -108,10 +108,11 @@ const AdminLogDetail = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-28">
-      <div className="fixed left-[-10rem] top-20 h-[26rem] w-[26rem] rounded-full bg-primary/10 blur-[120px]" />
-      <div className="fixed bottom-0 right-[-10rem] h-[24rem] w-[24rem] rounded-full bg-amber-200/30 blur-[120px]" />
+      {/* Background blobs - decorative, should not block clicks */}
+      <div className="fixed left-[-10rem] top-20 h-[26rem] w-[26rem] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-0 right-[-10rem] h-[24rem] w-[24rem] rounded-full bg-amber-200/30 blur-[120px] pointer-events-none" />
 
-      <div className="container mx-auto space-y-6 px-4">
+      <div className="container relative z-10 mx-auto space-y-6 px-4">
         <Button asChild variant="outline" className="rounded-full border-white/60 bg-white/70 px-5 backdrop-blur-xl">
           <Link to="/admin?section=logs">
             <ArrowLeft className="h-4 w-4" />
