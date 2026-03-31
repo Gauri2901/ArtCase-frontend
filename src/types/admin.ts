@@ -7,6 +7,7 @@ export type Artwork = {
   price: number;
   imageUrl: string;
   category: ArtworkCategory;
+  dimensions: string;
   tags: string[];
   createdAt: string;
   updatedAt: string;
