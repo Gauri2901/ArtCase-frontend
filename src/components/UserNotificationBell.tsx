@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, CheckCheck, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 import type { UserNotification } from '@/types/user';
 
@@ -119,48 +121,64 @@ const UserNotificationBell = () => {
         <span className="sr-only">Toggle user notifications</span>
       </Button>
 
-      {open ? (
-        <div className="absolute right-0 top-12 z-50 w-[min(24rem,calc(100vw-2rem))] rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notifications</p>
-              <h3 className="mt-1 font-serif text-2xl">Updates for you</h3>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="rounded-full"
-              onClick={markAllRead}
-              disabled={loading || data.unreadCount === 0}
-            >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />}
-              Mark read
-            </Button>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {data.notifications.length === 0 ? (
-              <div className="rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
-                No new updates right now.
-              </div>
-            ) : (
-              data.notifications.map((notification) => (
-                <button
-                  key={notification._id}
-                  type="button"
-                  onClick={() => handleNotificationClick(notification)}
-                  className={`w-full rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm transition-colors hover:bg-background ${!notification.read ? 'border-primary/30' : ''}`}
-                >
-                  <p className="font-semibold">{notification.title}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{notification.message}</p>
-                  <p className="mt-2 text-xs text-muted-foreground">{new Date(notification.createdAt).toLocaleString('en-IN')}</p>
-                </button>
-              ))
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className={cn(
+              "absolute z-50 rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl",
+              "top-14 sm:top-12 right-0 sm:right-0",
+              "w-[min(24rem,calc(100vw-3rem))]",
+              "max-sm:fixed max-sm:inset-x-4 max-sm:mx-auto max-sm:top-24 max-sm:w-auto max-sm:max-w-md"
             )}
-          </div>
-        </div>
-      ) : null}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notifications</p>
+                <h3 className="mt-1 font-serif text-2xl">Updates for you</h3>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+                onClick={markAllRead}
+                disabled={loading || data.unreadCount === 0}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />}
+                Mark read
+              </Button>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {data.notifications.length === 0 ? (
+                <div className="rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
+                  No new updates right now.
+                </div>
+              ) : (
+                data.notifications.map((notification) => (
+                  <button
+                    key={notification._id}
+                    type="button"
+                    onClick={() => handleNotificationClick(notification)}
+                    className={cn(
+                      "w-full rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm transition-colors hover:bg-background",
+                      !notification.read && "border-primary/30"
+                    )}
+                  >
+                    <p className="font-semibold">{notification.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{notification.message}</p>
+                    <p className="mt-2 text-xs text-muted-foreground">{new Date(notification.createdAt).toLocaleString('en-IN')}</p>
+                  </button>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

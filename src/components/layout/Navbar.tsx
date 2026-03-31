@@ -167,7 +167,12 @@ const Navbar = () => {
                                             exit={{ opacity: 0, y: -10, scale: 0.96 }}
                                             transition={{ duration: 0.18, ease: 'easeOut' }}
                                             // On mobile: center below the button. On sm+: anchor to right edge.
-                                            className="absolute left-1/2 -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0 top-12 sm:top-14 w-[calc(100vw-2rem)] max-w-xs overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl z-50"
+                                            className={cn(
+                                                "absolute z-50 overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl",
+                                                "top-14 sm:top-14 right-0 sm:right-0",
+                                                "w-[calc(100vw-2rem)] max-w-xs",
+                                                "max-sm:fixed max-sm:inset-x-4 max-sm:mx-auto max-sm:top-24 max-sm:w-auto"
+                                            )}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-foreground text-background text-base font-semibold">
