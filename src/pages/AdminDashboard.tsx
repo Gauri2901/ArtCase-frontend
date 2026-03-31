@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
@@ -40,6 +40,7 @@ type ArtworkFormState = {
   description: string;
   price: string;
   category: ArtworkCategory;
+  dimensions: string;
   tags: string;
   imageFile: File | null;
   existingImageUrl: string;
@@ -52,6 +53,7 @@ const emptyForm: ArtworkFormState = {
   description: '',
   price: '',
   category: 'Oil',
+  dimensions: '24" x 36"',
   tags: '',
   imageFile: null,
   existingImageUrl: '',
@@ -83,6 +85,7 @@ const logActionConfig = {
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const formRef = useRef<HTMLDivElement | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedSection = searchParams.get('section');
   const initialSection = validSections.includes(requestedSection as AdminSection)
@@ -229,10 +232,16 @@ const AdminDashboard = () => {
       description: artwork.description,
       price: String(artwork.price),
       category: artwork.category,
+      dimensions: artwork.dimensions || '24" x 36"',
       tags: artwork.tags.join(', '),
       imageFile: null,
       existingImageUrl: artwork.imageUrl,
     });
+
+    // Scroll to form for immediate visibility
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -274,6 +283,7 @@ const AdminDashboard = () => {
         description: form.description,
         price: Number(form.price),
         category: form.category,
+        dimensions: form.dimensions || '24" x 36"',
         tags: form.tags,
         image: imageUrl,
       };
@@ -443,7 +453,7 @@ const AdminDashboard = () => {
             ) : null}
 
             {!loading && activeSection === 'artworks' ? (
-              <>
+              <div ref={formRef} className="space-y-6 scroll-mt-32">
                 <Card className={tableCardClassName}>
                   <CardHeader>
                     <CardTitle className="text-3xl">Upload or update artwork</CardTitle>
@@ -492,6 +502,12 @@ const AdminDashboard = () => {
                             </option>
                           ))}
                         </select>
+                        <Input
+                          value={form.dimensions}
+                          onChange={(event) => updateField('dimensions', event.target.value)}
+                          placeholder='Dimensions (default: 24" x 36")'
+                          className="h-12 rounded-2xl bg-background/80"
+                        />
                         <div className="md:col-span-2">
                           <Input
                             value={form.tags}
@@ -547,7 +563,9 @@ const AdminDashboard = () => {
                           <div className="flex items-start justify-between gap-3">
                             <div>
                               <h3 className="text-2xl font-serif">{artwork.title}</h3>
-                              <p className="mt-1 text-sm text-muted-foreground">{artwork.category}</p>
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                {artwork.category} • {artwork.dimensions || '24" x 36"'}
+                              </p>
                             </div>
                             <p className="text-base font-semibold">
                               {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(artwork.price)}
@@ -585,7 +603,7 @@ const AdminDashboard = () => {
                     ))}
                   </CardContent>
                 </Card>
-              </>
+              </div>
             ) : null}
 
             {!loading && activeSection === 'orders' ? (
