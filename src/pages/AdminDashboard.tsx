@@ -391,10 +391,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-28">
-      <div className="fixed left-[-10rem] top-20 h-[26rem] w-[26rem] rounded-full bg-primary/10 blur-[120px]" />
-      <div className="fixed bottom-0 right-[-10rem] h-[24rem] w-[24rem] rounded-full bg-amber-200/30 blur-[120px]" />
+      {/* Background blobs - decorative, should not block clicks */}
+      <div className="fixed left-[-10rem] top-20 h-[26rem] w-[26rem] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-0 right-[-10rem] h-[24rem] w-[24rem] rounded-full bg-amber-200/30 blur-[120px] pointer-events-none" />
 
-      <div className="container mx-auto px-4">
+      <div className="container relative z-10 mx-auto px-4">
         <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Admin Dashboard</p>
