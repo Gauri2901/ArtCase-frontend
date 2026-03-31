@@ -448,7 +448,7 @@ const AdminDashboard = () => {
                     <CardTitle className="text-3xl">Upload or update artwork</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <form className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]" onSubmit={handleArtworkSubmit}>
+                    <form className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] max-md:grid-cols-1" onSubmit={handleArtworkSubmit}>
                       <div className="space-y-4">
                         <div className="aspect-[4/5] overflow-hidden rounded-[1.75rem] border border-dashed border-border bg-secondary/50">
                           {previewUrl ? (
@@ -645,7 +645,7 @@ const AdminDashboard = () => {
                             </div>
                           </div>
 
-                          <div className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)]">
+                          <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
                             <div className="rounded-2xl bg-secondary/60 p-4">
                               <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Payment</p>
                               <p className="mt-2 font-medium break-words">{formatPrice(order.payment.amount)}</p>

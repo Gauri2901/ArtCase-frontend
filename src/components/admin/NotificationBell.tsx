@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, CheckCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/api';
@@ -100,61 +101,74 @@ const NotificationBell = () => {
         <span className="sr-only">Toggle admin notifications</span>
       </Button>
 
-      {open ? (
-        <div className="absolute right-0 top-12 z-50 w-[min(24rem,calc(100vw-2rem))] rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notifications</p>
-              <h3 className="mt-1 font-serif text-2xl">New orders</h3>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="rounded-full"
-              onClick={markAllRead}
-              disabled={loading || data.unreadCount === 0}
-            >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />}
-              Mark read
-            </Button>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {data.orders.length === 0 ? (
-              <div className="rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
-                No unread orders right now.
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className={cn(
+              "absolute z-50 rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl",
+              "top-14 sm:top-12 right-0 sm:right-0",
+              "w-[min(24rem,calc(100vw-3rem))]",
+              "max-sm:fixed max-sm:inset-x-4 max-sm:mx-auto max-sm:top-24 max-sm:w-auto max-sm:max-w-md"
+            )}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notifications</p>
+                <h3 className="mt-1 font-serif text-2xl">New orders</h3>
               </div>
-            ) : (
-              data.orders.map((order) => (
-                <div
-                  key={order._id}
-                  className={cn(
-                    'rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm',
-                    order.unread && 'border-primary/30'
-                  )}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-semibold">{order.orderId}</p>
-                      <p className="text-sm text-muted-foreground">{order.user.name}</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+                onClick={markAllRead}
+                disabled={loading || data.unreadCount === 0}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />}
+                Mark read
+              </Button>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {data.orders.length === 0 ? (
+                <div className="rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
+                  No unread orders right now.
+                </div>
+              ) : (
+                data.orders.map((order) => (
+                  <div
+                    key={order._id}
+                    className={cn(
+                      'rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm',
+                      order.unread && 'border-primary/30'
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-semibold">{order.orderId}</p>
+                        <p className="text-sm text-muted-foreground">{order.user.name}</p>
+                      </div>
+                      <p className="text-sm font-medium">
+                        {new Intl.NumberFormat('en-IN', {
+                          style: 'currency',
+                          currency: order.payment.currency || 'INR',
+                        }).format(order.payment.amount)}
+                      </p>
                     </div>
-                    <p className="text-sm font-medium">
-                      {new Intl.NumberFormat('en-IN', {
-                        style: 'currency',
-                        currency: order.payment.currency || 'INR',
-                      }).format(order.payment.amount)}
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {order.artworks.map((artwork) => artwork.title).join(', ')}
                     </p>
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {order.artworks.map((artwork) => artwork.title).join(', ')}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      ) : null}
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
