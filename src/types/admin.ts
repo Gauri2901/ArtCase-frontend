@@ -56,6 +56,10 @@ export type AdminOrder = {
   orderKind: 'purchase' | 'commission';
   unread: boolean;
   placedAt: string;
+  invoice: {
+    invoiceNumber: string;
+    issuedAt: string;
+  };
   payment: {
     amount: number;
     currency: string;
@@ -64,9 +68,17 @@ export type AdminOrder = {
     razorpayOrderId: string;
     razorpayPaymentId: string;
   };
+  pricing: {
+    subtotal: number;
+    discount: number;
+    shipping: number;
+    total: number;
+    currency: string;
+  };
   user: {
     name: string;
     email: string;
+    phone: string;
     address: string;
     city: string;
     zip: string;
