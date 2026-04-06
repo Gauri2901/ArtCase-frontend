@@ -1,4 +1,4 @@
-import { ChevronDown, CreditCard, Mail, MapPin, Phone, Receipt, ShoppingBag, User2 } from 'lucide-react';
+import { ChevronDown, CreditCard, Loader2, Mail, MapPin, Phone, Receipt, ShoppingBag, User2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
 import type { AdminOrder } from '@/types/admin';
@@ -9,97 +9,22 @@ type OrderCardProps = {
   onToggle: () => void;
   highlighted?: boolean;
   showInvoiceAction?: boolean;
+  invoiceLoading?: boolean;
+  onDownloadInvoice?: (order: AdminOrder) => void;
 };
 
 const formatAddress = (order: AdminOrder) =>
   [order.user.address, order.user.city, order.user.zip].filter(Boolean).join(', ');
 
-const buildInvoiceHtml = (order: AdminOrder) => {
-  const address = formatAddress(order) || 'Not provided';
-  const itemRows =
-    order.orderKind === 'commission'
-      ? `
-        <tr>
-          <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">${order.commissionDetails?.artworkType || 'Custom commission'}</td>
-          <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">1</td>
-          <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; text-align: right;">${formatPrice(order.pricing.total)}</td>
-        </tr>
-      `
-      : order.artworks
-          .map(
-            (artwork) => `
-              <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">
-                  <div style="font-weight: 600;">${artwork.title}</div>
-                  <div style="font-size: 12px; color: #6b7280;">${artwork.category}</div>
-                </td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">${artwork.quantity}</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; text-align: right;">${formatPrice(artwork.price * artwork.quantity)}</td>
-              </tr>
-            `
-          )
-          .join('');
-
-  return `
-    <html>
-      <head>
-        <title>Invoice ${order.invoice.invoiceNumber}</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; color: #111827; padding: 32px;">
-        <h1 style="margin-bottom: 6px;">Art-Case Invoice</h1>
-        <p style="margin: 0 0 24px;">Invoice ${order.invoice.invoiceNumber}</p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-          <div>
-            <h3>Order details</h3>
-            <p><strong>Order ID:</strong> ${order.orderId}</p>
-            <p><strong>Placed at:</strong> ${new Date(order.placedAt).toLocaleString('en-IN')}</p>
-            <p><strong>Payment method:</strong> ${order.payment.method}</p>
-            <p><strong>Payment status:</strong> ${order.payment.status}</p>
-            <p><strong>Razorpay order ID:</strong> ${order.payment.razorpayOrderId || 'Not available'}</p>
-            <p><strong>Razorpay payment ID:</strong> ${order.payment.razorpayPaymentId || 'Not available'}</p>
-          </div>
-          <div>
-            <h3>Customer</h3>
-            <p><strong>Name:</strong> ${order.user.name}</p>
-            <p><strong>Email:</strong> ${order.user.email}</p>
-            <p><strong>Phone:</strong> ${order.user.phone || 'Not provided'}</p>
-            <p><strong>Address:</strong> ${address}</p>
-          </div>
-        </div>
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="text-align: left; padding-bottom: 12px; border-bottom: 1px solid #d1d5db;">Item</th>
-              <th style="text-align: left; padding-bottom: 12px; border-bottom: 1px solid #d1d5db;">Qty</th>
-              <th style="text-align: right; padding-bottom: 12px; border-bottom: 1px solid #d1d5db;">Amount</th>
-            </tr>
-          </thead>
-          <tbody>${itemRows}</tbody>
-        </table>
-        <div style="margin-top: 24px; margin-left: auto; width: 320px;">
-          <p><strong>Subtotal:</strong> ${formatPrice(order.pricing.subtotal)}</p>
-          <p><strong>Discount:</strong> ${formatPrice(order.pricing.discount)}</p>
-          <p><strong>Shipping:</strong> ${formatPrice(order.pricing.shipping)}</p>
-          <p style="font-size: 18px;"><strong>Total:</strong> ${formatPrice(order.pricing.total)}</p>
-        </div>
-      </body>
-    </html>
-  `;
-};
-
-const downloadInvoice = (order: AdminOrder) => {
-  const invoiceWindow = window.open('', '_blank', 'noopener,noreferrer,width=960,height=720');
-  if (!invoiceWindow) {
-    return;
-  }
-
-  invoiceWindow.document.write(buildInvoiceHtml(order));
-  invoiceWindow.document.close();
-  invoiceWindow.focus();
-  invoiceWindow.print();
-};
-
-const OrderCard = ({ order, expanded, onToggle, highlighted = false, showInvoiceAction = false }: OrderCardProps) => {
+const OrderCard = ({
+  order,
+  expanded,
+  onToggle,
+  highlighted = false,
+  showInvoiceAction = false,
+  invoiceLoading = false,
+  onDownloadInvoice,
+}: OrderCardProps) => {
   const primaryArtwork = order.artworks[0];
   const shippingAddress = formatAddress(order);
   const itemCount = order.orderKind === 'commission'
@@ -184,6 +109,7 @@ const OrderCard = ({ order, expanded, onToggle, highlighted = false, showInvoice
               <p className="break-all"><span className="font-medium text-foreground">Razorpay order ID:</span> {order.payment.razorpayOrderId || 'Not available'}</p>
               <p className="break-all"><span className="font-medium text-foreground">Razorpay payment ID:</span> {order.payment.razorpayPaymentId || 'Not available'}</p>
               <p><span className="font-medium text-foreground">Order ID:</span> {order.orderId}</p>
+              <p><span className="font-medium text-foreground">PDF status:</span> {order.invoice.pdfUrl ? 'Ready to download' : 'Will be generated on request'}</p>
             </div>
           </div>
 
@@ -198,9 +124,9 @@ const OrderCard = ({ order, expanded, onToggle, highlighted = false, showInvoice
               <p><span className="font-medium text-foreground">Shipping:</span> {formatPrice(order.pricing.shipping)}</p>
               <p className="text-base font-semibold text-foreground"><span>Total amount:</span> {formatPrice(order.pricing.total)}</p>
               {showInvoiceAction ? (
-                <Button type="button" className="mt-3 rounded-full" onClick={() => downloadInvoice(order)}>
-                  <Receipt className="h-4 w-4" />
-                  Download invoice
+                <Button type="button" className="mt-3 rounded-full" onClick={() => onDownloadInvoice?.(order)} disabled={invoiceLoading}>
+                  {invoiceLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Receipt className="h-4 w-4" />}
+                  {invoiceLoading ? 'Preparing invoice...' : 'Download invoice PDF'}
                 </Button>
               ) : null}
             </div>

@@ -59,6 +59,7 @@ export type AdminOrder = {
   invoice: {
     invoiceNumber: string;
     issuedAt: string;
+    pdfUrl: string;
   };
   payment: {
     amount: number;

@@ -32,6 +32,7 @@ const Profile = () => {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [commissions, setCommissions] = useState<AdminCommission[]>([]);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [invoiceOrderId, setInvoiceOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!highlightedOrderId) {
@@ -147,6 +148,24 @@ const Profile = () => {
 
     setOrders(myOrders);
     setCommissions(myCommissions);
+  };
+
+  const handleInvoiceDownload = async (order: AdminOrder) => {
+    if (!user?.token) return;
+
+    setInvoiceOrderId(order._id);
+    try {
+      const payload = await apiRequest<{ downloadUrl: string }>('/orders/' + order._id + '/invoice', {
+        token: user.token,
+      });
+
+      window.open(payload.downloadUrl, '_blank', 'noopener,noreferrer');
+      await refreshOrders();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to generate invoice');
+    } finally {
+      setInvoiceOrderId(null);
+    }
   };
 
   const handleProfileSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -362,6 +381,8 @@ const Profile = () => {
                       expanded={expandedOrderId === order._id}
                       onToggle={() => setExpandedOrderId((current) => (current === order._id ? null : order._id))}
                       showInvoiceAction={true}
+                      invoiceLoading={invoiceOrderId === order._id}
+                      onDownloadInvoice={handleInvoiceDownload}
                     />
                   ))
                 )}
