@@ -112,6 +112,7 @@ const AdminDashboard = () => {
   const [previewUrl, setPreviewUrl] = useState('');
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
   const [expandedAdminOrderId, setExpandedAdminOrderId] = useState<string | null>(null);
+  const [invoiceOrderId, setInvoiceOrderId] = useState<string | null>(null);
   const [orderUserFilter, setOrderUserFilter] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -333,6 +334,25 @@ const AdminDashboard = () => {
         { token: user.token }
       )
     );
+  };
+
+  const handleInvoiceDownload = async (order: AdminOrder) => {
+    if (!user?.token) {
+      return;
+    }
+
+    setInvoiceOrderId(order._id);
+    try {
+      const payload = await apiRequest<{ downloadUrl: string }>(`/orders/${order._id}/invoice`, {
+        token: user.token,
+      });
+      window.open(payload.downloadUrl, '_blank', 'noopener,noreferrer');
+      await refreshSectionData('orders');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to generate invoice');
+    } finally {
+      setInvoiceOrderId(null);
+    }
   };
 
   const startEditing = (artwork: Artwork) => {
@@ -751,6 +771,9 @@ const AdminDashboard = () => {
                         order={order}
                         expanded={expandedAdminOrderId === order._id}
                         onToggle={() => setExpandedAdminOrderId((current) => (current === order._id ? null : order._id))}
+                        showInvoiceAction={true}
+                        invoiceLoading={invoiceOrderId === order._id}
+                        onDownloadInvoice={handleInvoiceDownload}
                       />
                     ))}
 
