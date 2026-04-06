@@ -4,7 +4,7 @@ import { ArrowLeft, Clock3, Loader2, PencilLine, PlusCircle, Trash2 } from 'luci
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/useAuth';
 import { apiRequest } from '@/lib/api';
 import type { UploadLog } from '@/types/admin';
 

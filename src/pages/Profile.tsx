@@ -3,7 +3,7 @@ import type { FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CreditCard, Loader2, LogOut, Package, Save, User2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -45,13 +45,9 @@ const Profile = () => {
 
     let mounted = true;
 
-    const load = async () => {
+    const loadProfile = async () => {
       try {
-        const [profile, myOrders, myCommissions] = await Promise.all([
-          apiRequest<{ _id: string; name: string; email: string; phone: string; isAdmin: boolean; token: string }>('/auth/profile', { token: user.token }),
-          apiRequest<AdminOrder[]>('/orders/mine', { token: user.token }),
-          apiRequest<AdminCommission[]>('/commissions/mine', { token: user.token }),
-        ]);
+        const profile = await apiRequest<{ _id: string; name: string; email: string; phone: string; isAdmin: boolean; token: string }>('/auth/profile', { token: user.token });
 
         if (!mounted) return;
         updateUser(profile);
@@ -60,6 +56,39 @@ const Profile = () => {
           email: profile.email,
           phone: profile.phone || '',
         });
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : 'Unable to load your profile');
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      mounted = false;
+    };
+  }, [user?.token, updateUser]);
+
+  useEffect(() => {
+    if (!user?.token) return;
+
+    let mounted = true;
+
+    const loadOrders = async () => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+
+      try {
+        const [myOrders, myCommissions] = await Promise.all([
+          apiRequest<AdminOrder[]>('/orders/mine', { token: user.token }),
+          apiRequest<AdminCommission[]>('/commissions/mine', { token: user.token }),
+        ]);
+
+        if (!mounted) return;
         setOrders(myOrders);
         setCommissions(myCommissions);
       } catch (error) {
@@ -71,14 +100,14 @@ const Profile = () => {
       }
     };
 
-    load();
-    const interval = window.setInterval(load, 15000);
+    loadOrders();
+    const interval = window.setInterval(loadOrders, activeSection === 'orders' ? 30000 : 60000);
 
     return () => {
       mounted = false;
       window.clearInterval(interval);
     };
-  }, [user?.token]);
+  }, [activeSection, user?.token]);
 
   const loadRazorpay = () =>
     new Promise<boolean>((resolve) => {

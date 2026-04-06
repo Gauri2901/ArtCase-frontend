@@ -19,7 +19,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,7 @@ import { formatPrice } from '@/lib/utils';
 import type { AdminCommission, AdminOrder, Artwork, ArtworkCategory, CommissionStatus, DashboardStats, UploadLog } from '@/types/admin';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminStatCard from '@/components/admin/AdminStatCard';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 
 type AdminSection = 'artworks' | 'orders' | 'commissions' | 'logs';
 type OrderStatusFilter = 'all' | 'created' | 'paid' | 'failed';
@@ -122,6 +123,9 @@ const AdminDashboard = () => {
   const [logTypeFilter, setLogTypeFilter] = useState<'all' | ArtworkCategory>('all');
   const [logActionFilter, setLogActionFilter] = useState<LogActionFilter>('all');
   const [logSearch, setLogSearch] = useState('');
+  const debouncedOrderUserFilter = useDebouncedValue(orderUserFilter);
+  const debouncedCommissionSearch = useDebouncedValue(commissionSearch);
+  const debouncedLogSearch = useDebouncedValue(logSearch);
 
   useEffect(() => {
     if (!requestedSection || !validSections.includes(requestedSection as AdminSection)) {
@@ -159,52 +163,119 @@ const AdminDashboard = () => {
     return () => URL.revokeObjectURL(nextPreview);
   }, [form.imageFile, form.existingImageUrl]);
 
-  const fetchDashboardData = async () => {
+  const fetchStats = async () => {
     if (!user?.token) return;
 
-    setLoading(true);
     try {
-      const [statsData, artworkData, orderData, commissionData, logData] = await Promise.all([
-        apiRequest<DashboardStats>('/admin/stats', { token: user.token }),
-        apiRequest<Artwork[]>('/artworks', { token: user.token }),
-        apiRequest<AdminOrder[]>(
-          `/orders?status=${orderStatus}&user=${encodeURIComponent(orderUserFilter)}&dateFrom=${dateFrom}&dateTo=${dateTo}`,
-          { token: user.token }
-        ),
-        apiRequest<AdminCommission[]>(
-          `/commissions?status=${commissionStatusFilter}&search=${encodeURIComponent(commissionSearch)}`,
-          { token: user.token }
-        ),
-        apiRequest<UploadLog[]>(
-          `/logs?sortBy=${logSort}&order=${logOrder}&type=${encodeURIComponent(logTypeFilter)}&action=${encodeURIComponent(logActionFilter)}&search=${encodeURIComponent(logSearch)}`,
-          { token: user.token }
-        ),
-      ]);
-
+      const statsData = await apiRequest<DashboardStats>('/admin/stats', { token: user.token });
       setStats(statsData);
-      setArtworks(artworkData);
-      setOrders(orderData);
-      setCommissions(commissionData);
-      setLogs(logData);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to load admin dashboard');
-    } finally {
-      setLoading(false);
+      toast.error(error instanceof Error ? error.message : 'Failed to load dashboard stats');
     }
   };
 
   useEffect(() => {
-    fetchDashboardData();
-  }, [user, orderStatus, orderUserFilter, dateFrom, dateTo, commissionStatusFilter, commissionSearch, logSort, logOrder, logTypeFilter, logActionFilter, logSearch]);
+    if (!user?.token) return;
+
+    fetchStats();
+
+    const interval = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+
+      fetchStats();
+    }, 60000);
+
+    return () => window.clearInterval(interval);
+  }, [user?.token]);
 
   useEffect(() => {
     if (!user?.token) return;
-    const interval = window.setInterval(() => {
-      fetchDashboardData();
-    }, 20000);
 
-    return () => window.clearInterval(interval);
-  }, [user, orderStatus, orderUserFilter, dateFrom, dateTo, commissionStatusFilter, commissionSearch, logSort, logOrder, logTypeFilter, logActionFilter, logSearch]);
+    let cancelled = false;
+
+    const loadActiveSection = async () => {
+      setLoading(true);
+
+      try {
+        if (activeSection === 'artworks') {
+          const artworkData = await apiRequest<Artwork[]>('/artworks', { token: user.token });
+          if (!cancelled) {
+            setArtworks(artworkData);
+          }
+          return;
+        }
+
+        if (activeSection === 'orders') {
+          const orderData = await apiRequest<AdminOrder[]>(
+            `/orders?status=${orderStatus}&user=${encodeURIComponent(debouncedOrderUserFilter)}&dateFrom=${dateFrom}&dateTo=${dateTo}`,
+            { token: user.token }
+          );
+          if (!cancelled) {
+            setOrders(orderData);
+          }
+          return;
+        }
+
+        if (activeSection === 'commissions') {
+          const commissionData = await apiRequest<AdminCommission[]>(
+            `/commissions?status=${commissionStatusFilter}&search=${encodeURIComponent(debouncedCommissionSearch)}`,
+            { token: user.token }
+          );
+          if (!cancelled) {
+            setCommissions(commissionData);
+          }
+          return;
+        }
+
+        const logData = await apiRequest<UploadLog[]>(
+          `/logs?sortBy=${logSort}&order=${logOrder}&type=${encodeURIComponent(logTypeFilter)}&action=${encodeURIComponent(logActionFilter)}&search=${encodeURIComponent(debouncedLogSearch)}`,
+          { token: user.token }
+        );
+        if (!cancelled) {
+          setLogs(logData);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          toast.error(error instanceof Error ? error.message : `Failed to load ${activeSection}`);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadActiveSection();
+
+    const interval = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+
+      loadActiveSection();
+    }, 30000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [
+    activeSection,
+    commissionStatusFilter,
+    dateFrom,
+    dateTo,
+    debouncedCommissionSearch,
+    debouncedLogSearch,
+    debouncedOrderUserFilter,
+    logActionFilter,
+    logOrder,
+    logSort,
+    logTypeFilter,
+    orderStatus,
+    user?.token,
+  ]);
 
   const totalRevenue = useMemo(
     () => orders.reduce((sum, order) => sum + order.payment.amount, 0),
@@ -222,6 +293,44 @@ const AdminDashboard = () => {
 
   const handleSectionChange = (section: AdminSection) => {
     setActiveSection(section);
+  };
+
+  const refreshSectionData = async (section: AdminSection = activeSection) => {
+    if (!user?.token) {
+      return;
+    }
+
+    if (section === 'artworks') {
+      setArtworks(await apiRequest<Artwork[]>('/artworks', { token: user.token }));
+      return;
+    }
+
+    if (section === 'orders') {
+      setOrders(
+        await apiRequest<AdminOrder[]>(
+          `/orders?status=${orderStatus}&user=${encodeURIComponent(debouncedOrderUserFilter)}&dateFrom=${dateFrom}&dateTo=${dateTo}`,
+          { token: user.token }
+        )
+      );
+      return;
+    }
+
+    if (section === 'commissions') {
+      setCommissions(
+        await apiRequest<AdminCommission[]>(
+          `/commissions?status=${commissionStatusFilter}&search=${encodeURIComponent(debouncedCommissionSearch)}`,
+          { token: user.token }
+        )
+      );
+      return;
+    }
+
+    setLogs(
+      await apiRequest<UploadLog[]>(
+        `/logs?sortBy=${logSort}&order=${logOrder}&type=${encodeURIComponent(logTypeFilter)}&action=${encodeURIComponent(logActionFilter)}&search=${encodeURIComponent(debouncedLogSearch)}`,
+        { token: user.token }
+      )
+    );
   };
 
   const startEditing = (artwork: Artwork) => {
@@ -305,7 +414,7 @@ const AdminDashboard = () => {
       }
 
       resetForm();
-      fetchDashboardData();
+      await Promise.all([fetchStats(), refreshSectionData('artworks')]);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to save artwork');
     } finally {
@@ -328,7 +437,7 @@ const AdminDashboard = () => {
       if (editingArtworkId === artworkId) {
         resetForm();
       }
-      fetchDashboardData();
+      await Promise.all([fetchStats(), refreshSectionData('artworks')]);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to delete artwork');
     } finally {
@@ -387,7 +496,7 @@ const AdminDashboard = () => {
         }),
       });
       toast.success('Commission updated successfully');
-      fetchDashboardData();
+      await Promise.all([fetchStats(), refreshSectionData('commissions')]);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to update commission');
     } finally {

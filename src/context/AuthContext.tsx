@@ -1,16 +1,22 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { UserAccount } from '@/types/user';
+import { AuthContext } from './auth-context';
 
-interface AuthContextType {
-  user: UserAccount | null;
-  loading: boolean; // Add loading state
-  login: (userData: UserAccount) => void;
-  updateUser: (userData: UserAccount) => void;
-  logout: () => void;
-}
+const isSameUser = (current: UserAccount | null, next: UserAccount) => {
+  if (!current) {
+    return false;
+  }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+  return (
+    current._id === next._id &&
+    current.name === next.name &&
+    current.email === next.email &&
+    current.phone === next.phone &&
+    current.isAdmin === next.isAdmin &&
+    current.token === next.token
+  );
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserAccount | null>(null);
@@ -31,8 +37,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateUser = (userData: UserAccount) => {
-    setUser(userData);
-    localStorage.setItem('artcase_user', JSON.stringify(userData));
+    setUser((current) => {
+      if (isSameUser(current, userData)) {
+        return current;
+      }
+
+      localStorage.setItem('artcase_user', JSON.stringify(userData));
+      return userData;
+    });
   };
 
   const logout = () => {
@@ -47,9 +59,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
-  return context;
-};  

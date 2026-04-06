@@ -4,7 +4,7 @@ import { Bell, CheckCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/useAuth';
 import type { AdminOrder } from '@/types/admin';
 
 type NotificationPayload = {
@@ -20,11 +20,15 @@ const NotificationBell = () => {
   const [data, setData] = useState<NotificationPayload>({ unreadCount: 0, orders: [] });
 
   useEffect(() => {
-    if (!user?.isAdmin) return;
+    if (!user?.isAdmin || !user.token) return;
 
     let mounted = true;
 
     const load = async () => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+
       try {
         const payload = await apiRequest<NotificationPayload>('/orders/unread', {
           token: user.token,
@@ -39,13 +43,13 @@ const NotificationBell = () => {
     };
 
     load();
-    const interval = window.setInterval(load, 15000);
+    const interval = window.setInterval(load, 60000);
 
     return () => {
       mounted = false;
       window.clearInterval(interval);
     };
-  }, [user]);
+  }, [user?.isAdmin, user?.token]);
 
   useEffect(() => {
     if (!open) return;
