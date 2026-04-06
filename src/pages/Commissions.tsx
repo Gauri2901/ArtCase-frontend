@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { apiRequest } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/useAuth';
 
 const artworkSuggestions = ['Oil', 'Acrylic', 'Watercolor', 'Mixed Media', 'Portrait', 'Abstract', 'Landscape'];
 

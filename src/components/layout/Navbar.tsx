@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/useAuth';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/admin/NotificationBell';
 import UserNotificationBell from '@/components/UserNotificationBell';
