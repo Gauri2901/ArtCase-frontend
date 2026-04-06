@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { apiRequest } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import type { AdminCommission, AdminOrder } from '@/types/admin';
+import OrderCard from '@/components/orders/OrderCard';
 
 type ProfileSection = 'profile' | 'orders';
 
@@ -30,6 +31,18 @@ const Profile = () => {
   });
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [commissions, setCommissions] = useState<AdminCommission[]>([]);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!highlightedOrderId) {
+      return;
+    }
+
+    const matchingOrder = orders.find((order) => order.orderId === highlightedOrderId);
+    if (matchingOrder) {
+      setExpandedOrderId(matchingOrder._id);
+    }
+  }, [highlightedOrderId, orders]);
 
   useEffect(() => {
     if (!user) return;
@@ -342,25 +355,14 @@ const Profile = () => {
                   </div>
                 ) : (
                   purchaseOrders.map((order) => (
-                    <div
+                    <OrderCard
                       key={order._id}
-                      className={`rounded-[1.5rem] border bg-background/80 p-5 shadow-sm ${highlightedOrderId === order.orderId ? 'border-primary/40 ring-2 ring-primary/20' : 'border-white/50'}`}
-                    >
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">{order.orderKind === 'commission' ? 'Commission order' : 'Order'}</p>
-                          <h3 className="mt-2 text-2xl font-serif">{order.orderId}</h3>
-                          <p className="mt-2 text-sm text-muted-foreground">{new Date(order.placedAt).toLocaleString('en-IN')}</p>
-                        </div>
-                        <div className="rounded-2xl bg-secondary/60 p-4">
-                          <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Payment</p>
-                          <p className="mt-2 font-medium">{formatPrice(order.payment.amount)}</p>
-                          <span className="mt-3 inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                            {order.payment.status}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                      order={order}
+                      highlighted={highlightedOrderId === order.orderId}
+                      expanded={expandedOrderId === order._id}
+                      onToggle={() => setExpandedOrderId((current) => (current === order._id ? null : order._id))}
+                      showInvoiceAction={true}
+                    />
                   ))
                 )}
               </CardContent>

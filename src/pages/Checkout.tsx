@@ -26,6 +26,7 @@ import { formatPrice } from "@/lib/utils";
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name is required." }),
     email: z.string().email({ message: "Invalid email address." }),
+    phone: z.string().min(10, { message: "Phone number is required." }),
     address: z.string().min(5, { message: "Address is required." }),
     city: z.string().min(2, { message: "City is required." }),
     zip: z.string().min(4, { message: "Zip code is required." }),
@@ -41,8 +42,9 @@ const Checkout = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            email: "",
+            name: user?.name || "",
+            email: user?.email || "",
+            phone: user?.phone || "",
             address: "",
             city: "",
             zip: "",
@@ -115,6 +117,7 @@ const Checkout = () => {
                                 customer: {
                                     name: values.name,
                                     email: values.email,
+                                    phone: values.phone,
                                     address: values.address,
                                     city: values.city,
                                     zip: values.zip,
@@ -130,6 +133,13 @@ const Checkout = () => {
                                 amount: totalPrice,
                                 currency: order.currency,
                                 method: "Razorpay",
+                                pricing: {
+                                    subtotal: totalPrice,
+                                    discount: 0,
+                                    shipping: 0,
+                                    total: totalPrice,
+                                    currency: order.currency,
+                                },
                             }),
                         });
 
@@ -145,7 +155,7 @@ const Checkout = () => {
                 prefill: {
                     name: values.name,
                     email: values.email,
-                    contact: "9999999999",
+                    contact: values.phone,
                 },
                 notes: {
                     address: values.address,
@@ -240,6 +250,19 @@ const Checkout = () => {
                                                     <FormLabel>Email Address</FormLabel>
                                                     <FormControl>
                                                         <Input placeholder="artcase@gmail.com" {...field} className="bg-white/50 dark:bg-black/20" />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="phone"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Phone Number</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="9876543210" {...field} className="bg-white/50 dark:bg-black/20" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>

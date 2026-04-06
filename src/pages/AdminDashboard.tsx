@@ -29,6 +29,7 @@ import type { AdminCommission, AdminOrder, Artwork, ArtworkCategory, CommissionS
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminStatCard from '@/components/admin/AdminStatCard';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import OrderCard from '@/components/orders/OrderCard';
 
 type AdminSection = 'artworks' | 'orders' | 'commissions' | 'logs';
 type OrderStatusFilter = 'all' | 'created' | 'paid' | 'failed';
@@ -110,6 +111,7 @@ const AdminDashboard = () => {
   const [form, setForm] = useState<ArtworkFormState>(emptyForm);
   const [previewUrl, setPreviewUrl] = useState('');
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>('all');
+  const [expandedAdminOrderId, setExpandedAdminOrderId] = useState<string | null>(null);
   const [orderUserFilter, setOrderUserFilter] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -744,82 +746,12 @@ const AdminDashboard = () => {
 
                   <div className="space-y-4">
                     {orders.map((order) => (
-                      <div key={order._id} className="rounded-[1.75rem] border border-white/60 bg-background/85 p-5 shadow-sm">
-                        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(280px,0.9fr)_minmax(320px,1.15fr)]">
-                          <div className="min-w-0 rounded-2xl bg-secondary/35 p-4">
-                            <div>
-                              <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                                {order.orderKind === 'commission' ? 'Commission Order' : 'Order'}
-                              </p>
-                              <h3 className="mt-2 text-2xl font-serif">{order.orderId}</h3>
-                              <p className="mt-2 text-sm text-muted-foreground">
-                                {new Date(order.placedAt).toLocaleString('en-IN')}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="min-w-0 rounded-2xl bg-secondary/35 p-4">
-                            <div>
-                              <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Customer</p>
-                              <p className="mt-2 font-medium">{order.user.name}</p>
-                              <p className="text-sm text-muted-foreground">{order.user.email}</p>
-                              {order.user.address || order.user.city || order.user.zip ? (
-                                <p className="mt-1 text-sm text-muted-foreground">
-                                  {order.user.address}, {order.user.city} {order.user.zip}
-                                </p>
-                              ) : (
-                                <p className="mt-1 text-sm text-muted-foreground">No shipping address captured yet.</p>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-                            <div className="rounded-2xl bg-secondary/60 p-4">
-                              <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Payment</p>
-                              <p className="mt-2 font-medium break-words">{formatPrice(order.payment.amount)}</p>
-                              <p className="mt-1 text-sm text-muted-foreground break-words">{order.payment.method}</p>
-                              <span className="mt-3 inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                                {order.payment.status}
-                              </span>
-                            </div>
-                            <div className="min-w-0 rounded-2xl bg-secondary/60 p-4">
-                              <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                                {order.orderKind === 'commission' ? 'Commission brief' : 'Artwork details'}
-                              </p>
-                              {order.orderKind === 'commission' && order.commissionDetails ? (
-                                <div className="mt-3 space-y-3 min-w-0">
-                                  <div>
-                                    <p className="font-medium">{order.commissionDetails.artworkType}</p>
-                                    <p className="mt-1 break-words text-sm text-muted-foreground">{order.commissionDetails.sizeDetails}</p>
-                                  </div>
-                                  <p className="break-words text-sm text-muted-foreground">{order.commissionDetails.description}</p>
-                                  {order.commissionDetails.referenceImages.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2">
-                                      {order.commissionDetails.referenceImages.map((image, index) => (
-                                        <img key={`${order._id}-reference-${index}`} src={image} alt={`Reference ${index + 1}`} className="h-12 w-12 rounded-xl object-cover" />
-                                      ))}
-                                    </div>
-                                  ) : null}
-                                </div>
-                              ) : (
-                                <div className="mt-3 space-y-3 min-w-0">
-                                  {order.artworks.map((artwork) => (
-                                    <div key={`${order._id}-${artwork.artwork}`} className="flex items-center gap-3">
-                                      <img src={artwork.imageUrl} alt={artwork.title} className="h-12 w-12 rounded-xl object-cover" />
-                                      <div className="min-w-0">
-                                        <p className="truncate font-medium">{artwork.title}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                          {artwork.category} • Qty {artwork.quantity}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <OrderCard
+                        key={order._id}
+                        order={order}
+                        expanded={expandedAdminOrderId === order._id}
+                        onToggle={() => setExpandedAdminOrderId((current) => (current === order._id ? null : order._id))}
+                      />
                     ))}
 
                     {orders.length === 0 ? (
