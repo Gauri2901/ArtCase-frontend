@@ -17,7 +17,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminLogDetail from './pages/AdminLogDetail';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import Profile from './pages/Profile';
-
+//commit
 function App() {
   return (
     <Routes>
