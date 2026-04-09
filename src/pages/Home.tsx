@@ -295,36 +295,36 @@ const CommissionSection = () => {
         <div className="rounded-[2rem] border border-primary/10 bg-secondary/20 backdrop-blur-sm shadow-[0_20px_80px_-40px_rgba(0,0,0,0.18)] px-6 py-10 md:px-10 md:py-14">
           <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
             <div>
-            <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs mb-6">
-              <Brush className="w-4 h-4" /> Custom Orders
-            </div>
-            <h2 className="text-5xl font-serif font-medium mb-6">Your Vision. <br /> Our Hands.</h2>
-            <p className="text-lg text-muted-foreground mb-12 max-w-md">
-              Looking for a specific size or color palette? We accept a limited number of commissions each month to bring your unique ideas to life.
-            </p>
+              <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs mb-6">
+                <Brush className="w-4 h-4" /> Custom Orders
+              </div>
+              <h2 className="text-5xl font-serif font-medium mb-6">Your Vision. <br /> Our Hands.</h2>
+              <p className="text-lg text-muted-foreground mb-12 max-w-md">
+                Looking for a specific size or color palette? We accept a limited number of commissions each month to bring your unique ideas to life.
+              </p>
 
-            <div className="space-y-8">
-              {[
-                { title: "Consultation", desc: "Share your space, colors, and inspiration." },
-                { title: "Creation", desc: "Receive sketches and updates as we paint." },
-                { title: "Delivery", desc: "White-glove shipping to your door." }
-              ].map((step, i) => (
-                <div key={i} className="flex gap-6 group">
-                  <span className="text-4xl font-serif text-primary/20 font-bold group-hover:text-primary transition-colors">0{i + 1}</span>
-                  <div>
-                    <h3 className="text-xl font-serif font-bold">{step.title}</h3>
-                    <p className="text-muted-foreground">{step.desc}</p>
+              <div className="space-y-8">
+                {[
+                  { title: "Consultation", desc: "Share your space, colors, and inspiration." },
+                  { title: "Creation", desc: "Receive sketches and updates as we paint." },
+                  { title: "Delivery", desc: "White-glove shipping to your door." }
+                ].map((step, i) => (
+                  <div key={i} className="flex gap-6 group">
+                    <span className="text-4xl font-serif text-primary/20 font-bold group-hover:text-primary transition-colors">0{i + 1}</span>
+                    <div>
+                      <h3 className="text-xl font-serif font-bold">{step.title}</h3>
+                      <p className="text-muted-foreground">{step.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="mt-12">
-              <Button asChild className="rounded-full px-8 h-12 shadow-lg">
-                <Link to="/commissions">Start Custom Order</Link>
-              </Button>
+              <div className="mt-12">
+                <Button asChild className="rounded-full px-8 h-12 shadow-lg">
+                  <Link to="/commissions">Start Custom Order</Link>
+                </Button>
+              </div>
             </div>
-          </div>
 
             <div className="relative h-[420px] md:h-[520px] flex items-center justify-center">
               <motion.div
