@@ -341,10 +341,10 @@ const Commissions = () => {
                 If you want to discuss your idea in more detail, you can reach out directly here:
               </p>
               <a
-                href="mailto:gauriborle1002@gmail.com"
+                href="mailto:artcase159@gmail.com"
                 className="mt-5 inline-flex rounded-full border border-primary/15 bg-primary/5 px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-primary/10"
               >
-                gauriborle1002@gmail.com
+                artcase159@gmail.com
               </a>
             </div>
           </motion.div>

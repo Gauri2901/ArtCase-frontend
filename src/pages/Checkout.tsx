@@ -249,7 +249,7 @@ const Checkout = () => {
                                                 <FormItem>
                                                     <FormLabel>Email Address</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="artcase@gmail.com" {...field} className="bg-white/50 dark:bg-black/20" />
+                                                        <Input placeholder="artcase159@gmail.com" {...field} className="bg-white/50 dark:bg-black/20" />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
