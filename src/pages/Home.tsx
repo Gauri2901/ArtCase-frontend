@@ -5,9 +5,8 @@ import { ArrowRight, Palette, ShieldCheck, Truck, Brush, Play, Sparkles, Paintbr
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-// --- NEW HELPER COMPONENTS (Inline for easy setup) ---
+// --- HELPER COMPONENTS ---
 
-// 1. Marquee Component (For infinite scrolling text/images)
 const Marquee = ({ children, direction = "left", speed = 20, className }: { children: React.ReactNode, direction?: "left" | "right", speed?: number, className?: string }) => {
   return (
     <div className={cn("flex overflow-hidden whitespace-nowrap", className)}>
@@ -22,7 +21,6 @@ const Marquee = ({ children, direction = "left", speed = 20, className }: { chil
           duration: speed,
         }}
       >
-        {/* Repeat children 4 times to ensure seamless looping on large screens */}
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex gap-8 items-center shrink-0">
             {children}
@@ -33,7 +31,6 @@ const Marquee = ({ children, direction = "left", speed = 20, className }: { chil
   );
 };
 
-// 2. Floating Shapes Component (Background artifacts)
 const FloatingIcon = ({ Icon, delay, x, y, duration }: { Icon: React.ComponentType<{ className?: string }>; delay: number; x: string; y: number; duration: number }) => (
   <motion.div
     className="absolute text-foreground/5 dark:text-foreground/10 pointer-events-none z-0"
@@ -64,7 +61,6 @@ const FloatingShapes = () => (
   </div>
 );
 
-// 3. Moving Gallery Section (The "Shoparl" style strip)
 const MovingGallery = () => {
   const images = [
     "/paintings/blossom.jpg",
@@ -80,20 +76,16 @@ const MovingGallery = () => {
       <div className="mb-12 text-center">
         <h2 className="text-3xl md:text-4xl font-serif italic text-muted-foreground/50">Studio Life</h2>
       </div>
-
-      {/* Top Row - Moving Left */}
       <Marquee speed={40} className="mb-8" direction="left">
         {images.map((src, i) => (
-          <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative  hover:-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+          <div key={i} className="w-[250px] h-[180px] md:w-[300px] md:h-[220px] rounded-2xl overflow-hidden relative transition-all duration-500 hover:scale-105 cursor-pointer">
             <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
           </div>
         ))}
       </Marquee>
-
-      {/* Bottom Row - Moving Right */}
       <Marquee speed={35} direction="right">
         {images.reverse().map((src, i) => (
-          <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative  hover:-0 transition-all duration-500 hover:scale-105 cursor-pointer">
+          <div key={i} className="w-[300px] h-[200px] md:w-[400px] md:h-[280px] rounded-2xl overflow-hidden relative transition-all duration-500 hover:scale-105 cursor-pointer">
             <img src={src} className="w-full h-full object-cover" alt="Gallery item" />
           </div>
         ))}
@@ -101,8 +93,6 @@ const MovingGallery = () => {
     </section>
   );
 };
-
-// --- EXISTING COMPONENTS (Untouched logic, minor layout tweaks) ---
 
 const AuroraBackground = () => {
   return (
@@ -127,16 +117,14 @@ const HeroSection = () => {
   const scaleImage = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
 
   return (
-    <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden border-2px-s">
+    <section ref={ref} className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
       <AuroraBackground />
-      {/* Add Floating Shapes to Hero */}
       <FloatingShapes />
 
-      <div className="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
-        {/* Text Content */}
+      <div className="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center py-20 lg:py-0 lg:h-screen">
         <motion.div
           style={{ y: yText }}
-          className="flex flex-col gap-6 text-center lg:text-left"
+          className="flex flex-col gap-5 text-center lg:text-left"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -152,7 +140,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-5xl lg:text-7xl font-serif font-bold leading-tight text-foreground"
+            className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold leading-tight text-foreground"
           >
             Art that <span className="italic text-primary/80">breathes</span> life into your space.
           </motion.h1>
@@ -161,7 +149,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 font-sans"
+            className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 font-sans"
           >
             Discover a curated collection of handmade paintings.
             Where every stroke tells a story and every canvas holds an emotion.
@@ -171,22 +159,20 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+            className="hidden lg:flex flex-col sm:flex-row gap-4 justify-start"
           >
-            <Button size="lg" className="rounded-full text-lg h-12 px-8" asChild>
+            <Button size="lg" className="rounded-full text-base sm:text-lg h-12 px-8" asChild>
               <Link to="/gallery">
                 Explore Gallery <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button variant="outline" size="lg" className="rounded-full text-lg h-12 px-8 bg-white/10 backdrop-blur-md border-primary/20 hover:bg-white/20" asChild>
+            <Button variant="outline" size="lg" className="rounded-full text-base sm:text-lg h-12 px-8 bg-white/10 backdrop-blur-md border-primary/20 hover:bg-white/20" asChild>
               <Link to="/about">Our Story</Link>
             </Button>
           </motion.div>
         </motion.div>
 
-        {/* Hero Image Parallax */}
         <div className="hidden lg:block relative h-[600px] w-full">
-          {/* Main Hero Image */}
           <motion.div
             style={{ y: yImage, scale: scaleImage }}
             className="absolute inset-0 z-10"
@@ -197,7 +183,6 @@ const HeroSection = () => {
                 alt="Abstract Ocean Art"
                 className="w-full h-full object-cover"
               />
-              {/* Glass Overlay Card */}
               <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl text-white">
                 <p className="font-serif italic text-lg">"The Ocean's Whisper"</p>
                 <p className="text-sm opacity-80 font-sans">Oil on Canvas, 2025</p>
@@ -205,7 +190,6 @@ const HeroSection = () => {
             </div>
           </motion.div>
 
-          {/* Floating Decorative Elements */}
           <motion.div
             animate={{ y: [0, -20, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -220,6 +204,57 @@ const HeroSection = () => {
             className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full overflow-hidden shadow-xl z-20 border-4 border-white/30"
           >
             <img src="/paintings/tent.jpg" alt="Forest" className="w-full h-full object-cover" />
+          </motion.div>
+        </div>
+
+        {/* ── MOBILE-ONLY: Unique image collage then buttons ── */}
+        <div className="lg:hidden flex flex-col gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.5, ease: "easeOut" }}
+            className="relative w-full h-[300px] sm:h-[360px]"
+          >
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute left-0 top-0 w-[58%] h-full rounded-2xl overflow-hidden shadow-2xl border-2 border-white/40 z-10 -rotate-1"
+            >
+              <img src="/paintings/Brushes.jpg" alt="Main painting" className="w-full h-full object-cover" />
+              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                <p className="font-serif italic text-white text-sm">"The Ocean's Whisper"</p>
+                <p className="text-white/70 text-xs">Oil on Canvas, 2025</p>
+              </div>
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+              className="absolute right-0 top-0 w-[38%] h-[52%] rounded-2xl overflow-hidden shadow-xl border-2 border-white/30 z-20 rotate-2"
+            >
+              <img src="/paintings/lights.jpg" alt="Painting" className="w-full h-full object-cover" />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, -14, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+              className="absolute right-2 bottom-0 w-[34%] h-[42%] rounded-full overflow-hidden shadow-xl border-4 border-white/40 z-20"
+            >
+              <img src="/paintings/tent.jpg" alt="Painting" className="w-full h-full object-cover" />
+            </motion.div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <Button size="lg" className="rounded-full text-base h-12 px-8" asChild>
+              <Link to="/gallery">
+                Explore Gallery <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" className="rounded-full text-base h-12 px-8 bg-white/10 backdrop-blur-md border-primary/20 hover:bg-white/20" asChild>
+              <Link to="/about">Our Story</Link>
+            </Button>
           </motion.div>
         </div>
       </div>
@@ -353,7 +388,7 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-0 relative">
 
-      {/* 1. TOP MARQUEE (Sale Section) */}
+      {/* 1. TOP MARQUEE */}
       <div className="bg-primary py-3 relative z-40 overflow-hidden">
         <Marquee speed={30} className="text-primary-foreground font-medium text-sm uppercase tracking-widest">
           <span className="flex items-center gap-4 mx-4"><Sparkles className="w-4 h-4" /> New Collection Drop: "Midnight Bloom"</span>
@@ -366,7 +401,7 @@ const Home = () => {
       {/* 2. HERO */}
       <HeroSection />
 
-      {/* 3. MOVING GALLERY (New "Shoparl" Style Section) */}
+      {/* 3. MOVING GALLERY */}
       <MovingGallery />
 
       {/* 4. FEATURES */}
@@ -396,10 +431,10 @@ const Home = () => {
       {/* 5. PHILOSOPHY */}
       <PhilosophySection />
 
-      {/* 8. COMMISSIONS */}
+      {/* 6. COMMISSIONS */}
       <CommissionSection />
 
-      {/* 9. CALL TO ACTION */}
+      {/* 7. CALL TO ACTION */}
       <section className="py-32 container mx-auto px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 -z-10 rounded-3xl transform rotate-1 scale-95" />
         <motion.div

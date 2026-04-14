@@ -19,9 +19,9 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
 
   // Extract dominant color from image for dynamic background
-  const { data: dominantColor } = useColor(product?.imageUrl || '', 'hex', { 
+  const { data: dominantColor } = useColor(product?.imageUrl || '', 'hex', {
     crossOrigin: 'anonymous',
-    quality: 10 
+    quality: 10
   });
 
   useEffect(() => {
@@ -81,13 +81,13 @@ const ProductDetail = () => {
     <div className="relative min-h-screen overflow-x-hidden bg-background">
       {/* 1. Dynamic Ambient Background */}
       <div className="fixed inset-0 -z-10 pointer-events-none transition-colors duration-1000"
-           style={{ backgroundColor: dominantColor ? `${dominantColor}10` : 'transparent' }}>
+        style={{ backgroundColor: dominantColor ? `${dominantColor}10` : 'transparent' }}>
         <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-transparent opacity-80" />
-        <div 
+        <div
           className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[120px] opacity-30 animate-pulse"
           style={{ backgroundColor: dominantColor || 'var(--primary)' }}
         />
-        <div 
+        <div
           className="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-20"
           style={{ backgroundColor: dominantColor || 'var(--accent)' }}
         />
@@ -123,11 +123,11 @@ const ProductDetail = () => {
                   alt={product.title}
                   className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
-                
+
                 {/* Wishlist Button on Image */}
                 <div className="absolute top-6 right-6 z-20">
-                  <WishlistButton 
-                    productId={product._id} 
+                  <WishlistButton
+                    productId={product._id}
                     className="h-12 w-12 bg-white/20 hover:bg-white/40 backdrop-blur-md border border-white/20 text-white shadow-2xl"
                     size={22}
                   />
@@ -164,15 +164,15 @@ const ProductDetail = () => {
 
               {/* Action Buttons - Exactly below price */}
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4 mb-10">
-                <Button 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium shadow-xl shadow-primary/10 hover:scale-[1.02] transition-all h-auto" 
+                <Button
+                  size="lg"
+                  className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium shadow-xl shadow-primary/10 hover:scale-[1.02] transition-all h-auto"
                   onClick={handleAddToCart}
                 >
                   <Plus className="mr-2 h-5 w-5" /> Add to Collection
                 </Button>
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   variant="secondary"
                   className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium bg-foreground text-background hover:bg-foreground/90 hover:scale-[1.02] transition-all h-auto"
                   onClick={() => {
