@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   return (
-    <footer className="bg-foreground text-background pt-24 pb-12 relative overflow-hidden">
+    <footer className="bg-[#0a0a0a] text-background pt-24 pb-12 relative z-20 overflow-hidden">
       
       {/* Watermark Background Logo */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-[0.03]">
