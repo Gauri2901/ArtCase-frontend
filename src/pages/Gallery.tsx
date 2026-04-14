@@ -4,28 +4,15 @@ import { Filter } from 'lucide-react';
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { apiRequest } from '@/lib/api';
+import { useArtworks } from '@/hooks/useArtworks';
 import type { Artwork } from '@/types/admin';
 
 const CATEGORIES = ["All", "Oil", "Acrylic", "Watercolor", "Mixed Media"];
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [products, setProducts] = useState<Artwork[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { artworks: products, isLoading, isError } = useArtworks();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await apiRequest<Artwork[]>('/products');
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching gallery:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
 
   const filteredProducts = activeCategory === "All" 
     ? products 
@@ -35,6 +22,20 @@ const Gallery = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
+        <h2 className="text-2xl font-serif mb-4 text-destructive">Unable to load collection</h2>
+        <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          We encountered a connection issue. This usually happens during server-side startup. Please try again in a few moments.
+        </p>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          Refresh Page
+        </Button>
       </div>
     );
   }

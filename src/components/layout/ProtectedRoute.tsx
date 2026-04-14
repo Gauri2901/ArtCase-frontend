@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/useAuth';
 
 interface ProtectedRouteProps {
@@ -7,14 +7,15 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ adminOnly = false }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
-    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="h-screen flex items-center justify-center font-serif">Arriving shortly...</div>;
   }
 
-  // 1. Not logged in? Go to Login.
+  // 1. Not logged in? Go to Login, but remember where we were.
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // 2. Admin route but user is not admin? Go Home.

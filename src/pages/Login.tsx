@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/useAuth';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,10 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the redirect location from state, defaults to home
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +35,9 @@ const Login = () => {
       });
       login(data);
       toast.success(`Welcome back, ${data.name}`);
-      navigate('/');
+      
+      // Redirect back to origin OR home
+      navigate(from, { replace: true });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
     } finally {

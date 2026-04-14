@@ -1,12 +1,14 @@
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, ShieldCheck, Truck, Ruler, Calendar } from 'lucide-react';
+import { ArrowLeft, Plus, ShieldCheck, Truck, Ruler, Calendar, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
 import { apiRequest } from '@/lib/api';
 import type { Artwork } from '@/types/admin';
 import { formatPrice } from '@/lib/utils';
+import { useColor } from 'color-thief-react';
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,6 +16,12 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState<Artwork | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Extract dominant color from image for dynamic background
+  const { data: dominantColor } = useColor(product?.imageUrl || '', 'hex', { 
+    crossOrigin: 'anonymous',
+    quality: 10 
+  });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -23,7 +31,6 @@ const ProductDetail = () => {
         setProduct(data);
       } catch (error) {
         console.error(error);
-        // Optional: navigate('/gallery') here
       } finally {
         setLoading(false);
       }
@@ -31,7 +38,12 @@ const ProductDetail = () => {
     if (id) fetchProduct();
   }, [id]);
 
-  if (loading) return <div className="h-screen flex items-center justify-center">Loading masterpiece...</div>;
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-background">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  );
+
   if (!product) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-background text-center p-4">
@@ -53,150 +65,157 @@ const ProductDetail = () => {
     });
   };
 
-  // Animation variants for staggered text loading
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
   };
 
   return (
-    <div className="relative overflow-x-hidden">
-
-      {/* 1. Ambient Background Blur - Takes colors from the image itself */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-[100px] z-10" />
-        <img
-          src={product.imageUrl}
-          alt=""
-          className="w-full h-full object-cover blur-3xl opacity-40 scale-150"
+    <div className="relative min-h-screen overflow-x-hidden bg-background">
+      {/* 1. Dynamic Ambient Background */}
+      <div className="fixed inset-0 -z-10 pointer-events-none transition-colors duration-1000"
+           style={{ backgroundColor: dominantColor ? `${dominantColor}10` : 'transparent' }}>
+        <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-transparent opacity-80" />
+        <div 
+          className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[120px] opacity-30 animate-pulse"
+          style={{ backgroundColor: dominantColor || 'var(--primary)' }}
+        />
+        <div 
+          className="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full blur-[100px] opacity-20"
+          style={{ backgroundColor: dominantColor || 'var(--accent)' }}
         />
       </div>
 
-      <div className="min-h-screen">
+      <div className="relative">
         <div className="container mx-auto px-4 py-24 md:py-32">
+          {/* Back Button */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-8 sm:mb-12 hidden sm:block"
+          >
+            <Button variant="ghost" asChild className="hover:bg-primary/5 -ml-4 text-muted-foreground group">
+              <Link to="/gallery" className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Back to Collection
+              </Link>
+            </Button>
+          </motion.div>
 
-        {/* Navigation Breadcrumb */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
-        >
-          <Button variant="ghost" asChild className="hover:bg-white/20 -ml-4 text-muted-foreground">
-            <Link to="/gallery" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" /> Back to Gallery
-            </Link>
-          </Button>
-        </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+            {/* Image Section */}
+            <div className="relative lg:sticky lg:top-32">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="rounded-[2.5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white/10 bg-white/5 relative group aspect-square lg:aspect-[4/5]"
+              >
+                <img
+                  src={product.imageUrl}
+                  alt={product.title}
+                  className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2.5rem]" />
+              </motion.div>
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
-
-          {/* 2. Sticky Image Section */}
-          <div className="relative lg:sticky lg:top-32">
+            {/* Content Section */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="rounded-[2rem] overflow-hidden shadow-2xl border border-white/20 bg-white/5 aspect-[4/5] relative group"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col"
             >
-              <img
-                src={product.imageUrl}
-                alt={product.title}
-                className="h-full w-full object-cover"
-              />
+              <motion.div variants={itemVariants} className="flex items-center gap-2 mb-6">
+                <span className="h-px w-8 bg-primary/40" />
+                <span className="text-xs font-bold tracking-[0.3em] text-primary uppercase">
+                  {product.category} Masterpiece
+                </span>
+              </motion.div>
 
-              {/* Subtle grain overlay on the painting */}
-              <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay pointer-events-none" />
+              <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl md:text-7xl font-serif font-medium text-foreground mb-6 sm:mb-8 leading-[1.1] tracking-tight">
+                {product.title}
+              </motion.h1>
+
+              <motion.div variants={itemVariants} className="flex items-baseline gap-4 mb-6">
+                <span className="text-4xl font-sans font-light tracking-tight text-foreground">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="text-muted-foreground text-sm uppercase tracking-widest font-medium">Incl. Taxes</span>
+              </motion.div>
+
+              {/* Action Buttons - Exactly below price */}
+              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mb-10">
+                <Button size="lg" className="flex-1 rounded-full py-4 text-xl font-medium shadow-xl shadow-primary/10 hover:scale-[1.02] transition-all h-auto" onClick={handleAddToCart}>
+                  <Plus className="mr-2 h-5 w-5" /> Add to Collection
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="secondary"
+                  className="flex-1 rounded-full py-4 text-xl font-medium bg-foreground text-background hover:bg-foreground/90 hover:scale-[1.02] transition-all h-auto"
+                  onClick={() => {
+                    handleAddToCart();
+                    navigate('/checkout');
+                  }}
+                >
+                  <CreditCard className="mr-2 h-5 w-5" /> Buy Now
+                </Button>
+              </motion.div>
+
+              {/* Description */}
+              <motion.div variants={itemVariants} className="space-y-6 mb-10">
+                <p className="text-lg text-muted-foreground leading-relaxed font-sans">
+                  {product.description}
+                </p>
+              </motion.div>
+
+              {/* Specifications */}
+              <motion.div variants={itemVariants} className="grid grid-cols-2 gap-8 mb-12 py-8 border-y border-border/40">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Ruler className="h-4 w-4" />
+                    <span className="text-xs uppercase tracking-widest font-bold">Dimensions</span>
+                  </div>
+                  <p className="font-sans text-lg">{product.dimensions || '24" x 36"'}</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    <span className="text-xs uppercase tracking-widest font-bold">Year</span>
+                  </div>
+                  <p className="font-sans text-lg">{product.year || '2025'}</p>
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="space-y-6">
+                <div className="flex items-start gap-4 group">
+                  <div className="p-3 bg-primary/5 rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <Truck className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-lg">Curated Global Shipping</h4>
+                    <p className="text-muted-foreground">White-glove delivery with museum-grade impact packaging.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 group">
+                  <div className="p-3 bg-primary/5 rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <ShieldCheck className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-lg">Authenticity Guaranteed</h4>
+                    <p className="text-muted-foreground">Includes a signed and sealed Certificate of Authenticity.</p>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
-
-          {/* 3. Product Details Column */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col pt-4"
-          >
-            {/* Artist/Category Tag */}
-            <motion.span variants={itemVariants} className="text-sm font-bold tracking-widest text-primary uppercase mb-4">
-              Original Artwork
-            </motion.span>
-
-            {/* Title */}
-            <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl font-serif font-medium text-foreground mb-6 leading-tight">
-              {product.title}
-            </motion.h1>
-
-            {/* Price & Add Button */}
-            <motion.div variants={itemVariants} className="flex items-center gap-6 mb-8 pb-8 border-b border-border/50">
-              <span className="text-3xl font-sans font-light">
-                {formatPrice(product.price)}
-              </span>
-              <Button size="lg" className="rounded-full px-8 h-12 text-lg shadow-lg hover:shadow-primary/25" onClick={handleAddToCart}>
-                <Plus className="mr-2 h-5 w-5" /> Add to Collection
-              </Button>
-            </motion.div>
-
-            {/* Description */}
-            <motion.div variants={itemVariants} className="space-y-6 mb-12">
-              <p className="text-lg text-muted-foreground leading-relaxed font-sans">
-                {product.description}
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed font-sans">
-                This piece invites the viewer to explore the relationship between color and form.
-                Hand-painted with archival quality materials to ensure longevity and vibrance.
-              </p>
-            </motion.div>
-
-            {/* Mock Specifications */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-6 mb-12">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Ruler className="h-4 w-4" />
-                  <span className="text-sm uppercase tracking-wide">Dimensions</span>
-                </div>
-                <p className="font-serif text-lg">24" x 36"</p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <span className="text-sm uppercase tracking-wide">Year</span>
-                </div>
-                <p className="font-serif text-lg">2025</p>
-              </div>
-            </motion.div>
-
-            {/* Trust Badges */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-4 bg-secondary/50 p-6 rounded-2xl backdrop-blur-sm border border-white/10">
-              <div className="flex items-start gap-4">
-                <div className="p-2 bg-background rounded-full shadow-sm">
-                  <Truck className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-serif font-bold">Free Global Shipping</h4>
-                  <p className="text-sm text-muted-foreground">Includes custom crating and insurance.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="p-2 bg-background rounded-full shadow-sm">
-                  <ShieldCheck className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-serif font-bold">Certificate of Authenticity</h4>
-                  <p className="text-sm text-muted-foreground">Signed and dated by the artist.</p>
-                </div>
-              </div>
-            </motion.div>
-
-          </motion.div>
-        </div>
         </div>
       </div>
     </div>
