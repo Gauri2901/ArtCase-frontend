@@ -3,7 +3,6 @@ import WishlistButton from './WishlistButton';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
 import { cn, formatPrice } from '@/lib/utils';
 
 type ProductCardProps = {
