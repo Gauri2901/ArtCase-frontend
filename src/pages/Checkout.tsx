@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
-import { MapPin, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
+import { MapPin, ArrowLeft, Loader2, ShieldCheck, Plus, CheckCircle2 } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,7 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/useAuth";
 import { apiRequest } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+import type { UserAddress } from "@/types/user";
 
 // Schema Validation
 const formSchema = z.object({
@@ -30,6 +31,7 @@ const formSchema = z.object({
     address: z.string().min(5, { message: "Address is required." }),
     city: z.string().min(2, { message: "City is required." }),
     zip: z.string().min(4, { message: "Zip code is required." }),
+    state: z.string().min(2, { message: "State is required." }),
 });
 
 const Checkout = () => {
@@ -37,6 +39,11 @@ const Checkout = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
+    
+    // Address Selection State
+    const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([]);
+    const [selectedAddressId, setSelectedAddressId] = useState<string | 'new'>('new');
+    const [loadingAddresses, setLoadingAddresses] = useState(true);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -47,10 +54,63 @@ const Checkout = () => {
             address: "",
             city: "",
             zip: "",
+            state: "",
         },
     });
 
-    // Mock Order Processing
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            if (!user?.token) {
+                setLoadingAddresses(false);
+                return;
+            }
+            try {
+                const addresses = await apiRequest<UserAddress[]>('/users/addresses', { token: user.token });
+                setSavedAddresses(addresses);
+                
+                // Select default address if it exists
+                const defaultAddr = addresses.find(a => a.isDefault);
+                if (defaultAddr) {
+                    setSelectedAddressId(defaultAddr._id);
+                    fillFormWithAddress(defaultAddr);
+                }
+            } catch (error) {
+                console.error("Error fetching addresses:", error);
+            } finally {
+                setLoadingAddresses(false);
+            }
+        };
+
+        fetchAddresses();
+    }, [user?.token]);
+
+    const fillFormWithAddress = (addr: UserAddress) => {
+        form.setValue('name', addr.name);
+        form.setValue('phone', addr.phone);
+        form.setValue('address', addr.addressLine);
+        form.setValue('city', addr.city);
+        form.setValue('zip', addr.zip);
+        form.setValue('state', addr.state);
+    };
+
+    const handleSelectAddress = (addr: UserAddress) => {
+        setSelectedAddressId(addr._id);
+        fillFormWithAddress(addr);
+    };
+
+    const handleAddNewAddress = () => {
+        setSelectedAddressId('new');
+        form.reset({
+            name: user?.name || "",
+            email: user?.email || "",
+            phone: user?.phone || "",
+            address: "",
+            city: "",
+            zip: "",
+            state: "",
+        });
+    };
+
     // Load Razorpay Script
     const loadScript = (src: string) => {
         return new Promise((resolve) => {
@@ -119,6 +179,7 @@ const Checkout = () => {
                                     address: values.address,
                                     city: values.city,
                                     zip: values.zip,
+                                    state: values.state,
                                 },
                                 artworks: cartItems.map((item) => ({
                                     artworkId: item.id,
@@ -216,119 +277,192 @@ const Checkout = () => {
                             <p className="text-muted-foreground">Complete your purchase to secure your artwork.</p>
                         </div>
 
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
-                                {/* Section 1: Shipping */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-2 pb-2 border-b border-border/50">
-                                        <MapPin className="h-5 w-5 text-primary" />
-                                        <h2 className="text-xl font-serif">Shipping Details</h2>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <FormField
-                                            control={form.control}
-                                            name="name"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Full Name</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="" {...field} className="bg-white/50 dark:bg-black/20" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="email"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Email Address</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="artcase159@gmail.com" {...field} className="bg-white/50 dark:bg-black/20" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="phone"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Phone Number</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="9876543210" {...field} className="bg-white/50 dark:bg-black/20" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    <FormField
-                                        control={form.control}
-                                        name="address"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Street Address</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="123 Starry Night Lane" {...field} className="bg-white/50 dark:bg-black/20" />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <FormField
-                                            control={form.control}
-                                            name="city"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>City</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Pune" {...field} className="bg-white/50 dark:bg-black/20" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="zip"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Zip Code</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="10001" {...field} className="bg-white/50 dark:bg-black/20" />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
+                        {/* Address Selection Step */}
+                        {savedAddresses.length > 0 && (
+                            <div className="mb-12 space-y-6">
+                                <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+                                    <MapPin className="h-5 w-5 text-primary" />
+                                    <h2 className="text-xl font-serif">Select Delivery Address</h2>
                                 </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {savedAddresses.map((addr) => (
+                                        <button
+                                            key={addr._id}
+                                            onClick={() => handleSelectAddress(addr)}
+                                            className={`text-left p-5 rounded-3xl border-2 transition-all duration-300 relative overflow-hidden ${
+                                                selectedAddressId === addr._id 
+                                                ? 'border-primary bg-primary/5 shadow-md shadow-primary/10' 
+                                                : 'border-border/40 bg-white/40 hover:border-primary/40'
+                                            }`}
+                                        >
+                                            {selectedAddressId === addr._id && (
+                                                <div className="absolute top-3 right-3">
+                                                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                                                </div>
+                                            )}
+                                            <p className="font-bold mb-1">{addr.name}</p>
+                                            <p className="text-sm text-muted-foreground line-clamp-2">{addr.addressLine}</p>
+                                            <p className="text-sm text-muted-foreground">{addr.city}, {addr.zip}</p>
+                                            <p className="text-xs font-medium mt-3 uppercase tracking-widest text-primary/70">{addr.addressType}</p>
+                                        </button>
+                                    ))}
+                                    <button
+                                        onClick={handleAddNewAddress}
+                                        className={`text-left p-5 rounded-3xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center gap-2 group ${
+                                            selectedAddressId === 'new' 
+                                            ? 'border-primary bg-primary/5 shadow-md' 
+                                            : 'border-border/40 bg-white/40 hover:border-primary/40'
+                                        }`}
+                                    >
+                                        <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Plus className="h-5 w-5" />
+                                        </div>
+                                        <span className="font-medium text-sm">Add New Address</span>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
-                                <Button
-                                    type="submit"
-                                    size="lg"
-                                    className="w-full rounded-full h-12 text-lg mt-8"
-                                    disabled={isProcessing}
+                        <AnimatePresence mode="wait">
+                            {(selectedAddressId === 'new' || savedAddresses.find(a => a._id === selectedAddressId)) && (
+                                <motion.div
+                                    key={selectedAddressId === 'new' ? 'new-form' : `edit-form-${selectedAddressId}`}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.3 }}
                                 >
-                                    {isProcessing ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                            Processing Payment...
-                                        </>
-                                    ) : (
-                                        `Pay ${formatPrice(totalPrice)}`
-                                    )}
-                                </Button>
-                            </form>
-                        </Form>
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+                                            {/* Section 1: Shipping */}
+                                            <div className="space-y-6">
+                                                <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+                                                    <MapPin className="h-5 w-5 text-primary" />
+                                                    <h2 className="text-xl font-serif">
+                                                        {selectedAddressId === 'new' ? 'New Shipping Details' : 'Confirm Shipping Details'}
+                                                    </h2>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="name"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Full Name</FormLabel>
+                                                                <FormControl>
+                                                                    <Input placeholder="" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="email"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Email Address</FormLabel>
+                                                                <FormControl>
+                                                                    <Input placeholder="artcase159@gmail.com" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="phone"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Phone Number</FormLabel>
+                                                                <FormControl>
+                                                                    <Input placeholder="9876543210" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name="address"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Street Address</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="123 Starry Night Lane" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="city"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>City</FormLabel>
+                                                                <FormControl>
+                                                                    <Input placeholder="Pune" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="state"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>State</FormLabel>
+                                                                <FormControl>
+                                                                    <Input placeholder="Maharashtra" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="zip"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Zip Code</FormLabel>
+                                                                <FormControl>
+                                                                    <Input placeholder="10001" {...field} className="bg-white/50 dark:bg-black/20 rounded-xl" />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <Button
+                                                type="submit"
+                                                size="lg"
+                                                className="w-full rounded-full h-14 text-lg mt-8 shadow-xl shadow-primary/20 hover:shadow-2xl transition-all"
+                                                disabled={isProcessing}
+                                            >
+                                                {isProcessing ? (
+                                                    <>
+                                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                        Processing Payment...
+                                                    </>
+                                                ) : (
+                                                    `Pay ${formatPrice(totalPrice)}`
+                                                )}
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
 
                     {/* RIGHT COLUMN: Summary Panel */}
@@ -338,47 +472,47 @@ const Checkout = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        <div className="sticky top-32 bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-xl">
-                            <h3 className="text-2xl font-serif font-medium mb-6">Order Summary</h3>
+                        <div className="sticky top-32 bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-white/20 rounded-[2.5rem] p-8 shadow-2xl">
+                            <h3 className="text-2xl font-serif font-medium mb-8">Order Summary</h3>
 
                             <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                 {cartItems.map((item) => (
-                                    <div key={item.id} className="flex gap-4 items-center">
-                                        <div className="h-16 w-16 rounded-lg overflow-hidden bg-secondary shrink-0">
+                                    <div key={item.id} className="flex gap-5 items-center group">
+                                        <div className="h-20 w-20 rounded-2xl overflow-hidden bg-secondary shrink-0 shadow-sm border border-white/40 group-hover:scale-105 transition-transform">
                                             <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
                                         </div>
                                         <div className="flex-grow">
-                                            <h4 className="font-medium font-serif">{item.title}</h4>
+                                            <h4 className="font-medium font-serif text-lg">{item.title}</h4>
                                             <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                                         </div>
-                                        <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
+                                        <p className="font-bold">{formatPrice(item.price * item.quantity)}</p>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="h-px bg-border my-6" />
+                            <div className="h-px bg-border/40 my-8" />
 
-                            <div className="space-y-3 text-sm">
-                                <div className="flex justify-between text-muted-foreground">
+                            <div className="space-y-4 text-sm">
+                                <div className="flex justify-between text-muted-foreground text-base">
                                     <span>Subtotal</span>
-                                    <span>{formatPrice(totalPrice)}</span>
+                                    <span className="text-foreground">{formatPrice(totalPrice)}</span>
                                 </div>
-                                <div className="flex justify-between text-muted-foreground">
+                                <div className="flex justify-between text-muted-foreground text-base">
                                     <span>Shipping</span>
-                                    <span className="text-foreground font-medium">Free</span>
+                                    <span className="text-primary font-bold">Free</span>
                                 </div>
-                                <div className="flex justify-between text-lg font-medium pt-2">
+                                <div className="flex justify-between text-2xl font-serif font-bold pt-4 border-t border-border/20">
                                     <span>Total</span>
-                                    <span>{formatPrice(totalPrice)}</span>
+                                    <span className="text-primary">{formatPrice(totalPrice)}</span>
                                 </div>
                             </div>
 
-                            <div className="mt-8 bg-primary/5 rounded-xl p-4 flex items-start gap-3">
-                                <ShieldCheck className="h-5 w-5 text-primary shrink-0" />
+                            <div className="mt-10 bg-primary/5 rounded-[2rem] p-6 flex items-start gap-4 border border-primary/10">
+                                <ShieldCheck className="h-6 w-6 text-primary shrink-0" />
                                 <div>
-                                    <h4 className="font-bold text-sm mb-1">Buyer Protection</h4>
-                                    <p className="text-xs text-muted-foreground">
-                                        Your purchase is backed by our gallery guarantee. Authentic art, safe delivery.
+                                    <h4 className="font-bold text-base mb-1">Premium Protection</h4>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        Your acquisition is protected by our gallery authenticity certificate and secure logistics.
                                     </p>
                                 </div>
                             </div>
