@@ -151,7 +151,7 @@ const ProductDetail = () => {
                   <Ruler className="h-4 w-4" />
                   <span className="text-sm uppercase tracking-wide">Dimensions</span>
                 </div>
-                <p className="font-serif text-lg">24" x 36"</p>
+                <p className="font-serif text-lg">{product.dimensions || '24" x 36"'}</p>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-muted-foreground">
