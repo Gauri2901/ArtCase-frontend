@@ -9,6 +9,7 @@ interface CartItem {
   price: number;
   imageUrl: string;
   category?: ArtworkCategory;
+  dimensions?: string;
   quantity: number; // We'll need quantity
 }
 // 2. Define the shape of the 'bulletin board' (our Context)

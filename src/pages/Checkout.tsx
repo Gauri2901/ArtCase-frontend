@@ -482,8 +482,11 @@ const Checkout = () => {
                                             <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
                                         </div>
                                         <div className="flex-grow">
-                                            <h4 className="font-medium font-serif text-lg">{item.title}</h4>
-                                            <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                                            <h4 className="font-medium font-serif text-lg leading-tight">{item.title}</h4>
+                                            {item.dimensions && (
+                                                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-medium">{item.dimensions}</p>
+                                            )}
+                                            <p className="text-sm text-muted-foreground mt-1">Qty: {item.quantity}</p>
                                         </div>
                                         <p className="font-bold">{formatPrice(item.price * item.quantity)}</p>
                                     </div>

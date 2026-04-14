@@ -6,7 +6,7 @@ export function useArtworks() {
     '/products',
     // Fetcher is provided globally in main.tsx via SWRConfig
     {
-      dedupingInterval: 60000, // 1 minute
+      dedupingInterval: 5000, // 5 seconds
     }
   );
 

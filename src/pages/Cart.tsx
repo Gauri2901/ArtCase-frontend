@@ -101,6 +101,11 @@ const Cart = () => {
                                                     <span className="sr-only">Remove</span>
                                                 </button>
                                             </div>
+                                            {item.dimensions && (
+                                                <p className="text-sm text-muted-foreground mt-1 font-sans">
+                                                    {item.dimensions}
+                                                </p>
+                                            )}
                                         </div>
 
                                         <div className="flex justify-between items-end">
