@@ -7,6 +7,7 @@ import './index.css';
 
 import { CartProvider } from './context/CartContext.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
+import { WishlistProvider } from './context/WishlistContext.tsx';
 import { SWRConfig } from 'swr';
 import { apiRequest } from './lib/api';
 
@@ -20,10 +21,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         errorRetryCount: 3,
         errorRetryInterval: 3000
       }}>
-        <AuthProvider>     {/* ← Wrap AuthProvider FIRST */}
-          <CartProvider>   {/* ← Then wrap CartProvider */}
-            <App />        {/* ← Now Navbar can useAuth() safely */}
-          </CartProvider>
+        <AuthProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </WishlistProvider>
         </AuthProvider>
       </SWRConfig>
     </BrowserRouter>

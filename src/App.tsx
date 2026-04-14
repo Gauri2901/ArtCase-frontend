@@ -17,6 +17,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminLogDetail from './pages/AdminLogDetail';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import Profile from './pages/Profile';
+import Wishlist from './pages/Wishlist';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="checkout" element={<Checkout />} />
           <Route path="thank-you" element={<ThankYou />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="wishlist" element={<Wishlist />} />
         </Route>
 
         {/* Protected Admin Routes */}

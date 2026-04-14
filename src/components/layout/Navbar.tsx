@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Menu } from 'lucide-react';
+import { ShoppingCart, Menu, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/context/useAuth';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/admin/NotificationBell';
@@ -11,6 +12,7 @@ import UserNotificationBell from '@/components/UserNotificationBell';
 
 const Navbar = () => {
     const { cartItems } = useCart();
+    const { wishlist } = useWishlist();
     const { user, logout } = useAuth();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -211,6 +213,34 @@ const Navbar = () => {
                         )}
 
                         {user?.isAdmin ? <NotificationBell /> : <UserNotificationBell />}
+
+                        {/* Wishlist Icon */}
+                        <div className="relative h-8 w-8 sm:h-9 sm:w-9 shrink-0">
+                            <Button
+                                asChild
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-white/20 rounded-full w-full h-full transition-transform hover:scale-105 active:scale-95"
+                            >
+                                <Link to="/wishlist">
+                                    <Heart className={cn("h-4 w-4 sm:h-5 sm:w-5 transition-colors", wishlist.length > 0 ? "fill-red-500 text-red-500" : "text-foreground")} />
+                                    <span className="sr-only">View Wishlist</span>
+                                </Link>
+                            </Button>
+                            <AnimatePresence>
+                                {wishlist.length > 0 && (
+                                    <motion.div
+                                        key={wishlist.length}
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0, opacity: 0 }}
+                                        className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 flex items-center justify-center bg-red-500 text-white text-[8px] sm:text-[9px] font-bold rounded-full pointer-events-none border-2 border-white dark:border-black"
+                                    >
+                                        {wishlist.length}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
 
                         {/* Cart Icon */}
                         {/* Use `relative` + fixed size so the badge never bleeds outside */}

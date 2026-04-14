@@ -1,4 +1,5 @@
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import WishlistButton from '@/components/WishlistButton';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, ShieldCheck, Truck, Ruler, Calendar, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -122,6 +123,16 @@ const ProductDetail = () => {
                   alt={product.title}
                   className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
+                
+                {/* Wishlist Button on Image */}
+                <div className="absolute top-6 right-6 z-20">
+                  <WishlistButton 
+                    productId={product._id} 
+                    className="h-12 w-12 bg-white/20 hover:bg-white/40 backdrop-blur-md border border-white/20 text-white shadow-2xl"
+                    size={22}
+                  />
+                </div>
+
                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2.5rem]" />
               </motion.div>
             </div>
@@ -152,14 +163,18 @@ const ProductDetail = () => {
               </motion.div>
 
               {/* Action Buttons - Exactly below price */}
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mb-10">
-                <Button size="lg" className="flex-1 rounded-full py-4 text-xl font-medium shadow-xl shadow-primary/10 hover:scale-[1.02] transition-all h-auto" onClick={handleAddToCart}>
+              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4 mb-10">
+                <Button 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium shadow-xl shadow-primary/10 hover:scale-[1.02] transition-all h-auto" 
+                  onClick={handleAddToCart}
+                >
                   <Plus className="mr-2 h-5 w-5" /> Add to Collection
                 </Button>
                 <Button 
                   size="lg" 
                   variant="secondary"
-                  className="flex-1 rounded-full py-4 text-xl font-medium bg-foreground text-background hover:bg-foreground/90 hover:scale-[1.02] transition-all h-auto"
+                  className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium bg-foreground text-background hover:bg-foreground/90 hover:scale-[1.02] transition-all h-auto"
                   onClick={() => {
                     handleAddToCart();
                     navigate('/checkout');
