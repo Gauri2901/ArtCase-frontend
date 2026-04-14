@@ -30,7 +30,6 @@ const formSchema = z.object({
     address: z.string().min(5, { message: "Address is required." }),
     city: z.string().min(2, { message: "City is required." }),
     zip: z.string().min(4, { message: "Zip code is required." }),
-    cardNumber: z.string().min(10, { message: "Card number required (mock)." }),
 });
 
 const Checkout = () => {
@@ -48,7 +47,6 @@ const Checkout = () => {
             address: "",
             city: "",
             zip: "",
-            cardNumber: "",
         },
     });
 
@@ -144,7 +142,7 @@ const Checkout = () => {
                         });
 
                             toast.success("Payment successful!");
-                            clearCart();
+                            clearCart(false);
                             navigate("/thank-you", { state: { orderId: verifyData.order.orderId } });
                     } catch (error) {
                         toast.error(error instanceof Error ? error.message : "Verification failed");
@@ -163,6 +161,11 @@ const Checkout = () => {
                 theme: {
                     color: "#3399cc",
                 },
+                modal: {
+                    ondismiss: function() {
+                        setIsProcessing(false);
+                    }
+                }
             };
 
             const paymentObject = new (window as any).Razorpay(options);
@@ -313,36 +316,7 @@ const Checkout = () => {
                                         />
                                     </div>
                                 </div>
-
-                                {/* Section 2: Payment (Mock) */}
-                                <div className="space-y-6 pt-4">
-                                    <div className="flex items-center gap-2 pb-2 border-b border-border/50">
-                                        <CreditCard className="h-5 w-5 text-primary" />
-                                        <h2 className="text-xl font-serif">Payment Method</h2>
-                                    </div>
-
-                                    <div className="bg-secondary/30 p-4 rounded-lg border border-border flex items-center gap-3 mb-4">
-                                        <Lock className="h-4 w-4 text-green-600" />
-                                        <p className="text-xs text-muted-foreground">
-                                            Transactions are encrypted and secured. We do not store your full card details.
-                                        </p>
-                                    </div>
-
-                                    <FormField
-                                        control={form.control}
-                                        name="cardNumber"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Card Number</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="0000 0000 0000 0000" {...field} className="bg-white/50 dark:bg-black/20 font-mono" />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
+                                
                                 <Button
                                     type="submit"
                                     size="lg"

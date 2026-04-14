@@ -17,7 +17,7 @@ interface CartContextType {
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
   decreaseQuantity: (id: string) => void;
   removeFromCart: (id: string) => void;
-  clearCart: () => void; 
+  clearCart: (showToast?: boolean) => void; 
 }
 
 // 3. Create the Context.
@@ -99,9 +99,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const clearCart = () => {
+  const clearCart = (showToast = true) => {
     setCartItems([]); // Just set the cart to an empty array
-    toast.info("Cart cleared");
+    if (showToast) {
+      toast.info("Cart cleared");
+    }
   };
 
   // 4. Provide the new functions in the 'value'
