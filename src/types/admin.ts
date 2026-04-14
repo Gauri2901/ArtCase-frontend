@@ -8,6 +8,7 @@ export type Artwork = {
   imageUrl: string;
   category: ArtworkCategory;
   dimensions: string;
+  year?: string | number;
   tags: string[];
   createdAt: string;
   updatedAt: string;

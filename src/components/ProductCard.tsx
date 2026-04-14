@@ -2,8 +2,7 @@ import { useRef } from 'react';
 import WishlistButton from './WishlistButton';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Star } from 'lucide-react';
-import { Button } from './ui/button';
+import { Star } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { cn, formatPrice } from '@/lib/utils';
 
@@ -23,10 +22,6 @@ const ProductCard = ({ id, title, imageUrl, price, category, className }: Produc
   // Random rating for demo
   const rating = (Math.random() * (5.0 - 4.5) + 4.5).toFixed(1);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addToCart({ id, title, imageUrl, price, category });
-  };
 
   return (
     <motion.div 

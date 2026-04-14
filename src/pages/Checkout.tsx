@@ -5,7 +5,7 @@ import * as z from "zod";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
-import { Lock, CreditCard, MapPin, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
+import { MapPin, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {

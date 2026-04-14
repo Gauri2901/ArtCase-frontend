@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter } from 'lucide-react';
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { apiRequest } from '@/lib/api';
 import { useArtworks } from '@/hooks/useArtworks';
-import type { Artwork } from '@/types/admin';
 
 const CATEGORIES = ["All", "Oil", "Acrylic", "Watercolor", "Mixed Media"];
 
