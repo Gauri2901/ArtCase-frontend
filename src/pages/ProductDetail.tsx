@@ -68,18 +68,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="relative overflow-x-hidden">
-
-      {/* 1. Ambient Background Blur - Takes colors from the image itself */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-[100px] z-10" />
-        <img
-          src={product.imageUrl}
-          alt=""
-          className="w-full h-full object-cover blur-3xl opacity-40 scale-150"
-        />
-      </div>
-
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <div className="min-h-screen">
         <div className="container mx-auto px-4 py-24 md:py-32">
 
