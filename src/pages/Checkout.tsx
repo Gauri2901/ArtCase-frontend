@@ -141,9 +141,9 @@ const Checkout = () => {
                             }),
                         });
 
-                            toast.success("Payment successful!");
-                            clearCart(false);
-                            navigate("/thank-you", { state: { orderId: verifyData.order.orderId } });
+                        toast.success("Payment successful!");
+                        clearCart();
+                        navigate("/thank-you", { state: { orderId: verifyData.order.orderId } });
                     } catch (error) {
                         toast.error(error instanceof Error ? error.message : "Verification failed");
                     } finally {
@@ -161,11 +161,6 @@ const Checkout = () => {
                 theme: {
                     color: "#3399cc",
                 },
-                modal: {
-                    ondismiss: function() {
-                        setIsProcessing(false);
-                    }
-                }
             };
 
             const paymentObject = new (window as any).Razorpay(options);
@@ -316,7 +311,7 @@ const Checkout = () => {
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <Button
                                     type="submit"
                                     size="lg"
