@@ -15,8 +15,7 @@ type ProductCardProps = {
   className?: string;
 };
 
-const ProductCard = ({ id, title, imageUrl, price, category, className }: ProductCardProps) => {
-  const { addToCart } = useCart();
+const ProductCard = ({ id, title, imageUrl, price, className }: ProductCardProps) => {
   const ref = useRef<HTMLDivElement>(null);
   
   // Random rating for demo
