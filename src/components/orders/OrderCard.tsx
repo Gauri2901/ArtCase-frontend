@@ -1,4 +1,4 @@
-import { ChevronDown, CreditCard, Loader2, Mail, MapPin, Phone, Receipt, ShoppingBag, User2 } from 'lucide-react';
+import { ChevronDown, CreditCard, Loader2, Mail, MapPin, Phone, Receipt, ShoppingBag, Star, User2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
 import type { AdminOrder } from '@/types/admin';
@@ -11,6 +11,7 @@ type OrderCardProps = {
   showInvoiceAction?: boolean;
   invoiceLoading?: boolean;
   onDownloadInvoice?: (order: AdminOrder) => void;
+  onWriteReview?: (productId: string, productTitle: string, orderId: string) => void;
 };
 
 const formatAddress = (order: AdminOrder) =>
@@ -24,6 +25,7 @@ const OrderCard = ({
   showInvoiceAction = false,
   invoiceLoading = false,
   onDownloadInvoice,
+  onWriteReview,
 }: OrderCardProps) => {
   const primaryArtwork = order.artworks[0];
   const shippingAddress = formatAddress(order);
@@ -172,6 +174,17 @@ const OrderCard = ({
                       <p className="text-sm text-muted-foreground">
                         Line total: {formatPrice(artwork.price * artwork.quantity)}
                       </p>
+                      {onWriteReview && order.payment.status === 'paid' && (
+                        <Button 
+                          variant="secondary" 
+                          size="lg" 
+                          className="mt-6 w-full sm:w-auto h-12 rounded-full !bg-amber-400 !text-black hover:!bg-amber-500 shadow-xl shadow-amber-400/20 transition-all text-sm font-bold border-none"
+                          onClick={() => onWriteReview(artwork.artwork, artwork.title, order._id)}
+                        >
+                          <Star className="h-4 w-4 mr-2 fill-black" />
+                          Review this Artwork
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}

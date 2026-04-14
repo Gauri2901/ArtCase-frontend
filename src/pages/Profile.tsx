@@ -11,6 +11,8 @@ import { apiRequest } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import type { AdminCommission, AdminOrder } from '@/types/admin';
 import type { UserAddress } from '@/types/user';
+import type { Review } from '@/types/review';
+import ReviewDialog from '@/components/reviews/ReviewDialog';
 import OrderCard from '@/components/orders/OrderCard';
 import {
   Dialog,
@@ -50,6 +52,14 @@ const Profile = () => {
   const [commissions, setCommissions] = useState<AdminCommission[]>([]);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [invoiceOrderId, setInvoiceOrderId] = useState<string | null>(null);
+
+  // Review Dialog State
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [reviewContext, setReviewContext] = useState<{
+      productId: string;
+      productTitle: string;
+      orderId: string;
+  } | null>(null);
 
   // Address State
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
@@ -395,6 +405,11 @@ const Profile = () => {
     [orders]
   );
 
+  const handleWriteReview = (productId: string, productTitle: string, orderId: string) => {
+      setReviewContext({ productId, productTitle, orderId });
+      setReviewDialogOpen(true);
+  };
+
   if (!user) {
     return null;
   }
@@ -708,6 +723,7 @@ const Profile = () => {
                       showInvoiceAction={true}
                       invoiceLoading={invoiceOrderId === order._id}
                       onDownloadInvoice={handleInvoiceDownload}
+                      onWriteReview={handleWriteReview}
                     />
                   ))
                 )}
@@ -796,6 +812,19 @@ const Profile = () => {
           </div>
         ) : null}
       </div>
+
+      {reviewContext && (
+        <ReviewDialog 
+          isOpen={reviewDialogOpen}
+          onClose={() => setReviewDialogOpen(false)}
+          productId={reviewContext.productId}
+          productTitle={reviewContext.productTitle}
+          orderId={reviewContext.orderId}
+          onSuccess={() => {
+            // Success logic if needed
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -10,6 +10,9 @@ import { apiRequest } from '@/lib/api';
 import type { Artwork } from '@/types/admin';
 import { formatPrice } from '@/lib/utils';
 import { useColor } from 'color-thief-react';
+import type { Review } from '@/types/review';
+import ReviewList from '@/components/reviews/ReviewList';
+import { Star as StarIcon } from 'lucide-react';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -17,6 +20,7 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Artwork | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Extract dominant color from image for dynamic background
@@ -26,18 +30,22 @@ const ProductDetail = () => {
   });
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductData = async () => {
       try {
         if (!id) return;
-        const data = await apiRequest<Artwork>(`/products/${id}`);
-        setProduct(data);
+        const [productData, reviewsData] = await Promise.all([
+            apiRequest<Artwork>(`/products/${id}`),
+            apiRequest<Review[]>(`/reviews/product/${id}`)
+        ]);
+        setProduct(productData);
+        setReviews(reviewsData);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
     };
-    if (id) fetchProduct();
+    if (id) fetchProductData();
   }, [id]);
 
   if (loading) return (
@@ -158,10 +166,27 @@ const ProductDetail = () => {
               </motion.h1>
 
               <motion.div variants={itemVariants} className="flex items-baseline gap-4 mb-6">
-                <span className="text-4xl font-sans font-light tracking-tight text-foreground">
-                  {formatPrice(product.price)}
-                </span>
-                <span className="text-muted-foreground text-sm uppercase tracking-widest font-medium">Incl. Taxes</span>
+                <div className="flex flex-col">
+                  <span className="text-4xl font-sans font-light tracking-tight text-foreground">
+                    {formatPrice(product.price)}
+                  </span>
+                  {product.rating > 0 && (
+                    <div className="flex items-center gap-2 mt-2">
+                       <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                           <StarIcon
+                             key={s}
+                             className={`h-4 w-4 ${s <= Math.round(product.rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                           />
+                        ))}
+                       </div>
+                       <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                         {product.rating.toFixed(1)} ({product.numReviews})
+                       </span>
+                    </div>
+                  )}
+                </div>
+                <span className="text-muted-foreground text-sm uppercase tracking-widest font-medium self-start mt-2">Incl. Taxes</span>
               </motion.div>
 
               {/* Action Buttons - Exactly below price */}
@@ -233,6 +258,29 @@ const ProductDetail = () => {
               </motion.div>
             </motion.div>
           </div>
+
+          {/* Reviews Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mt-32 pt-32 border-t border-border/40"
+          >
+            <div className="max-w-4xl mx-auto">
+              <div className="flex flex-col items-center text-center mb-16">
+                <span className="text-xs font-bold tracking-[0.3em] text-primary uppercase mb-4">Feedback</span>
+                <h2 className="text-4xl md:text-5xl font-serif font-medium">Collector Reviews</h2>
+                <div className="h-1 w-20 bg-primary/20 mt-8 rounded-full" />
+              </div>
+              
+              <ReviewList 
+                reviews={reviews} 
+                averageRating={product.rating || 0} 
+                totalReviews={product.numReviews || 0} 
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
