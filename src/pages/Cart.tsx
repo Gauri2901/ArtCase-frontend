@@ -101,7 +101,6 @@ const Cart = () => {
                                                     <span className="sr-only">Remove</span>
                                                 </button>
                                             </div>
-                                            <p className="text-sm text-muted-foreground font-sans">Oil on Canvas</p>
                                         </div>
 
                                         <div className="flex justify-between items-end">
