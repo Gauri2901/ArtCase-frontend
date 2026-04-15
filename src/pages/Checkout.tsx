@@ -43,7 +43,6 @@ const Checkout = () => {
     // Address Selection State
     const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([]);
     const [selectedAddressId, setSelectedAddressId] = useState<string | 'new'>('new');
-    const [loadingAddresses, setLoadingAddresses] = useState(true);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -61,7 +60,6 @@ const Checkout = () => {
     useEffect(() => {
         const fetchAddresses = async () => {
             if (!user?.token) {
-                setLoadingAddresses(false);
                 return;
             }
             try {
@@ -77,7 +75,6 @@ const Checkout = () => {
             } catch (error) {
                 console.error("Error fetching addresses:", error);
             } finally {
-                setLoadingAddresses(false);
             }
         };
 

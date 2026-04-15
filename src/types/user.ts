@@ -1,4 +1,4 @@
-export interface UserAddress {
+ export interface UserAddress {
   _id: string;
   name: string;
   phone: string;

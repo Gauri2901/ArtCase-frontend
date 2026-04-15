@@ -12,6 +12,8 @@ export type Artwork = {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  rating?: number;
+  numReviews?: number;
 };
 
 export type DashboardStats = {

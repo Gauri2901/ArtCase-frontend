@@ -11,7 +11,6 @@ import { apiRequest } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import type { AdminCommission, AdminOrder } from '@/types/admin';
 import type { UserAddress } from '@/types/user';
-import type { Review } from '@/types/review';
 import ReviewDialog from '@/components/reviews/ReviewDialog';
 import OrderCard from '@/components/orders/OrderCard';
 import {
@@ -653,7 +652,7 @@ const Profile = () => {
                         <p className="text-muted-foreground/70 mt-2">Add your shipping addresses for a faster checkout</p>
                     </div>
                 ) : (
-                    addresses.sort((a,b) => a.isDefault ? -1 : 1).map((addr) => (
+                    addresses.sort((a, _b) => a.isDefault ? -1 : 1).map((addr) => (
                         <Card key={addr._id} className={`border-white/50 bg-white/70 shadow-lg backdrop-blur-2xl rounded-3xl overflow-hidden transition-all hover:shadow-xl ${addr.isDefault ? 'ring-2 ring-primary/40 bg-white/90' : ''}`}>
                             <CardContent className="p-6">
                                 <div className="flex justify-between items-start mb-4">

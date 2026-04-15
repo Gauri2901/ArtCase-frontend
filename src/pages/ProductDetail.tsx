@@ -170,18 +170,18 @@ const ProductDetail = () => {
                   <span className="text-4xl font-sans font-light tracking-tight text-foreground">
                     {formatPrice(product.price)}
                   </span>
-                  {product.rating > 0 && (
+                  {(product.rating ?? 0) > 0 && (
                     <div className="flex items-center gap-2 mt-2">
                        <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((s) => (
                            <StarIcon
                              key={s}
-                             className={`h-4 w-4 ${s <= Math.round(product.rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                             className={`h-4 w-4 ${s <= Math.round(product.rating ?? 0) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
                            />
                         ))}
                        </div>
                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                         {product.rating.toFixed(1)} ({product.numReviews})
+                         {(product.rating ?? 0).toFixed(1)} ({product.numReviews ?? 0})
                        </span>
                     </div>
                   )}
