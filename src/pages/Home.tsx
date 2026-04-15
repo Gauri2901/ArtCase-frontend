@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Palette, ShieldCheck, Truck, Brush, Play, Sparkles, Paintbrush, Frame, Shapes, PenTool } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CLOUDINARY_IMAGES } from "@/lib/constants";
 
 // --- HELPER COMPONENTS ---
 
@@ -63,12 +64,12 @@ const FloatingShapes = () => (
 
 const MovingGallery = () => {
   const images = [
-    "/paintings/blossom.jpg",
-    "/paintings/clouds.jpg",
-    "/paintings/calm.jpg",
-    "/paintings/night.jpg",
-    "/paintings/tulips.jpg",
-    "/paintings/mandala.jpg",
+    CLOUDINARY_IMAGES[0],
+    CLOUDINARY_IMAGES[1],
+    CLOUDINARY_IMAGES[2],
+    CLOUDINARY_IMAGES[3],
+    CLOUDINARY_IMAGES[4],
+    CLOUDINARY_IMAGES[5],
   ];
 
   return (
@@ -179,7 +180,7 @@ const HeroSection = () => {
           >
             <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl">
               <img
-                src="/paintings/Brushes.jpg"
+                src={CLOUDINARY_IMAGES[6]}
                 alt="Abstract Ocean Art"
                 className="w-full h-full object-cover"
               />
@@ -195,7 +196,7 @@ const HeroSection = () => {
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -top-12 -right-12 w-48 h-64 rounded-xl overflow-hidden shadow-xl z-0 opacity-80"
           >
-            <img src="/paintings/lights.jpg" alt="Sunset" className="w-full h-full object-cover" />
+            <img src={CLOUDINARY_IMAGES[1]} alt="Sunset" className="w-full h-full object-cover" />
           </motion.div>
 
           <motion.div
@@ -203,7 +204,7 @@ const HeroSection = () => {
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full overflow-hidden shadow-xl z-20 border-4 border-white/30"
           >
-            <img src="/paintings/tent.jpg" alt="Forest" className="w-full h-full object-cover" />
+            <img src={CLOUDINARY_IMAGES[2]} alt="Forest" className="w-full h-full object-cover" />
           </motion.div>
         </div>
 
@@ -220,7 +221,7 @@ const HeroSection = () => {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="absolute left-0 top-0 w-[58%] h-full rounded-2xl overflow-hidden shadow-2xl border-2 border-white/40 z-10 -rotate-1"
             >
-              <img src="/paintings/Brushes.jpg" alt="Main painting" className="w-full h-full object-cover" />
+            <img src={CLOUDINARY_IMAGES[6]} alt="Main painting" className="w-full h-full object-cover" />
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
                 <p className="font-serif italic text-white text-sm">"The Ocean's Whisper"</p>
                 <p className="text-white/70 text-xs">Oil on Canvas, 2025</p>
@@ -231,14 +232,14 @@ const HeroSection = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
               className="absolute right-0 top-0 w-[38%] h-[52%] rounded-2xl overflow-hidden shadow-xl border-2 border-white/30 z-20 rotate-2"
             >
-              <img src="/paintings/lights.jpg" alt="Painting" className="w-full h-full object-cover" />
+              <img src={CLOUDINARY_IMAGES[1]} alt="Painting" className="w-full h-full object-cover" />
             </motion.div>
             <motion.div
               animate={{ y: [0, -14, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
               className="absolute right-2 bottom-0 w-[34%] h-[42%] rounded-full overflow-hidden shadow-xl border-4 border-white/40 z-20"
             >
-              <img src="/paintings/tent.jpg" alt="Painting" className="w-full h-full object-cover" />
+              <img src={CLOUDINARY_IMAGES[2]} alt="Painting" className="w-full h-full object-cover" />
             </motion.div>
           </motion.div>
           <motion.div
@@ -313,7 +314,7 @@ const PhilosophySection = () => {
               <Play className="w-8 h-8 fill-white text-white ml-1" />
             </div>
           </div>
-          <img src="/paintings/Brushes.jpg" alt="In the Studio" className="h-full w-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-700" />
+          <img src={CLOUDINARY_IMAGES[3]} alt="In the Studio" className="h-full w-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-700" />
           <p className="absolute bottom-8 left-8 font-mono text-xs uppercase tracking-widest text-white/80 z-20">Watch the Process • 01:24</p>
         </div>
       </div>
@@ -367,14 +368,14 @@ const CommissionSection = () => {
                 className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-2xl rotate-3 z-10 rounded-xl border border-gray-100"
               >
                 <div className="w-full h-full bg-gray-100 overflow-hidden relative">
-                  <img src="/paintings/tnj.jpg" className="w-full h-full object-cover" />
+                  <img src={CLOUDINARY_IMAGES[4]} className="w-full h-full object-cover" />
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded text-xs font-bold shadow-sm">COMMISSION #42</div>
                 </div>
               </motion.div>
               <motion.div
                 className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-10 translate-y-10 md:translate-x-12 md:translate-y-12 border border-gray-100"
               >
-                <img src="/paintings/house.jpg" className="w-full h-full object-cover " />
+                <img src={CLOUDINARY_IMAGES[5]} className="w-full h-full object-cover " />
               </motion.div>
             </div>
           </div>

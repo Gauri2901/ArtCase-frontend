@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { apiRequest } from '@/lib/api';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { CLOUDINARY_IMAGES } from '@/lib/constants';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -43,7 +44,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[url('/paintings/city.jpg')] bg-cover bg-center px-4 py-12">
+    <div className={`min-h-screen flex items-center justify-center px-4 py-12`} style={{ backgroundImage: `url(${CLOUDINARY_IMAGES[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       <div className="relative z-10 w-full max-w-md p-6 sm:p-8 bg-white/10 border border-white/20 rounded-3xl backdrop-blur-xl shadow-2xl">
         <h1 className="text-3xl font-serif text-white mb-6 text-center">Join the Gallery</h1>

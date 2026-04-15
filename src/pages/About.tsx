@@ -3,6 +3,7 @@ import type { Variants } from 'framer-motion';
 import { ArrowRight, Palette, Heart, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { CLOUDINARY_IMAGES } from '@/lib/constants';
 
 const About = () => {
     // Animation variants for staggered reveals
@@ -63,7 +64,7 @@ const About = () => {
                     >
                         <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl">
                             <img
-                                src="/paintings/night.jpg"
+                                src={CLOUDINARY_IMAGES[0]}
                                 alt="Artist in Studio"
                                 className="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-[2s]"
                             />
@@ -146,7 +147,7 @@ const About = () => {
                 <div className="relative rounded-[3rem] overflow-hidden h-[400px] flex items-center justify-center text-center px-4">
                     {/* Background Image with Blur */}
                     <div className="absolute inset-0">
-                        <img src="/paintings/sunflower.jpg" alt="Ocean Texture" className="w-full h-full object-cover" />
+                        <img src={CLOUDINARY_IMAGES[2]} alt="Ocean Texture" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
                     </div>
 
