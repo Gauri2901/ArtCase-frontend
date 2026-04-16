@@ -80,16 +80,13 @@ const Navbar = () => {
         location.pathname === path || location.pathname.startsWith(`${path}/`);
 
     return (
-        // Outer wrapper: full-width fixed strip, pointer-events off so content beneath is clickable
         <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 sm:pt-4 px-3 sm:px-4 pointer-events-none">
             <header
                 className={cn(
-                    // pointer-events back on; pill fills available width up to max-w
                     'pointer-events-auto relative w-full max-w-6xl rounded-full',
                     'transition-all duration-500 ease-out',
                     'border border-white/40 shadow-xl',
                     'bg-white/60 dark:bg-black/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-white/40',
-                    // Fluid padding: tighter on mobile, relaxes on larger screens
                     isScrolled
                         ? 'py-1.5 px-3 sm:py-2 sm:px-6'
                         : 'py-2.5 px-4 sm:py-4 sm:px-8'
@@ -131,7 +128,7 @@ const Navbar = () => {
                     {/* ── Right-side Actions ───────────────────────── */}
                     <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
-                        {/* Profile avatar (all sizes) OR login buttons (desktop only) */}
+                        {/* Profile */}
                         {user ? (
                             <div ref={profileRef} className="relative">
                                 {user.isAdmin ? (
@@ -168,7 +165,6 @@ const Navbar = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: -10, scale: 0.96 }}
                                             transition={{ duration: 0.18, ease: 'easeOut' }}
-                                            // On mobile: center below the button. On sm+: anchor to right edge.
                                             className={cn(
                                                 "absolute z-50 overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-4 shadow-2xl backdrop-blur-2xl",
                                                 "top-14 sm:top-14 right-0 sm:right-0",
@@ -197,7 +193,6 @@ const Navbar = () => {
                                 </AnimatePresence>
                             </div>
                         ) : (
-                            // Login / Join — desktop only
                             <div className="hidden md:flex items-center gap-2">
                                 <Link to="/login">
                                     <Button variant="ghost" size="sm" className="rounded-full hover:bg-white/20">
@@ -214,7 +209,7 @@ const Navbar = () => {
 
                         {user?.isAdmin ? <NotificationBell /> : <UserNotificationBell />}
 
-                        {/* Wishlist Icon */}
+                        {/* ── Wishlist ─────────────────────────────── */}
                         <div className="relative h-8 w-8 sm:h-9 sm:w-9 shrink-0">
                             <Button
                                 asChild
@@ -234,16 +229,15 @@ const Navbar = () => {
                                         initial={{ scale: 0, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                         exit={{ scale: 0, opacity: 0 }}
-                                        className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 flex items-center justify-center bg-red-500 text-white text-[8px] sm:text-[9px] font-bold rounded-full pointer-events-none border-2 border-white dark:border-black"
+                                        className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-red-500 text-white text-[9px] font-bold rounded-full pointer-events-none px-1"
                                     >
-                                        {wishlist.length}
+                                        {wishlist.length > 99 ? '99+' : wishlist.length}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
 
-                        {/* Cart Icon */}
-                        {/* Use `relative` + fixed size so the badge never bleeds outside */}
+                        {/* ── Cart ─────────────────────────────────── */}
                         <div className="relative h-8 w-8 sm:h-9 sm:w-9 shrink-0">
                             <Button
                                 asChild
@@ -256,7 +250,6 @@ const Navbar = () => {
                                     <span className="sr-only">View Cart</span>
                                 </Link>
                             </Button>
-
                             <AnimatePresence>
                                 {totalItems > 0 && (
                                     <motion.div
@@ -265,8 +258,7 @@ const Navbar = () => {
                                         animate={{ scale: 1, opacity: 1 }}
                                         exit={{ scale: 0, opacity: 0 }}
                                         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                                        // Positioned relative to the fixed-size wrapper — always visible
-                                        className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center bg-primary text-primary-foreground text-[9px] sm:text-[10px] font-bold rounded-full pointer-events-none border-2 border-white dark:border-black"
+                                        className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center bg-foreground text-background text-[9px] font-bold rounded-full pointer-events-none px-1"
                                     >
                                         {totalItems > 99 ? '99+' : totalItems}
                                     </motion.div>
@@ -274,7 +266,7 @@ const Navbar = () => {
                             </AnimatePresence>
                         </div>
 
-                        {/* Mobile Hamburger */}
+                        {/* ── Mobile Hamburger ──────────────────────── */}
                         <div ref={mobileMenuRef} className="relative md:hidden shrink-0">
                             <Button
                                 variant="ghost"
@@ -296,7 +288,6 @@ const Navbar = () => {
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: -10, scale: 0.96 }}
                                         transition={{ duration: 0.18, ease: 'easeOut' }}
-                                        // Width: at least 10rem, at most viewport minus 2rem padding
                                         className="absolute right-0 top-12 sm:top-14 w-[min(12rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-white/50 bg-white/85 p-2 shadow-2xl backdrop-blur-2xl z-50"
                                     >
                                         <div className="flex flex-col gap-1">
@@ -315,7 +306,6 @@ const Navbar = () => {
                                                 </Link>
                                             ))}
 
-                                            {/* Login / Join for guests — inside mobile menu */}
                                             {!user && (
                                                 <div className="mt-2 grid grid-cols-2 gap-2 border-t border-foreground/10 pt-3">
                                                     <Button

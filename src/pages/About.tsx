@@ -64,7 +64,7 @@ const About = () => {
                     >
                         <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl">
                             <img
-                                src={CLOUDINARY_IMAGES[0]}
+                                src={CLOUDINARY_IMAGES[12]}
                                 alt="Artist in Studio"
                                 className="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-[2s]"
                             />
@@ -147,7 +147,7 @@ const About = () => {
                 <div className="relative rounded-[3rem] overflow-hidden h-[400px] flex items-center justify-center text-center px-4">
                     {/* Background Image with Blur */}
                     <div className="absolute inset-0">
-                        <img src={CLOUDINARY_IMAGES[2]} alt="Ocean Texture" className="w-full h-full object-cover" />
+                        <img src={CLOUDINARY_IMAGES[13]} alt="Ocean Texture" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
                     </div>
 
