@@ -11,7 +11,6 @@ const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const { artworks: products, isLoading, isError } = useArtworks();
 
-
   const filteredProducts = activeCategory === "All" 
     ? products 
     : products.filter((p) => p.category === activeCategory);
@@ -68,12 +67,12 @@ const Gallery = () => {
           ))}
         </div>
 
-        {/* MASONRY LAYOUT: 
-            We use CSS columns (columns-1 md:columns-2 lg:columns-3) to create the collage effect.
-            The 'gap-6' creates space between columns.
-            The ProductCard needs 'break-inside-avoid' (added in step 1) to prevent splitting.
+        {/* MASONRY LAYOUT:
+            - Mobile: 2 columns with tighter gap
+            - Tablet (sm): 2 columns with normal gap  
+            - Desktop (lg): 3 columns
         */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 mx-auto max-w-7xl px-2">
+        <div className="columns-2 lg:columns-3 gap-3 sm:gap-6 space-y-3 sm:space-y-6 mx-auto max-w-7xl px-2">
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product, index) => (
               <motion.div
