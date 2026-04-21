@@ -11,8 +11,8 @@ const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const { artworks: products, isLoading, isError } = useArtworks();
 
-  const filteredProducts = activeCategory === "All" 
-    ? products 
+  const filteredProducts = activeCategory === "All"
+    ? products
     : products.filter((p) => p.category === activeCategory);
 
   if (isLoading) {
@@ -36,43 +36,44 @@ const Gallery = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-background relative pb-20">
       {/* Header Section */}
-      <div className="container mx-auto px-4 pt-32 pb-12 text-center">
-        <h1 className="text-6xl md:text-8xl font-serif font-medium mb-6 text-foreground tracking-tight">
+      <div className="container mx-auto px-4 pt-28 pb-8 text-center">
+        <h1 className="text-5xl md:text-7xl font-serif font-medium mb-4 text-foreground tracking-tight">
           The Collection
         </h1>
-        
-        {/* Minimalist Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 mt-8 mb-16">
+
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap justify-center gap-4 mt-6 mb-10">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`
-                 text-sm font-medium transition-all duration-300 relative
-                 ${activeCategory === cat ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}
+                text-sm font-medium transition-all duration-300 relative
+                ${activeCategory === cat ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}
               `}
             >
               {cat}
               {activeCategory === cat && (
-                <motion.div 
-                  layoutId="underline" 
-                  className="absolute -bottom-1 left-0 right-0 h-px bg-primary" 
+                <motion.div
+                  layoutId="underline"
+                  className="absolute -bottom-1 left-0 right-0 h-px bg-primary"
                 />
               )}
             </button>
           ))}
         </div>
 
-        {/* MASONRY LAYOUT:
-            - Mobile: 2 columns with tighter gap
-            - Tablet (sm): 2 columns with normal gap  
-            - Desktop (lg): 3 columns
+        {/*
+          MASONRY LAYOUT changes:
+          - Mobile: 2 columns, tighter gaps (gap-2, space-y-2)
+          - Desktop: 3 columns, moderate gaps (gap-4, space-y-4)
+          - max-w-5xl instead of max-w-7xl so desktop images aren't huge
         */}
-        <div className="columns-2 lg:columns-3 gap-3 sm:gap-6 space-y-3 sm:space-y-6 mx-auto max-w-7xl px-2">
+        <div className="columns-2 lg:columns-3 gap-2 sm:gap-4 space-y-2 sm:space-y-4 mx-auto max-w-5xl px-1 sm:px-4">
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product, index) => (
               <motion.div
