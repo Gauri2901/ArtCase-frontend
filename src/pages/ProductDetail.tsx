@@ -104,7 +104,7 @@ const ProductDetail = () => {
       </div>
 
       <div className="relative">
-        <div className="container mx-auto px-4 py-24 md:py-32">
+        <div className="mx-auto w-full max-w-7xl px-4 py-20 md:px-6 md:py-24">
           {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -119,14 +119,14 @@ const ProductDetail = () => {
             </Button>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,0.8fr)] lg:gap-14 xl:gap-16">
             {/* Image Section */}
-            <div className="relative lg:sticky lg:top-32">
+            <div className="relative lg:sticky lg:top-28">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="rounded-[2.5rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white/10 bg-white/5 relative group aspect-square lg:aspect-[4/5]"
+                className="relative aspect-square overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_30px_80px_-24px_rgba(0,0,0,0.28)] group lg:aspect-[4/4.7]"
               >
                 <img
                   src={product.imageUrl}
@@ -135,15 +135,15 @@ const ProductDetail = () => {
                 />
 
                 {/* Wishlist Button on Image */}
-                <div className="absolute top-6 right-6 z-20">
+                <div className="absolute right-5 top-5 z-20">
                   <WishlistButton
                     productId={product._id}
-                    className="h-12 w-12 bg-white/20 hover:bg-white/40 backdrop-blur-md border border-white/20 text-white shadow-2xl"
-                    size={22}
+                    className="h-11 w-11 border border-white/20 bg-white/20 text-white shadow-2xl backdrop-blur-md hover:bg-white/40"
+                    size={20}
                   />
                 </div>
 
-                <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2.5rem]" />
+                <div className="absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-white/10" />
               </motion.div>
             </div>
 
@@ -152,26 +152,26 @@ const ProductDetail = () => {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="flex flex-col"
+              className="flex flex-col lg:max-w-xl xl:max-w-2xl"
             >
-              <motion.div variants={itemVariants} className="flex items-center gap-2 mb-6">
+              <motion.div variants={itemVariants} className="mb-5 flex items-center gap-2">
                 <span className="h-px w-8 bg-primary/40" />
                 <span className="text-xs font-bold tracking-[0.3em] text-primary uppercase">
                   {product.category} Masterpiece
                 </span>
               </motion.div>
 
-              <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl md:text-7xl font-serif font-medium text-foreground mb-6 sm:mb-8 leading-[1.1] tracking-tight">
+              <motion.h1 variants={itemVariants} className="mb-5 font-serif text-4xl font-medium leading-none tracking-tight text-foreground sm:text-5xl lg:text-[4.2rem] xl:text-[4.8rem]">
                 {product.title}
               </motion.h1>
 
-              <motion.div variants={itemVariants} className="flex items-baseline gap-4 mb-6">
+              <motion.div variants={itemVariants} className="mb-6 flex items-baseline gap-3 sm:gap-4">
                 <div className="flex flex-col">
-                  <span className="text-4xl font-sans font-light tracking-tight text-foreground">
+                  <span className="font-sans text-3xl font-light tracking-tight text-foreground sm:text-[2.6rem]">
                     {formatPrice(product.price)}
                   </span>
                   {(product.rating ?? 0) > 0 && (
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="mt-2 flex items-center gap-2">
                        <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((s) => (
                            <StarIcon
@@ -186,73 +186,73 @@ const ProductDetail = () => {
                     </div>
                   )}
                 </div>
-                <span className="text-muted-foreground text-sm uppercase tracking-widest font-medium self-start mt-2">Incl. Taxes</span>
+                <span className="mt-2 self-start text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground sm:text-sm">Incl. Taxes</span>
               </motion.div>
 
               {/* Action Buttons - Exactly below price */}
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4 mb-10">
+              <motion.div variants={itemVariants} className="mb-8 flex flex-col items-stretch gap-3 sm:flex-row">
                 <Button
                   size="lg"
-                  className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium shadow-xl shadow-primary/10 hover:scale-[1.02] transition-all h-auto"
+                  className="h-auto min-h-[3.75rem] flex-1 rounded-full px-6 py-4 text-base font-medium shadow-xl shadow-primary/10 transition-all hover:scale-[1.01] sm:text-lg"
                   onClick={handleAddToCart}
                 >
-                  <Plus className="mr-2 h-5 w-5" /> Add to Collection
+                  <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Add to Collection
                 </Button>
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="flex-1 w-full sm:w-auto rounded-full py-4 sm:py-6 text-lg sm:text-xl font-medium bg-foreground text-background hover:bg-foreground/90 hover:scale-[1.02] transition-all h-auto"
+                  className="h-auto min-h-[3.75rem] flex-1 rounded-full bg-foreground px-6 py-4 text-base font-medium text-background transition-all hover:scale-[1.01] hover:bg-foreground/90 sm:text-lg"
                   onClick={() => {
                     handleAddToCart();
                     navigate('/checkout');
                   }}
                 >
-                  <CreditCard className="mr-2 h-5 w-5" /> Buy Now
+                  <CreditCard className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Buy Now
                 </Button>
               </motion.div>
 
               {/* Description */}
-              <motion.div variants={itemVariants} className="space-y-6 mb-10">
-                <p className="text-lg text-muted-foreground leading-relaxed font-sans">
+              <motion.div variants={itemVariants} className="mb-8 space-y-6">
+                <p className="max-w-xl font-sans text-base leading-8 text-muted-foreground sm:text-lg">
                   {product.description}
                 </p>
               </motion.div>
 
               {/* Specifications */}
-              <motion.div variants={itemVariants} className="grid grid-cols-2 gap-8 mb-12 py-8 border-y border-border/40">
+              <motion.div variants={itemVariants} className="mb-10 grid grid-cols-2 gap-6 border-y border-border/40 py-6 sm:gap-8">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Ruler className="h-4 w-4" />
                     <span className="text-xs uppercase tracking-widest font-bold">Dimensions</span>
                   </div>
-                  <p className="font-sans text-lg">{product.dimensions || '24" x 36"'}</p>
+                  <p className="font-sans text-base sm:text-lg">{product.dimensions || '24" x 36"'}</p>
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
                     <span className="text-xs uppercase tracking-widest font-bold">Year</span>
                   </div>
-                  <p className="font-sans text-lg">{product.year || '2025'}</p>
+                  <p className="font-sans text-base sm:text-lg">{product.year || '2025'}</p>
                 </div>
               </motion.div>
 
-              <motion.div variants={itemVariants} className="space-y-6">
-                <div className="flex items-start gap-4 group">
-                  <div className="p-3 bg-primary/5 rounded-2xl group-hover:bg-primary/10 transition-colors">
-                    <Truck className="h-6 w-6 text-primary" />
+              <motion.div variants={itemVariants} className="space-y-5">
+                <div className="group flex items-start gap-4">
+                  <div className="rounded-2xl bg-primary/5 p-3 transition-colors group-hover:bg-primary/10">
+                    <Truck className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-lg">Curated Global Shipping</h4>
-                    <p className="text-muted-foreground">White-glove delivery with museum-grade impact packaging.</p>
+                    <h4 className="font-serif text-base font-bold sm:text-lg">Curated Global Shipping</h4>
+                    <p className="text-sm leading-7 text-muted-foreground sm:text-base">White-glove delivery with museum-grade impact packaging.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4 group">
-                  <div className="p-3 bg-primary/5 rounded-2xl group-hover:bg-primary/10 transition-colors">
-                    <ShieldCheck className="h-6 w-6 text-primary" />
+                <div className="group flex items-start gap-4">
+                  <div className="rounded-2xl bg-primary/5 p-3 transition-colors group-hover:bg-primary/10">
+                    <ShieldCheck className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-lg">Authenticity Guaranteed</h4>
-                    <p className="text-muted-foreground">Includes a signed and sealed Certificate of Authenticity.</p>
+                    <h4 className="font-serif text-base font-bold sm:text-lg">Authenticity Guaranteed</h4>
+                    <p className="text-sm leading-7 text-muted-foreground sm:text-base">Includes a signed and sealed Certificate of Authenticity.</p>
                   </div>
                 </div>
               </motion.div>
