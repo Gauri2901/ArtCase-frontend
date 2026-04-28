@@ -11,6 +11,8 @@ type ProductCardProps = {
   category?: 'Oil' | 'Acrylic' | 'Watercolor' | 'Mixed Media';
   dimensions?: string;
   year?: string | number;
+  isSold?: boolean;
+  isNew?: boolean;
   className?: string;
 };
 
@@ -19,57 +21,83 @@ const ProductCard = ({
   title,
   imageUrl,
   price,
-  category,
   dimensions,
   year,
+  isSold = false,
+  isNew = false,
   className,
 }: ProductCardProps) => {
   return (
     <motion.div
-      className={cn("group h-full cursor-pointer", className)}
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300 }}
+      className={cn('group cursor-pointer h-full', className)}
+      whileHover={!isSold ? { y: -4 } : {}}
+      transition={{ type: 'spring', stiffness: 280, damping: 22 }}
     >
       <Link to={`/product/${id}`} className="block h-full">
-        <article className="flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-black/8 bg-white/72 shadow-[0_18px_46px_-34px_rgba(15,23,42,0.34)] backdrop-blur-sm transition-all duration-300 group-hover:border-black/12 group-hover:shadow-[0_24px_56px_-32px_rgba(15,23,42,0.38)] sm:rounded-[1.75rem] sm:shadow-[0_22px_60px_-36px_rgba(15,23,42,0.42)]">
-          <div className="relative overflow-hidden">
-            <div className="aspect-[0.84] overflow-hidden bg-muted/30 sm:aspect-[4/5]">
-              <img
-                src={imageUrl}
-                alt={title}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+        <article
+          className={cn(
+            'flex h-full flex-col overflow-hidden rounded-2xl bg-white',
+            'border border-black/[0.06] transition-all duration-300',
+            !isSold &&
+              'hover:border-black/[0.10] hover:shadow-[0_18px_40px_-14px_rgba(20,14,6,0.13)]',
+            isSold && 'opacity-75',
+          )}
+        >
+          {/* ── Image ── */}
+          <div className="relative overflow-hidden aspect-[4/5] bg-[#ede8df]">
+            <img
+              src={imageUrl}
+              alt={title}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            />
+
+            {/* Top-left: Category badge
+            {category && (
+              <div className="absolute left-2.5 top-2.5 rounded-full border border-white/50 bg-white/86 px-2.5 py-1 text-[8.5px] font-semibold uppercase tracking-[0.2em] text-foreground/70 backdrop-blur-md">
+                {category}
+              </div>
+            )} */}
+
+            {/* Top-right: Wishlist */}
+            <div className="absolute right-2.5 top-2.5 z-20">
+              <WishlistButton
+                productId={id}
+                className="h-[30px] w-[30px] rounded-full border border-white/20 bg-white/38 text-white backdrop-blur-md hover:bg-white/70 shadow-sm"
+                size={17}
               />
             </div>
 
-            {category && (
-              <div className="absolute left-2.5 top-2.5 rounded-full border border-white/60 bg-white/82 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-foreground/80 backdrop-blur-md sm:left-4 sm:top-4 sm:px-3 sm:text-[10px]">
-                {category}
+            {/* Bottom-left: Status chip — Sold or New */}
+            {isSold && (
+              <div className="absolute bottom-2.5 left-2.5 rounded-full bg-black/60 px-2.5 py-1 text-[8.5px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+                Sold
               </div>
             )}
 
-            <div className="absolute right-2.5 top-2.5 z-20 sm:right-4 sm:top-4">
-              <WishlistButton
-                productId={id}
-                className="h-7 w-7 border border-white/20 bg-white/42 text-white shadow-lg backdrop-blur-md hover:bg-white/60 sm:h-10 sm:w-10 sm:shadow-xl"
-                size={14}
-              />
-            </div>
+            {!isSold && isNew && (
+              <div className="absolute bottom-2.5 left-2.5 rounded-full bg-[#c4a770]/90 px-2.5 py-1 text-[8.5px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+                New
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-1 flex-col gap-2.5 px-3 py-3 sm:gap-3 sm:px-4 sm:py-4">
-            <div className="space-y-1">
-              <h3 className="line-clamp-2 font-sans text-[0.98rem] font-medium leading-snug tracking-[-0.02em] text-foreground sm:text-[1.12rem]">
-                {title}
-              </h3>
+          {/* ── Body ── */}
+          <div className="flex flex-col gap-1.5 px-3 py-3">
+            <h3 className="line-clamp-2 font-serif text-[0.9rem] font-normal leading-snug tracking-[-0.01em] text-foreground">
+              {title}
+            </h3>
+            <div className="flex items-baseline justify-between">
               {(dimensions || year) && (
-                <p className="text-[11px] font-medium tracking-[0.01em] text-muted-foreground sm:text-xs">
-                  {[dimensions, year].filter(Boolean).join(' • ')}
+                <p className="text-[10.5px] font-normal text-[#b09a78]">
+                  {[dimensions, year].filter(Boolean).join(' · ')}
                 </p>
               )}
-            </div>
-
-            <div className="mt-auto">
-              <span className="text-[1.02rem] font-semibold tracking-tight text-foreground sm:text-base">
+              <span
+                className={cn(
+                  'ml-auto text-[14px] font-medium tracking-[0.01em]',
+                  isSold ? 'text-[#c4b49a] line-through' : 'text-[#7a6a52]',
+                )}
+              >
                 {formatPrice(price)}
               </span>
             </div>
