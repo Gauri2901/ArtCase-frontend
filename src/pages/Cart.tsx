@@ -54,10 +54,10 @@ const Cart = () => {
              {/* Ambient Background Blob */}
              <div className="fixed top-1/3 left-0 w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
-            <div className="container mx-auto px-4">
-                <h1 className="text-4xl md:text-5xl font-serif font-medium mb-12">Your Selection</h1>
+            <div className="mx-auto w-full max-w-6xl px-4 md:px-6">
+                <h1 className="mb-10 text-3xl font-serif font-medium tracking-tight sm:text-4xl lg:text-[2.9rem]">Your Selection</h1>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+                <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-12">
                     
                     {/* Cart Items List */}
                     <motion.div 
@@ -85,11 +85,11 @@ const Cart = () => {
                                     </Link>
 
                                     {/* Details */}
-                                    <div className="flex-grow flex flex-col justify-between h-32 md:h-40 py-1">
+                                    <div className="flex-grow flex flex-col justify-between h-32 py-1 md:h-40">
                                         <div>
                                             <div className="flex justify-between items-start">
                                                 <Link to={`/product/${item.id}`}>
-                                                    <h3 className="text-xl font-serif font-medium hover:text-primary/70 transition-colors">
+                                                    <h3 className="text-lg font-serif font-medium transition-colors hover:text-primary/70 md:text-xl">
                                                         {item.title}
                                                     </h3>
                                                 </Link>
@@ -145,7 +145,7 @@ const Cart = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="sticky top-32 p-8 rounded-3xl bg-white/50 dark:bg-black/50 backdrop-blur-xl border border-white/20 shadow-sm"
+                            className="sticky top-32 rounded-3xl border border-white/20 bg-white/50 p-7 shadow-sm backdrop-blur-xl dark:bg-black/50 lg:p-8"
                         >
                             <h2 className="text-2xl font-serif font-medium mb-6">Summary</h2>
                             

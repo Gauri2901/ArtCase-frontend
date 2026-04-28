@@ -120,8 +120,8 @@ const Commissions = () => {
       <div className="absolute left-[-8rem] top-24 h-[24rem] w-[24rem] rounded-full bg-primary/10 blur-[120px]" />
       <div className="absolute right-[-8rem] bottom-0 h-[28rem] w-[28rem] rounded-full bg-orange-100/40 blur-[140px]" />
 
-      <div className="container mx-auto px-4">
-        <div className="mb-10 max-w-3xl">
+      <div className="mx-auto w-full max-w-6xl px-4 md:px-6">
+        <div className="mb-10 max-w-2xl lg:mb-12">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -134,7 +134,7 @@ const Commissions = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="mt-6 text-5xl md:text-6xl font-serif leading-tight"
+            className="mt-5 text-4xl font-serif leading-tight tracking-tight sm:text-5xl lg:text-[3.8rem]"
           >
             Tell us the artwork you want us to create for you.
           </motion.h1>
@@ -142,13 +142,13 @@ const Commissions = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mt-6 max-w-2xl text-lg text-muted-foreground"
+            className="mt-5 max-w-xl text-base leading-8 text-muted-foreground sm:text-lg"
           >
             Share your idea, your budget, and any reference images. We will review it from the studio side and respond with the right next step.
           </motion.p>
         </div>
 
-        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.25fr)_420px]">
+        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.15fr)_380px]">
           <motion.form
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}

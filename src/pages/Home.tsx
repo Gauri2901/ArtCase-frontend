@@ -62,6 +62,7 @@ const FloatingShapes = () => (
   </div>
 );
 
+// ── MovingGallery is intentionally full-bleed — no container change ──
 const MovingGallery = () => {
   const images = [
     CLOUDINARY_IMAGES[3],
@@ -70,7 +71,6 @@ const MovingGallery = () => {
     CLOUDINARY_IMAGES[6],
     CLOUDINARY_IMAGES[7],
     CLOUDINARY_IMAGES[8],
-
   ];
 
   return (
@@ -123,7 +123,8 @@ const HeroSection = () => {
       <AuroraBackground />
       <FloatingShapes />
 
-      <div className="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center py-20 lg:py-0 lg:h-screen">
+      {/* ── max-w-6xl + px-4 md:px-6 matches About page container ── */}
+      <div className="mx-auto w-full max-w-6xl px-4 md:px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center py-20 lg:py-0 lg:h-screen">
         <motion.div
           style={{ y: yText }}
           className="flex flex-col gap-5 text-center lg:text-left"
@@ -209,7 +210,7 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* ── MOBILE-ONLY: Unique image collage then buttons ── */}
+        {/* ── MOBILE-ONLY: image collage + buttons ── */}
         <div className="lg:hidden flex flex-col gap-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -222,7 +223,7 @@ const HeroSection = () => {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="absolute left-0 top-0 w-[58%] h-full rounded-2xl overflow-hidden shadow-2xl border-2 border-white/40 z-10 -rotate-1"
             >
-            <img src={CLOUDINARY_IMAGES[0]} alt="Main painting" className="w-full h-full object-cover" />
+              <img src={CLOUDINARY_IMAGES[0]} alt="Main painting" className="w-full h-full object-cover" />
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
                 <p className="font-serif italic text-white text-sm">"The Ocean's Whisper"</p>
                 <p className="text-white/70 text-xs">Oil on Canvas, 2025</p>
@@ -287,7 +288,8 @@ const PhilosophySection = () => {
     <section className="py-32 bg-foreground text-background relative overflow-hidden">
       <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
 
-      <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
+      {/* ── max-w-6xl matches About page ── */}
+      <div className="mx-auto w-full max-w-6xl px-4 md:px-6 grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative">
           <div className="absolute -top-10 -left-10 text-[10rem] font-serif text-background/10 leading-none select-none">"</div>
           <h2 className="text-4xl md:text-6xl font-serif leading-tight relative z-10">
@@ -320,15 +322,16 @@ const PhilosophySection = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
 const CommissionSection = () => {
   return (
     <section id="commissions" className="pt-16 pb-24 md:pt-20 md:pb-28 relative overflow-hidden bg-background">
       <div className="absolute right-0 bottom-0 w-[800px] h-[800px] bg-orange-100/40 rounded-full blur-[120px] -z-10" />
 
-      <div className="container mx-auto px-4">
+      {/* ── max-w-6xl matches About page ── */}
+      <div className="mx-auto w-full max-w-6xl px-4 md:px-6">
         <div className="rounded-[2rem] border border-primary/10 bg-secondary/20 backdrop-blur-sm shadow-[0_20px_80px_-40px_rgba(0,0,0,0.18)] px-6 py-10 md:px-10 md:py-14">
           <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
             <div>
@@ -376,7 +379,7 @@ const CommissionSection = () => {
               <motion.div
                 className="absolute w-64 h-[360px] md:w-80 md:h-[450px] bg-white p-4 shadow-xl -rotate-6 z-0 opacity-60 rounded-xl translate-x-10 translate-y-10 md:translate-x-12 md:translate-y-12 border border-gray-100"
               >
-                <img src={CLOUDINARY_IMAGES[11]} className="w-full h-full object-cover " />
+                <img src={CLOUDINARY_IMAGES[11]} className="w-full h-full object-cover" />
               </motion.div>
             </div>
           </div>
@@ -390,7 +393,7 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-0 relative">
 
-      {/* 1. TOP MARQUEE */}
+      {/* 1. TOP MARQUEE — intentionally full-bleed, no container */}
       <div className="bg-primary py-3 relative z-40 overflow-hidden">
         <Marquee speed={30} className="text-primary-foreground font-medium text-sm uppercase tracking-widest">
           <span className="flex items-center gap-4 mx-4"><Sparkles className="w-4 h-4" /> New Collection Drop: "Midnight Bloom"</span>
@@ -403,11 +406,11 @@ const Home = () => {
       {/* 2. HERO */}
       <HeroSection />
 
-      {/* 3. MOVING GALLERY */}
+      {/* 3. MOVING GALLERY — intentionally full-bleed, untouched */}
       <MovingGallery />
 
-      {/* 4. FEATURES */}
-      <section className="py-24 container mx-auto px-4 relative z-10">
+      {/* 4. FEATURES — max-w-6xl matches About page */}
+      <section className="py-24 mx-auto w-full max-w-6xl px-4 md:px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <FeatureItem
             icon={Palette}
@@ -436,8 +439,8 @@ const Home = () => {
       {/* 6. COMMISSIONS */}
       <CommissionSection />
 
-      {/* 7. CALL TO ACTION */}
-      <section className="py-32 container mx-auto px-4 text-center relative overflow-hidden">
+      {/* 7. CALL TO ACTION — max-w-6xl matches About page */}
+      <section className="py-32 mx-auto w-full max-w-6xl px-4 md:px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5 -z-10 rounded-3xl transform rotate-1 scale-95" />
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -455,6 +458,7 @@ const Home = () => {
           </Button>
         </motion.div>
       </section>
+
     </div>
   );
 };

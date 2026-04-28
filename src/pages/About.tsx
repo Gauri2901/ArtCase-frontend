@@ -30,29 +30,29 @@ const About = () => {
             <div className="fixed top-0 left-0 w-[600px] h-[600px] bg-purple-200/20 dark:bg-purple-900/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
             <div className="fixed bottom-0 right-0 w-[600px] h-[600px] bg-blue-200/20 dark:bg-blue-900/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
-            <div className="container mx-auto px-4 pt-32 pb-20">
+            <div className="mx-auto w-full max-w-6xl px-4 pb-20 pt-32 md:px-6">
 
                 {/* 2. Hero Section */}
                 <motion.div
                     initial="hidden"
                     animate="visible"
                     variants={containerVariants}
-                    className="max-w-4xl mx-auto text-center mb-24"
+                    className="mx-auto mb-20 max-w-3xl text-center lg:mb-24"
                 >
                     {/* <motion.span variants={itemVariants} className="text-xs font-bold tracking-[0.2em] text-primary uppercase mb-6 block">
                         Est. 2026
                     </motion.span> */}
-                    <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-serif font-medium mb-8 text-foreground leading-tight">
+                    <motion.h1 variants={itemVariants} className="mb-6 text-4xl font-serif font-medium leading-tight text-foreground sm:text-5xl lg:text-[4.4rem]">
                         We believe art should <br />
                         <span className="italic text-muted-foreground">speak to the soul.</span>
                     </motion.h1>
-                    <motion.p variants={itemVariants} className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
+                    <motion.p variants={itemVariants} className="mx-auto max-w-2xl text-base font-light leading-8 text-muted-foreground sm:text-lg lg:text-xl">
                         Art-Case isn't just a gallery; it's a curated dialogue between the artist's vision and your personal space. We bring the raw emotion of the studio directly to your walls.
                     </motion.p>
                 </motion.div>
 
                 {/* 3. The Story Section (Split Layout) */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
+                <div className="mb-28 grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-14">
 
                     {/* Image Side with "Glass" Card Effect */}
                     <motion.div
@@ -87,7 +87,7 @@ const About = () => {
                         transition={{ duration: 0.8 }}
                         className="space-y-8"
                     >
-                        <h2 className="text-4xl font-serif font-medium">The Journey</h2>
+                        <h2 className="text-3xl font-serif font-medium sm:text-4xl">The Journey</h2>
                         <div className="space-y-4 text-muted-foreground leading-relaxed">
                             <p>
                                 It started with a single canvas and a chaotic burst of color. What began as a personal escape quickly transformed into a passion for connecting people through visual storytelling.
@@ -113,10 +113,10 @@ const About = () => {
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="mb-32"
+                    className="mb-28"
                 >
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-serif font-medium mb-4">Our Philosophy</h2>
+                        <h2 className="mb-4 text-3xl font-serif font-medium sm:text-[2.2rem]">Our Philosophy</h2>
                         <div className="h-1 w-20 bg-primary mx-auto rounded-full" />
                     </div>
 

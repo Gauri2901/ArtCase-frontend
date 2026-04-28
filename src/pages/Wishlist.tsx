@@ -18,9 +18,9 @@ const Wishlist = () => {
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-20">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-6xl px-4 md:px-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -34,7 +34,7 @@ const Wishlist = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-serif font-medium"
+              className="text-4xl font-serif font-medium tracking-tight sm:text-5xl lg:text-[3.7rem]"
             >
               Wishlist
             </motion.h1>
@@ -44,7 +44,7 @@ const Wishlist = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-muted-foreground text-lg max-w-md"
+            className="max-w-md text-base leading-8 text-muted-foreground sm:text-lg"
           >
             A curated selection of your favorite masterpieces. Save the items that speak to you.
           </motion.p>
@@ -52,7 +52,7 @@ const Wishlist = () => {
 
         {/* Content */}
         {wishlist.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
             {wishlist.map((artwork, index) => (
               <motion.div
                 key={artwork._id}
@@ -96,11 +96,11 @@ const Wishlist = () => {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="mt-20 p-12 rounded-[2.5rem] bg-primary text-primary-foreground text-center relative overflow-hidden"
+            className="relative mt-16 overflow-hidden rounded-[2.5rem] bg-primary p-8 text-center text-primary-foreground sm:p-12"
           >
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-serif mb-6">Ready to bring them home?</h2>
-              <p className="text-primary-foreground/80 mb-10 text-lg max-w-xl mx-auto">
+              <h2 className="mb-5 text-3xl font-serif sm:text-4xl lg:text-[3rem]">Ready to bring them home?</h2>
+              <p className="mx-auto mb-8 max-w-xl text-base text-primary-foreground/80 sm:text-lg">
                 Transform your favorites from dreams into reality. Add them to your cart and complete your purchase.
               </p>
               <Button variant="secondary" size="lg" className="rounded-full px-10 h-14 text-lg" asChild>

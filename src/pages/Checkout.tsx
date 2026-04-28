@@ -248,7 +248,7 @@ const Checkout = () => {
             {/* Ambient Background */}
             <div className="fixed top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
-            <div className="container mx-auto px-4">
+            <div className="mx-auto w-full max-w-6xl px-4 md:px-6">
 
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -260,7 +260,7 @@ const Checkout = () => {
                     </Link>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
+                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-14">
 
                     {/* LEFT COLUMN: Input Forms */}
                     <motion.div
@@ -270,7 +270,7 @@ const Checkout = () => {
                         transition={{ duration: 0.6 }}
                     >
                         <div className="mb-10">
-                            <h1 className="text-4xl font-serif font-medium mb-2">Secure Checkout</h1>
+                            <h1 className="mb-2 text-3xl font-serif font-medium tracking-tight sm:text-4xl lg:text-[2.8rem]">Secure Checkout</h1>
                             <p className="text-muted-foreground">Complete your purchase to secure your artwork.</p>
                         </div>
 

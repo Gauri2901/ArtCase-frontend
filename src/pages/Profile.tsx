@@ -419,12 +419,12 @@ const Profile = () => {
       <div className="fixed left-[-10rem] top-20 h-[26rem] w-[26rem] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
       <div className="fixed bottom-0 right-[-10rem] h-[24rem] w-[24rem] rounded-full bg-amber-200/30 blur-[120px] pointer-events-none" />
 
-      <div className="container relative z-10 mx-auto px-4">
-        <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 md:px-6">
+        <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary/70">My Dashboard</p>
-            <h1 className="text-5xl lg:text-6xl font-serif">Your profile & center</h1>
-            <p className="max-w-2xl text-lg text-muted-foreground/80 leading-relaxed">
+            <h1 className="text-4xl font-serif tracking-tight sm:text-5xl lg:text-[3.8rem]">Your profile & center</h1>
+            <p className="max-w-2xl text-base leading-8 text-muted-foreground/80 sm:text-lg">
               Keep your contact details up to date, follow your orders, and manage your delivery addresses from one premium dashboard.
             </p>
           </div>
