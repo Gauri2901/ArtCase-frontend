@@ -133,31 +133,31 @@ const UserNotificationBell = () => {
             exit={{ opacity: 0, y: -10, scale: 0.96 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={cn(
-              "absolute z-50 rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl",
-              "top-14 sm:top-12 right-0 sm:right-0",
-              "w-[min(24rem,calc(100vw-3rem))]",
-              "max-sm:fixed max-sm:inset-x-4 max-sm:mx-auto max-sm:top-24 max-sm:w-auto max-sm:max-w-md"
+              "absolute z-50 rounded-2xl border border-white/60 bg-white/90 p-3 shadow-2xl backdrop-blur-2xl",
+              "top-12 right-0",
+              "w-[min(18rem,calc(100vw-3rem))]",
+              "max-sm:fixed max-sm:left-1/2 max-sm:-translate-x-1/2 max-sm:right-auto max-sm:top-[4.75rem] max-sm:w-[calc(100vw-2rem)] max-sm:max-w-sm"
             )}
           >
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notifications</p>
-                <h3 className="mt-1 font-serif text-2xl">Updates for you</h3>
+                <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Notifications</p>
+                  <h3 className="mt-0.5 font-serif text-lg">Updates for you</h3>
               </div>
               <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-                onClick={markAllRead}
-                disabled={loading || data.unreadCount === 0}
-              >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />}
-                Mark read
-              </Button>
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full h-7 px-2.5 text-xs gap-1"
+                  onClick={markAllRead}
+                  disabled={loading || data.unreadCount === 0}
+                >
+                  {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCheck className="h-3 w-3" />}
+                  Mark read
+                </Button>
             </div>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-3 space-y-2">
               {data.notifications.length === 0 ? (
                 <div className="rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
                   No new updates right now.
@@ -169,13 +169,13 @@ const UserNotificationBell = () => {
                     type="button"
                     onClick={() => handleNotificationClick(notification)}
                     className={cn(
-                      "w-full rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm transition-colors hover:bg-background",
+                      "w-full rounded-xl border border-border/70 bg-background/80 p-3 text-left shadow-sm transition-colors hover:bg-background",
                       !notification.read && "border-primary/30"
                     )}
                   >
-                    <p className="font-semibold">{notification.title}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{notification.message}</p>
-                    <p className="mt-2 text-xs text-muted-foreground">{new Date(notification.createdAt).toLocaleString('en-IN')}</p>
+                    <p className="text-sm font-semibold leading-snug">{notification.title}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-snug">{notification.message}</p>
+                    <p className="mt-1.5 text-[10px] text-muted-foreground">{new Date(notification.createdAt).toLocaleString('en-IN')}</p>
                   </button>
                 ))
               )}

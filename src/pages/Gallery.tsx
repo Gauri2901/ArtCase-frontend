@@ -295,7 +295,7 @@ const Gallery = () => {
       <Dialog open={mobilePanelOpen} onOpenChange={setMobilePanelOpen}>
         <DialogContent
           showCloseButton={false}
-          className="top-0 left-auto right-0 h-screen max-w-[88vw]
+          className="top-0 left-auto right-0 h-[100dvh] max-w-[88vw]
                      translate-x-0 translate-y-0
                      rounded-none rounded-l-3xl
                      border-l border-border/50
@@ -305,16 +305,16 @@ const Gallery = () => {
                      data-[state=open]:slide-in-from-right
                      sm:hidden"
         >
-          <div className="flex h-full flex-col">
+          <div className="flex h-full min-h-0 flex-col">
 
             {/* Header */}
             <div className="border-b border-border/40 px-6 pt-8 pb-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <DialogTitle className="font-serif text-[1.8rem] font-medium tracking-tight text-foreground leading-none">
+                  <DialogTitle className="font-serif text-[1.6rem] font-medium tracking-tight text-foreground leading-none">                    
                     Filter & Sort
                   </DialogTitle>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-1.5 text-xs text-muted-foreground">
                     {filteredProducts.length} {filteredProducts.length === 1 ? 'work' : 'works'} available
                   </p>
                 </div>
@@ -331,13 +331,12 @@ const Gallery = () => {
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 py-8 space-y-9">
+            <div className="flex-1 overflow-y-auto px-5 py-6 space-y-7 pb-28">
 
               {/* Category */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                    Medium
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">                    Medium
                   </span>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -347,8 +346,7 @@ const Gallery = () => {
                       type="button"
                       onClick={() => setActiveCategory(cat)}
                       className={[
-                        'flex items-center justify-between w-full px-4 py-3.5 rounded-xl text-sm font-medium text-left transition-all duration-150',
-                        activeCategory === cat
+                          'flex items-center justify-between w-full px-3.5 py-2.5 rounded-lg text-sm font-medium text-left transition-all duration-150',                        activeCategory === cat
                           ? 'bg-foreground text-background'
                           : 'bg-muted/40 text-foreground hover:bg-muted',
                       ].join(' ')}
@@ -369,7 +367,7 @@ const Gallery = () => {
                     Sort by
                   </span>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1.5">
                   {SORT_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
@@ -393,7 +391,7 @@ const Gallery = () => {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-border/40 px-6 py-5 flex items-center gap-3">
+            <div className="sticky bottom-0 border-t border-border/40 px-5 py-4 flex items-center gap-3 bg-background/95 backdrop-blur">
               <button
                 type="button"
                 onClick={() => { setActiveCategory("All"); setSortBy("newest"); }}
@@ -404,7 +402,7 @@ const Gallery = () => {
               <Button
                 type="button"
                 onClick={() => setMobilePanelOpen(false)}
-                className="flex-1 h-12 rounded-full text-sm font-semibold"
+                className="flex-1 h-11 rounded-full text-sm font-semibold"
               >
                 Show {filteredProducts.length} works
               </Button>
