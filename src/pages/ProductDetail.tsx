@@ -207,14 +207,14 @@ const ProductDetail = () => {
                                 className="relative"
                             >
                                 {/* Main image container */}
-                                <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-white/5 group
-                                               aspect-square sm:aspect-[4/5]
-                                               border border-white/10
-                                               shadow-[0_32px_80px_-20px_rgba(0,0,0,0.25)]">
+                                <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-neutral-50 dark:bg-neutral-900 group
+                                    aspect-square sm:aspect-[4/5]
+                                    border border-black/5 dark:border-white/10
+                                    shadow-[0_32px_80px_-20px_rgba(0,0,0,0.25)]">
                                     <img
                                         src={product.imageUrl}
                                         alt={product.title}
-                                        className="h-full w-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.04]"
+                                        className="h-full w-full object-contain transition-transform duration-[1.2s] group-hover:scale-[1.03] p-2 sm:p-4"
                                     />
 
                                     {/* Subtle vignette */}
