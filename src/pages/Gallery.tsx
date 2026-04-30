@@ -257,6 +257,7 @@ const Gallery = () => {
                       category={product.category}
                       dimensions={product.dimensions}
                       year={product.year}
+                      tags={product.tags}
                       className="h-full border-none shadow-none bg-transparent rounded-none"
                     />
                   </div>

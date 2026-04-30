@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from './useAuth';
 import { apiRequest } from '@/lib/api';
@@ -11,6 +11,7 @@ interface WishlistContextType {
   toggleWishlist: (productId: string) => Promise<void>;
   isInWishlist: (productId: string) => boolean;
   isLoading: boolean;
+  refreshWishlist: () => Promise<void>;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -23,27 +24,33 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   // Derive IDs for quick lookup
   const wishlistIds = wishlist.map((item) => item._id);
 
+  const refreshWishlist = useCallback(async () => {
+    if (!user?.token) {
+      setWishlist([]);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const data = await apiRequest<Artwork[]>('/users/wishlist', {
+        token: user.token
+      });
+      setWishlist(data);
+    } catch (error) {
+      console.error('Failed to fetch wishlist:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]);
+
   // Load wishlist from backend when user logs in
   useEffect(() => {
-    const fetchWishlist = async () => {
-      if (!user) {
-        setWishlist([]);
-        return;
-      }
-      setIsLoading(true);
-      try {
-        const data = await apiRequest<Artwork[]>('/users/wishlist', {
-          token: user.token
-        });
-        setWishlist(data);
-      } catch (error) {
-        console.error('Failed to fetch wishlist:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (!user) {
+      setWishlist([]);
+      return;
+    }
 
-    fetchWishlist();
+    void refreshWishlist();
   }, [user]);
 
   const toggleWishlist = async (productId: string) => {
@@ -79,7 +86,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <WishlistContext.Provider value={{ wishlist, wishlistIds, toggleWishlist, isInWishlist, isLoading }}>
+    <WishlistContext.Provider value={{ wishlist, wishlistIds, toggleWishlist, isInWishlist, isLoading, refreshWishlist }}>
       {children}
     </WishlistContext.Provider>
   );

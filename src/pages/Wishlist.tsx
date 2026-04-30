@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { Heart, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import ProductCard from '@/components/ProductCard';
@@ -6,7 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 const Wishlist = () => {
-  const { wishlist, isLoading } = useWishlist();
+  const { wishlist, isLoading, refreshWishlist } = useWishlist();
+
+  useEffect(() => {
+    void refreshWishlist();
+  }, [refreshWishlist]);
 
   if (isLoading) {
     return (
@@ -66,6 +71,7 @@ const Wishlist = () => {
                   price={artwork.price}
                   imageUrl={artwork.imageUrl}
                   category={artwork.category}
+                  tags={artwork.tags}
                 />
               </motion.div>
             ))}

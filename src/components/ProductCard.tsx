@@ -2,6 +2,7 @@ import WishlistButton from './WishlistButton';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn, formatPrice } from '@/lib/utils';
+import { getDisplayTag } from '@/lib/productTags';
 
 type ProductCardProps = {
   id: string;
@@ -11,8 +12,7 @@ type ProductCardProps = {
   category?: 'Oil' | 'Acrylic' | 'Watercolor' | 'Mixed Media';
   dimensions?: string;
   year?: string | number;
-  isSold?: boolean;
-  isNew?: boolean;
+  tags?: string[];
   className?: string;
 };
 
@@ -23,10 +23,11 @@ const ProductCard = ({
   price,
   dimensions,
   year,
-  isSold = false,
-  isNew = false,
+  tags = [],
   className,
 }: ProductCardProps) => {
+  const { label: displayTag, isSold, isNew } = getDisplayTag(tags);
+
   return (
     <motion.div
       className={cn('group cursor-pointer h-full', className)}
@@ -67,16 +68,14 @@ const ProductCard = ({
               />
             </div>
 
-            {/* Bottom-left: Status chip — Sold or New */}
-            {isSold && (
-              <div className="absolute bottom-2.5 left-2.5 rounded-full bg-black/60 px-2.5 py-1 text-[8.5px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
-                Sold
-              </div>
-            )}
-
-            {!isSold && isNew && (
-              <div className="absolute bottom-2.5 left-2.5 rounded-full bg-[#c4a770]/90 px-2.5 py-1 text-[8.5px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
-                New
+            {displayTag && (
+              <div
+                className={cn(
+                  'absolute bottom-2.5 left-2.5 z-20 max-w-[calc(100%-5rem)] rounded-full px-2.5 py-1 text-[8.5px] font-semibold uppercase tracking-[0.2em] text-white shadow-sm backdrop-blur-md',
+                  isSold ? 'bg-black/60' : isNew ? 'bg-[#c4a770]/90' : 'bg-[#7a6a52]/78'
+                )}
+              >
+                <span className="block truncate">{displayTag}</span>
               </div>
             )}
           </div>

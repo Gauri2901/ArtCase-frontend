@@ -9,6 +9,7 @@ import { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import { apiRequest } from '@/lib/api';
 import type { Artwork } from '@/types/admin';
 import { formatPrice } from '@/lib/utils';
+import { getDisplayTag } from '@/lib/productTags';
 import { useColor } from 'color-thief-react';
 import type { Review } from '@/types/review';
 import ReviewList from '@/components/reviews/ReviewList';
@@ -152,6 +153,7 @@ const ProductDetail = () => {
     };
 
     const hasRating = (product.rating ?? 0) > 0;
+    const { label: displayTag, isSold, isNew } = getDisplayTag(product.tags);
 
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-background">
@@ -281,13 +283,24 @@ const ProductDetail = () => {
 
                             {/* Price */}
                             <motion.div variants={itemVariants} className="mb-7">
-                                <div className="flex items-baseline gap-3">
-                                    <span className="font-sans font-light tracking-tight text-foreground text-[2rem] sm:text-[2.2rem] leading-none">
-                                        {formatPrice(product.price)}
-                                    </span>
-                                    <span className="text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Incl. Taxes
-                                    </span>
+                                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                                    <div className="flex items-baseline gap-3">
+                                        <span className="font-sans font-light tracking-tight text-foreground text-[2rem] sm:text-[2.2rem] leading-none">
+                                            {formatPrice(product.price)}
+                                        </span>
+                                        <span className="text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+                                            Incl. Taxes
+                                        </span>
+                                    </div>
+                                    {displayTag && (
+                                        <span
+                                            className={`inline-flex max-w-full items-center rounded-full px-3 py-1 text-[10px] sm:text-[15px] font-semibold uppercase tracking-[0.18em] text-white shadow-sm ${
+                                                isSold ? 'bg-black/65' : isNew ? 'bg-[#c4a770]/90' : 'bg-[#7a6a52]/80'
+                                            }`}
+                                        >
+                                            <span className="truncate">{displayTag}</span>
+                                        </span>
+                                    )}
                                 </div>
                             </motion.div>
 
@@ -481,6 +494,7 @@ const ProductDetail = () => {
                                                 category={artwork.category}
                                                 dimensions={artwork.dimensions}
                                                 year={artwork.year}
+                                                tags={artwork.tags}
                                                 className="h-full pointer-events-none"
                                             />
                                         </div>
