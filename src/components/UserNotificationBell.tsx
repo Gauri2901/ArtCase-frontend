@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, CheckCheck, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -81,10 +82,11 @@ const UserNotificationBell = () => {
         method: 'PATCH',
         token: user.token,
       });
-      setData((current) => ({
+      setData({
         unreadCount: 0,
-        notifications: current.notifications.map((notification) => ({ ...notification, read: true })),
-      }));
+        notifications: [],
+      });
+      setOpen(false);
     } catch (error) {
       console.error(error);
     } finally {
@@ -99,6 +101,13 @@ const UserNotificationBell = () => {
           method: 'PATCH',
           token: user.token,
         });
+
+        setData((current) => ({
+          unreadCount: Math.max(0, current.unreadCount - 1),
+          notifications: current.notifications.map((entry) =>
+            entry._id === notification._id ? { ...entry, read: true } : entry
+          ),
+        }));
       }
       setOpen(false);
       navigate(notification.link || '/profile?section=orders');
@@ -108,12 +117,15 @@ const UserNotificationBell = () => {
   };
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative pointer-events-auto">
       <Button
         type="button"
         variant="ghost"
         size="icon"
-        className="rounded-full hover:bg-white/20"
+        className={cn(
+          'rounded-full transition-colors hover:bg-white/20',
+          (open || data.unreadCount > 0) && 'bg-primary/10 text-primary hover:bg-primary/15'
+        )}
         onClick={() => setOpen((value) => !value)}
       >
         <Bell className="h-5 w-5" />
@@ -133,7 +145,7 @@ const UserNotificationBell = () => {
             exit={{ opacity: 0, y: -10, scale: 0.96 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={cn(
-              "absolute z-50 rounded-2xl border border-white/60 bg-white/90 p-3 shadow-2xl backdrop-blur-2xl",
+              "pointer-events-auto absolute z-50 rounded-2xl border border-white/60 bg-white/90 p-3 shadow-2xl backdrop-blur-2xl",
               "top-12 right-0",
               "w-[min(18rem,calc(100vw-3rem))]",
               "max-sm:fixed max-sm:left-1/2 max-sm:-translate-x-1/2 max-sm:right-auto max-sm:top-[4.75rem] max-sm:w-[calc(100vw-2rem)] max-sm:max-w-sm"
@@ -145,13 +157,17 @@ const UserNotificationBell = () => {
                   <h3 className="mt-0.5 font-serif text-lg">Updates for you</h3>
               </div>
               <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full h-7 px-2.5 text-xs gap-1"
-                  onClick={markAllRead}
-                  disabled={loading || data.unreadCount === 0}
-                >
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full h-7 px-2.5 text-xs gap-1"
+                onClick={(event: ReactMouseEvent<HTMLButtonElement>) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  void markAllRead();
+                }}
+                disabled={loading || data.unreadCount === 0}
+              >
                   {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCheck className="h-3 w-3" />}
                   Mark read
                 </Button>

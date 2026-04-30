@@ -96,7 +96,10 @@ const NotificationBell = () => {
         type="button"
         variant="ghost"
         size="icon"
-        className="rounded-full hover:bg-white/20"
+        className={cn(
+          'rounded-full transition-colors hover:bg-white/20',
+          (open || data.unreadCount > 0) && 'bg-primary/10 text-primary hover:bg-primary/15'
+        )}
         onClick={() => setOpen((value) => !value)}
       >
         <Bell className="h-5 w-5" />
