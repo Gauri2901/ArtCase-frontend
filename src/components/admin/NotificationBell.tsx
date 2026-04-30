@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, CheckCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/useAuth';
-import type { AdminOrder } from '@/types/admin';
+import type { AdminCommission, AdminOrder } from '@/types/admin';
 
 type NotificationPayload = {
   unreadCount: number;
   orders: AdminOrder[];
+  commissions: AdminCommission[];
 };
 
 const NotificationBell = () => {
@@ -17,7 +19,7 @@ const NotificationBell = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<NotificationPayload>({ unreadCount: 0, orders: [] });
+  const [data, setData] = useState<NotificationPayload>({ unreadCount: 0, orders: [], commissions: [] });
 
   useEffect(() => {
     if (!user?.isAdmin || !user.token) return;
@@ -79,7 +81,8 @@ const NotificationBell = () => {
         method: 'PATCH',
         token: user.token,
       });
-      setData({ unreadCount: 0, orders: [] });
+      setData({ unreadCount: 0, orders: [], commissions: [] });
+      setOpen(false);
     } catch (error) {
       console.error(error);
     } finally {
@@ -88,7 +91,7 @@ const NotificationBell = () => {
   };
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative pointer-events-auto">
       <Button
         type="button"
         variant="ghost"
@@ -113,7 +116,7 @@ const NotificationBell = () => {
             exit={{ opacity: 0, y: -10, scale: 0.96 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={cn(
-              "absolute z-50 rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl",
+              "pointer-events-auto absolute z-50 rounded-[1.75rem] border border-white/60 bg-white/90 p-4 shadow-2xl backdrop-blur-2xl",
               "top-14 sm:top-12 right-0 sm:right-0",
               "w-[min(24rem,calc(100vw-3rem))]",
               "max-sm:fixed max-sm:inset-x-4 max-sm:mx-auto max-sm:top-24 max-sm:w-auto max-sm:max-w-md"
@@ -122,14 +125,18 @@ const NotificationBell = () => {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notifications</p>
-                <h3 className="mt-1 font-serif text-2xl">New orders</h3>
+                <h3 className="mt-1 font-serif text-2xl">Admin updates</h3>
               </div>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 className="rounded-full"
-                onClick={markAllRead}
+                onClick={(event: ReactMouseEvent<HTMLButtonElement>) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  void markAllRead();
+                }}
                 disabled={loading || data.unreadCount === 0}
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />}
@@ -138,36 +145,66 @@ const NotificationBell = () => {
             </div>
 
             <div className="mt-4 space-y-3">
-              {data.orders.length === 0 ? (
+              {data.orders.length === 0 && data.commissions.length === 0 ? (
                 <div className="rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
-                  No unread orders right now.
+                  No unread notifications right now.
                 </div>
               ) : (
-                data.orders.map((order) => (
-                  <div
-                    key={order._id}
-                    className={cn(
-                      'rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm',
-                      order.unread && 'border-primary/30'
-                    )}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="font-semibold">{order.orderId}</p>
-                        <p className="text-sm text-muted-foreground">{order.user.name}</p>
+                <>
+                  {data.orders.map((order) => (
+                    <div
+                      key={order._id}
+                      className={cn(
+                        'rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm',
+                        order.unread && 'border-primary/30'
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Order</p>
+                          <p className="mt-1 font-semibold">{order.orderId}</p>
+                          <p className="text-sm text-muted-foreground">{order.user.name}</p>
+                        </div>
+                        <p className="text-sm font-medium">
+                          {new Intl.NumberFormat('en-IN', {
+                            style: 'currency',
+                            currency: order.payment.currency || 'INR',
+                          }).format(order.payment.amount)}
+                        </p>
                       </div>
-                      <p className="text-sm font-medium">
-                        {new Intl.NumberFormat('en-IN', {
-                          style: 'currency',
-                          currency: order.payment.currency || 'INR',
-                        }).format(order.payment.amount)}
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {order.artworks.map((artwork) => artwork.title).join(', ') || order.commissionDetails?.artworkType || 'Order received'}
                       </p>
                     </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {order.artworks.map((artwork) => artwork.title).join(', ')}
-                    </p>
-                  </div>
-                ))
+                  ))}
+
+                  {data.commissions.map((commission) => (
+                    <div
+                      key={commission._id}
+                      className={cn(
+                        'rounded-2xl border border-border/70 bg-background/80 p-4 text-left shadow-sm',
+                        commission.unread && 'border-primary/30'
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Commission</p>
+                          <p className="mt-1 font-semibold">{commission.commissionId}</p>
+                          <p className="text-sm text-muted-foreground">{commission.customer.name}</p>
+                        </div>
+                        <p className="text-sm font-medium">
+                          {new Intl.NumberFormat('en-IN', {
+                            style: 'currency',
+                            currency: commission.currency || 'INR',
+                          }).format(commission.quotedPrice ?? commission.budget)}
+                        </p>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {commission.artworkType}
+                      </p>
+                    </div>
+                  ))}
+                </>
               )}
             </div>
           </motion.div>
