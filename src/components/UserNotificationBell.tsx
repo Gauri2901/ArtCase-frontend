@@ -104,9 +104,7 @@ const UserNotificationBell = () => {
 
         setData((current) => ({
           unreadCount: Math.max(0, current.unreadCount - 1),
-          notifications: current.notifications.map((entry) =>
-            entry._id === notification._id ? { ...entry, read: true } : entry
-          ),
+          notifications: current.notifications.filter((entry) => entry._id !== notification._id),
         }));
       }
       setOpen(false);
