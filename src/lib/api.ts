@@ -13,6 +13,7 @@ const REQUEST_TIMEOUT = 15000; // 15 second timeout
 
 export async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', token, body, headers = {} } = options;
+  const normalizedMethod = method.toUpperCase();
 
   if (!API_BASE_URL) {
     throw new Error('API is not configured. Set VITE_API_BASE_URL in environment variables.');
@@ -23,9 +24,11 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method,
+      method: normalizedMethod,
       headers: {
-        ...(body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+        ...((body instanceof FormData || body == null || normalizedMethod === 'GET' || normalizedMethod === 'HEAD')
+          ? {}
+          : { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },
